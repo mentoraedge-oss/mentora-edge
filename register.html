@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 font-inter text-gray-800">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
+    <a href="courses.html" class="text-primary font-medium hover:underline">
+      ← Back to Courses
+    </a>
+  </div>
+</header>
+
+<!-- ================= FORM ================= -->
+<section class="py-20">
+  <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl animate-fadeIn">
+
+    <h2 class="text-3xl font-extrabold text-center mb-2">
+      Student Registration
+    </h2>
+    <p class="text-center text-gray-500 mb-8 text-sm">
+      Complete payment to submit your registration
+    </p>
+
+    <form id="registerForm" class="space-y-4">
+
+      <input id="name" type="text" placeholder="Full Name" class="input"/>
+      <input id="email" type="email" placeholder="Email Address" class="input"/>
+      <input id="password" type="password" placeholder="Create Password" class="input"/>
+      <input id="mobile" type="tel" placeholder="Mobile Number" class="input"/>
+
+      <input id="classField" readonly class="input bg-gray-100"/>
+      <input id="subjectField" readonly class="input bg-gray-100"/>
+      <input id="feeField" readonly class="input bg-gray-100"/>
+
+      <!-- ================= PAYMENT ================= -->
+      <div class="border rounded-xl p-5 bg-blue-50 mt-6">
+        <p class="font-semibold mb-3 text-blue-800">Scan & Pay</p>
+
+        <img id="qrImage" class="mx-auto mb-4 w-40 h-40 rounded-lg shadow"/>
+
+        <p class="text-center text-sm mb-2">
+          Pay ₹<span id="feeAmount"></span> via UPI
+        </p>
+
+        <p class="text-center text-xs text-gray-600">
+          UPI ID: <strong>abirmunshi200@okhdfcbank</strong>
+        </p>
+
+        <p id="timer" class="text-center text-red-600 font-semibold mt-3">
+          Time left: 03:00
+        </p>
+      </div>
+
+      <!-- ================= BUTTONS ================= -->
+      <button
+        type="button"
+        id="payBtn"
+        disabled
+        class="w-full py-3 rounded-lg font-semibold
+               bg-green-600 text-white
+               opacity-50 cursor-not-allowed
+               transition-all duration-200">
+        Payment Completed
+      </button>
+
+      <button
+        type="button"
+        onclick="location.href='courses.html'"
+        class="w-full border py-3 rounded-lg hover:bg-gray-50 transition">
+        Cancel Payment
+      </button>
+
+    </form>
+
+    <div
+      id="successMsg"
+      class="hidden mt-8 text-center text-green-600 font-semibold animate-scaleIn">
+      ✅ Thank you! Kindly wait for admin approval.
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FIREBASE ================= -->
+<script type="module">
+import { auth, db } from "./js/firebase.js";
+import { createUserWithEmailAndPassword } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc, serverTimestamp } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===== URL PARAMS ===== */
+const params = new URLSearchParams(window.location.search);
+const cls = params.get("class");
+const rawSubject = params.get("subject");
+const subject = rawSubject ? rawSubject.replace(/\+/g, " ") : "";
+const fee = params.get("fee");
+
+/* ===== ELEMENTS ===== */
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const mobileInput = document.getElementById("mobile");
+const payBtn = document.getElementById("payBtn");
+const timerEl = document.getElementById("timer");
+
+/* ===== FILL FIELDS ===== */
+classField.value = cls;
+subjectField.value = subject;
+feeField.value = `₹${fee}`;
+feeAmount.innerText = fee;
+
+/* ===== FORM VALIDATION ===== */
+function validateForm() {
+  const valid =
+    nameInput.value.trim() &&
+    emailInput.value.trim() &&
+    passwordInput.value.trim() &&
+    mobileInput.value.trim();
+
+  if (valid) {
+    payBtn.disabled = false;
+    payBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    payBtn.classList.add("hover:bg-green-700", "hover:scale-[1.02]");
+  } else {
+    payBtn.disabled = true;
+    payBtn.classList.add("opacity-50", "cursor-not-allowed");
+  }
+}
+
+[nameInput, emailInput, passwordInput, mobileInput]
+  .forEach(i => i.addEventListener("input", validateForm));
+
+/* ===== QR CODE ===== */
+const upi = `upi://pay?pa=abirmunshi200@okhdfcbank&pn=Mentora Edge&am=${fee}&cu=INR`;
+qrImage.src =
+  `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upi)}`;
+
+/* ===== TIMER ===== */
+let seconds = 180;
+const interval = setInterval(() => {
+  seconds--;
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  timerEl.innerText = `Time left: ${m}:${s}`;
+
+  if (seconds <= 30) timerEl.classList.add("animate-pulse");
+
+  if (seconds <= 0) {
+    clearInterval(interval);
+    alert("Payment session expired");
+    location.href = "index.html";
+  }
+}, 1000);
+
+/* ===== PAYMENT COMPLETE ===== */
+payBtn.onclick = async () => {
+  try {
+    payBtn.disabled = true;
+    payBtn.innerText = "Processing…";
+    clearInterval(interval);
+
+    const cred = await createUserWithEmailAndPassword(
+      auth,
+      emailInput.value,
+      passwordInput.value
+    );
+
+    await setDoc(doc(db, "users", cred.user.uid), {
+      name: nameInput.value,
+      email: emailInput.value,
+      mobile: mobileInput.value,
+      class: cls,
+      subject,
+      role: "student",
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
+    registerForm.classList.add("hidden");
+    successMsg.classList.remove("hidden");
+
+    setTimeout(() => location.href = "index.html", 2500);
+
+  } catch (err) {
+    alert(err.message);
+    payBtn.disabled = false;
+    payBtn.innerText = "Payment Completed";
+  }
+};
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #D1D5DB;
+}
+.input:focus {
+  outline: none;
+  border-color: #2563EB;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scaleIn {
+  animation: scaleIn 0.4s ease-out;
+}
+</style>
+
+</body>
+</html>

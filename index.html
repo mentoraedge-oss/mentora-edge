@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentora Edge | Shaping Minds, Sharpening Futures</title>
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            secondary: '#0F172A',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-inter overflow-x-hidden">
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <h1 class="text-2xl font-extrabold text-primary">
+      Mentora Edge
+    </h1>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-primary">Home</a>
+      <a href="about.html" class="hover:text-primary">About Us</a>
+      <a href="courses.html" class="hover:text-primary">Courses</a>
+      <a href="educators.html" class="hover:text-primary">Educators</a>
+      <a href="contact.html" class="hover:text-primary">Contact</a>
+
+      <a href="login.html"
+         class="px-4 py-2 rounded-lg border border-primary text-primary
+                hover:bg-primary hover:text-white transition">
+        Login
+      </a>
+
+      <a href="courses.html"
+         class="px-5 py-2 rounded-lg bg-primary text-white
+                hover:bg-blue-700 transition shadow-md">
+        Register Now
+      </a>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="courses.html">Courses</a>
+      <a href="educators.html">Educators</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html" class="text-primary font-semibold">Login</a>
+      <a href="courses.html" class="bg-primary text-white text-center py-2 rounded-lg">
+        Register Now
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="relative bg-gradient-to-br from-primary to-accent text-white overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+  <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 py-24 text-center animate-fadeIn">
+    <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-6">
+      Unlock Your Potential with <br class="hidden sm:block"> Mentora Edge
+    </h2>
+    <p class="text-lg text-blue-100 mb-10 max-w-2xl mx-auto">
+      Expert guidance. Structured learning. Proven CBSE results — all in one place.
+    </p>
+    <a href="courses.html"
+       class="inline-block bg-white text-primary px-10 py-4 rounded-xl
+              font-semibold shadow-lg hover:scale-105 transition">
+      Register Now
+    </a>
+  </div>
+</section>
+
+<!-- ================= WHY CHOOSE ================= -->
+<section class="py-24 reveal">
+  <div class="max-w-7xl mx-auto px-6">
+    <h3 class="text-3xl font-bold text-center mb-16">
+      Why Choose Mentora Edge?
+    </h3>
+
+    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+      <div class="bg-white p-8 rounded-2xl shadow">
+        <h4 class="text-xl font-semibold mb-3">Experienced Educators</h4>
+        <p class="text-gray-600">25+ years of CBSE teaching excellence.</p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl shadow">
+        <h4 class="text-xl font-semibold mb-3">Structured Curriculum</h4>
+        <p class="text-gray-600">Concept-driven, exam-aligned learning.</p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl shadow">
+        <h4 class="text-xl font-semibold mb-3">Personal Attention</h4>
+        <p class="text-gray-600">Focused doubt-solving & growth tracking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT PREVIEW ================= -->
+<section class="py-24 bg-white reveal">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <h3 class="text-3xl font-bold mb-4">About Mentora Edge</h3>
+      <p class="text-gray-600 mb-6">
+        A structured learning platform for Classes VIII–X built by veteran educators.
+      </p>
+      <a href="about.html" class="bg-primary text-white px-6 py-3 rounded-lg">
+        Read More
+      </a>
+    </div>
+    <div class="bg-blue-50 rounded-2xl p-12 text-center shadow-inner">
+      <p class="text-2xl font-semibold text-primary">Shaping Minds</p>
+      <p class="text-gray-600">Sharpening Futures</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="bg-secondary text-white py-24 text-center reveal">
+  <h3 class="text-3xl font-bold mb-4">Start Your Learning Journey Today</h3>
+  <p class="text-gray-300 mb-10">Join Mentora Edge today.</p>
+  <a href="courses.html" class="bg-primary px-12 py-4 rounded-xl font-semibold">
+    Register Now
+  </a>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+  © 2025 Mentora Edge. All Rights Reserved.
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  // Mobile Menu
+  menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+
+  // Scroll Reveal
+  const reveals = document.querySelectorAll(".reveal");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("reveal-active");
+      }
+    });
+  }, { threshold: 0.15 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.9s ease-out; }
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
+</body>
+</html>

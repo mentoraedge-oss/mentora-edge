@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 font-inter text-gray-800 overflow-x-hidden">
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-primary">Home</a>
+      <a href="about.html" class="text-primary font-semibold">About Us</a>
+      <a href="courses.html" class="hover:text-primary">Courses</a>
+      <a href="educators.html" class="hover:text-primary">Educators</a>
+      <a href="contact.html" class="hover:text-primary">Contact</a>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+      <a href="index.html">Home</a>
+      <a href="about.html" class="text-primary font-semibold">About Us</a>
+      <a href="courses.html">Courses</a>
+      <a href="educators.html">Educators</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-br from-primary to-accent text-white py-20 text-center px-6">
+  <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 animate-fadeIn">
+    About Mentora Edge
+  </h2>
+  <p class="max-w-2xl mx-auto text-blue-100 text-base sm:text-lg">
+    Shaping Minds. Sharpening Futures.
+  </p>
+</section>
+
+<!-- ================= ABOUT CONTENT ================= -->
+<section class="py-20">
+  <div class="max-w-4xl mx-auto px-6 text-center reveal">
+    <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
+      Mentora Edge is an academic learning platform dedicated to providing
+      structured, concept-driven education for CBSE students of
+      Classes VIII, IX and X.
+      <br><br>
+      Founded by experienced educators with over two decades of teaching
+      excellence, Mentora Edge focuses on clarity, consistency, and confidence
+      building — not rote learning.
+      <br><br>
+      Our mission is to guide students through a disciplined learning journey
+      while empowering them to think critically and perform confidently.
+    </p>
+  </div>
+</section>
+
+<!-- ================= MD MESSAGE ================= -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-14 reveal">
+      From the Managing Director’s Desk
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+
+      <!-- MD PHOTO -->
+      <div class="flex justify-center reveal-left">
+        <img
+          src="Assets/Images/abir-munshi.jpeg"
+          alt="Abir Munshi - Founder & Managing Director"
+          class="w-60 sm:w-72 h-60 sm:h-72 object-cover rounded-2xl shadow-xl
+                 hover:scale-105 transition duration-300"
+        />
+      </div>
+
+      <!-- MD MESSAGE -->
+      <div class="bg-gray-50 p-6 sm:p-8 rounded-2xl shadow-lg reveal-right">
+
+        <p class="text-gray-700 leading-relaxed mb-5">
+          At Mentora Edge, we believe that education is not merely about marks,
+          but about building clarity, confidence, and a strong academic foundation
+          that lasts a lifetime.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-5">
+          As a student myself, I understand the challenges learners face today.
+          Mentora Edge was founded with a vision to provide structured guidance,
+          disciplined learning, and concept clarity at the right stage of a
+          student’s academic journey.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-8">
+          With experienced educators and a learner-first approach, our goal is to
+          nurture confidence, consistency, and curiosity — enabling students to
+          perform academically while growing personally.
+        </p>
+
+        <div>
+          <p class="font-bold text-lg text-gray-900">Abir Munshi</p>
+          <p class="text-sm text-gray-500">
+            Founder & Managing Director<br>Mentora Edge
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+  <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
+  <p class="text-sm mt-2 text-gray-500">
+    Shaping Minds, Sharpening Futures
+  </p>
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  // Mobile menu
+  menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+
+  // Scroll animations
+  const elements = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("reveal-active");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  elements.forEach(el => observer.observe(el));
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+/* Hero fade */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.9s ease-out;
+}
+
+/* Scroll reveals */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: all 0.9s ease;
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.9s ease;
+}
+.reveal-active {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard | Mentora Edge</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 font-inter text-gray-800">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white shadow-sm sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-extrabold text-primary">Mentora Edge</h1>
+    <button
+      id="logoutBtn"
+      class="text-sm font-semibold text-red-600 hover:underline">
+      Logout
+    </button>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-10 animate-fadeIn">
+
+<!-- ================= ANNOUNCEMENT ================= -->
+<section
+  id="announcementBanner"
+  class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 flex gap-4
+         opacity-0 translate-y-3 transition-all duration-500 hidden">
+
+  <div class="text-blue-600 text-2xl">📢</div>
+
+  <div class="flex-1">
+    <h3 class="text-sm font-semibold text-blue-700 uppercase tracking-wide">
+      Announcement
+    </h3>
+    <p id="announcementDisplay" class="text-gray-800 mt-1"></p>
+  </div>
+
+  <button
+    id="closeAnnouncement"
+    class="text-blue-400 hover:text-blue-600 text-lg">
+    ✕
+  </button>
+</section>
+
+<!-- ================= PAGE TITLE ================= -->
+<h1 class="text-3xl font-extrabold mb-8">
+  Student Dashboard
+</h1>
+
+<!-- ================= PROFILE CARD ================= -->
+<div class="bg-white rounded-2xl shadow-lg p-6">
+
+  <!-- HEADER -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <div>
+      <h2 class="text-xl font-semibold">
+        Welcome, <span id="studentName">Student</span>
+      </h2>
+      <p class="text-sm text-gray-500">
+        Mentora Edge • Student Portal
+      </p>
+    </div>
+
+    <span
+      id="studentStatus"
+      class="px-4 py-1.5 rounded-full text-sm font-semibold
+             bg-yellow-100 text-yellow-800 w-fit">
+      Pending
+    </span>
+  </div>
+
+  <hr class="my-6">
+
+  <!-- INFO GRID -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <div class="info-card">
+      <span>👤</span>
+      <div>
+        <p>Name</p>
+        <strong id="studentNameInfo"></strong>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <span>🎓</span>
+      <div>
+        <p>Class</p>
+        <strong id="studentClass"></strong>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <span>📘</span>
+      <div>
+        <p>Subject</p>
+        <strong id="studentSubject"></strong>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <span>⏳</span>
+      <div>
+        <p>Status</p>
+        <strong id="studentStatusText"></strong>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= PENDING ================= -->
+  <div
+    id="pendingMessage"
+    class="hidden mt-8 bg-yellow-50 border border-yellow-200
+           rounded-xl p-4 text-sm text-yellow-800">
+    Your admission is under review.  
+    Study materials will be available once approved by the admin.
+  </div>
+
+  <!-- ================= MATERIALS ================= -->
+  <div
+    id="materialsSection"
+    class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
+
+    <h3 class="text-xl font-bold mb-6">
+      📚 Study Materials
+    </h3>
+
+    <div
+      id="materialsList"
+      class="grid md:grid-cols-2 gap-6">
+    </div>
+
+  </div>
+
+</div>
+</main>
+
+<!-- ================= FIREBASE ================= -->
+<script type="module">
+import { auth, db } from "./js/firebase.js";
+import { onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  doc, getDoc,
+  collection, getDocs,
+  query, orderBy, limit, where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* LOGOUT */
+logoutBtn.onclick = async () => {
+  await signOut(auth);
+  location.href = "login.html";
+};
+
+/* ANNOUNCEMENT */
+async function loadAnnouncement() {
+  const q = query(
+    collection(db, "announcements"),
+    orderBy("createdAt", "desc"),
+    limit(1)
+  );
+  const snap = await getDocs(q);
+  if (snap.empty) return;
+
+  announcementDisplay.innerText = snap.docs[0].data().text;
+  announcementBanner.classList.remove("hidden");
+
+  setTimeout(() => {
+    announcementBanner.classList.remove("opacity-0", "translate-y-3");
+  }, 60);
+
+  closeAnnouncement.onclick = () =>
+    announcementBanner.classList.add("hidden");
+}
+
+/* MATERIALS */
+async function loadMaterials(studentClass) {
+  const q = query(
+    collection(db, "materials"),
+    where("class", "==", studentClass)
+  );
+
+  const snap = await getDocs(q);
+  materialsList.innerHTML = "";
+
+  snap.forEach(doc => {
+    const m = doc.data();
+    materialsList.innerHTML += `
+      <div class="bg-white rounded-xl p-5 shadow hover:shadow-lg transition">
+        <h4 class="font-semibold mb-2">${m.title}</h4>
+        <a href="${m.fileURL}" target="_blank"
+           class="text-primary text-sm font-medium hover:underline">
+          Download →
+        </a>
+      </div>
+    `;
+  });
+
+  if (snap.empty) {
+    materialsList.innerHTML =
+      `<p class="text-gray-500">No materials uploaded yet.</p>`;
+  }
+}
+
+/* AUTH */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return location.href = "login.html";
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  const data = snap.data();
+
+  studentName.innerText = data.name;
+  studentNameInfo.innerText = data.name;
+  studentClass.innerText = data.class;
+  studentSubject.innerText = data.subject;
+  studentStatusText.innerText = data.status;
+
+  if (data.status === "active") {
+    studentStatus.innerText = "Active";
+    studentStatusText.innerText = "Active";
+    studentStatus.className =
+      "px-4 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-800";
+
+    materialsSection.classList.remove("hidden");
+    await loadMaterials(data.class);
+  } else {
+    pendingMessage.classList.remove("hidden");
+  }
+
+  await loadAnnouncement();
+});
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+.info-card span {
+  font-size: 1.5rem;
+}
+.info-card p {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+</style>
+
+</body>
+</html>

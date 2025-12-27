@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 font-inter text-gray-800">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white sticky top-0 z-40 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-extrabold text-primary">
+      Mentora Edge <span class="text-gray-400 font-medium">— Admin Panel</span>
+    </h1>
+    <button
+      id="logoutBtn"
+      class="text-sm font-semibold text-red-600 hover:underline">
+      Logout
+    </button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-14 animate-fadeIn">
+
+<!-- ================= ANNOUNCEMENT ================= -->
+<section class="bg-white rounded-2xl shadow border p-6">
+  <h2 class="text-xl font-bold mb-4 flex items-center gap-2">📢 Global Announcement</h2>
+
+  <textarea
+    id="announcementText"
+    rows="4"
+    class="w-full border rounded-xl p-4 focus:ring-2 focus:ring-primary outline-none"
+    placeholder="Type announcement for all students..."></textarea>
+
+  <div class="flex justify-end mt-4">
+    <button
+      id="publishAnnouncementBtn"
+      class="bg-primary text-white px-6 py-2 rounded-lg font-semibold
+             hover:bg-accent transition shadow">
+      Publish Announcement
+    </button>
+  </div>
+</section>
+
+<!-- ================= STUDY MATERIAL ================= -->
+<section class="bg-white rounded-2xl shadow border p-6">
+  <h2 class="text-xl font-bold mb-6 flex items-center gap-2">📚 Upload Study Material</h2>
+
+  <div class="grid md:grid-cols-4 gap-4 items-end">
+
+    <div>
+      <label class="text-sm text-gray-600">Class</label>
+      <select id="materialClass" class="input">
+        <option value="">Select</option>
+        <option value="VIII">Class VIII</option>
+        <option value="IX">Class IX</option>
+        <option value="X">Class X</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Title</label>
+      <input id="materialTitle" class="input" placeholder="Chapter title"/>
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">File</label>
+      <input id="materialFile" type="file" class="mt-2 text-sm"/>
+    </div>
+
+    <button
+      id="uploadMaterialBtn"
+      class="bg-primary text-white rounded-lg py-2 font-semibold
+             hover:bg-accent transition shadow">
+      Upload
+    </button>
+  </div>
+</section>
+
+<!-- ================= STUDENT APPROVALS ================= -->
+<section class="bg-white rounded-2xl shadow border overflow-hidden">
+  <h2 class="text-xl font-bold px-6 py-4 border-b">👥 Student Approvals</h2>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50 text-xs uppercase text-gray-600">
+        <tr>
+          <th class="px-6 py-4 text-left">Name</th>
+          <th class="px-6 py-4 text-left">Email</th>
+          <th class="px-6 py-4 text-center">Class</th>
+          <th class="px-6 py-4 text-left">Subject</th>
+          <th class="px-6 py-4 text-center">Status</th>
+          <th class="px-6 py-4 text-center">Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="studentsTable" class="divide-y"></tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= SCRIPT ================= -->
+<script type="module">
+import { auth, db } from "./js/firebase.js";
+import { onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  collection, getDocs, doc, getDoc,
+  updateDoc, addDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const storage = getStorage();
+const table = document.getElementById("studentsTable");
+
+/* ================= AUTH ================= */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return location.href = "login.html";
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (!snap.exists() || snap.data().role !== "admin") {
+    alert("Access denied");
+    await signOut(auth);
+    location.href = "login.html";
+  }
+
+  loadStudents();
+});
+
+/* ================= ANNOUNCEMENT ================= */
+publishAnnouncementBtn.onclick = async () => {
+  if (!announcementText.value.trim()) return alert("Enter announcement");
+
+  await addDoc(collection(db, "announcements"), {
+    text: announcementText.value.trim(),
+    createdAt: serverTimestamp()
+  });
+
+  announcementText.value = "";
+  alert("Announcement published");
+};
+
+/* ================= MATERIAL UPLOAD ================= */
+uploadMaterialBtn.onclick = async () => {
+  if (!materialClass.value || !materialTitle.value || !materialFile.files[0])
+    return alert("Fill all fields");
+
+  uploadMaterialBtn.disabled = true;
+  uploadMaterialBtn.innerText = "Uploading...";
+
+  const filePath = `study-materials/${materialClass.value}/${Date.now()}_${materialFile.files[0].name}`;
+  const storageRef = ref(storage, filePath);
+
+  await uploadBytes(storageRef, materialFile.files[0]);
+  const url = await getDownloadURL(storageRef);
+
+  await addDoc(collection(db, "materials"), {
+    title: materialTitle.value,
+    class: materialClass.value,
+    fileURL: url,
+    createdAt: serverTimestamp()
+  });
+
+  materialTitle.value = "";
+  materialFile.value = "";
+
+  uploadMaterialBtn.innerText = "Upload";
+  uploadMaterialBtn.disabled = false;
+
+  alert("File uploaded successfully");
+};
+
+/* ================= LOAD STUDENTS ================= */
+async function loadStudents() {
+  table.innerHTML = "";
+  const snap = await getDocs(collection(db, "users"));
+
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    if (d.role !== "student") return;
+
+    table.innerHTML += `
+<tr class="hover:bg-gray-50 transition">
+  <td class="px-6 py-4 font-medium">${d.name}</td>
+  <td class="px-6 py-4">${d.email}</td>
+  <td class="px-6 py-4 text-center">${d.class}</td>
+  <td class="px-6 py-4">${d.subject}</td>
+  <td class="px-6 py-4 text-center">
+    <span class="px-3 py-1 rounded-full text-xs font-semibold
+      ${d.status === "active"
+        ? "bg-green-100 text-green-700"
+        : "bg-yellow-100 text-yellow-700"}">
+      ${d.status}
+    </span>
+  </td>
+  <td class="px-6 py-4 text-center">
+    ${
+      d.status === "pending"
+        ? `<button class="approveBtn text-green-600 font-semibold hover:underline"
+            data-id="${docSnap.id}">Approve</button>`
+        : "—"
+    }
+  </td>
+</tr>`;
+  });
+
+  document.querySelectorAll(".approveBtn").forEach(btn => {
+    btn.onclick = async () => {
+      btn.innerText = "Approving...";
+      btn.disabled = true;
+      await updateDoc(doc(db, "users", btn.dataset.id), { status: "active" });
+      loadStudents();
+    };
+  });
+}
+
+/* ================= LOGOUT ================= */
+logoutBtn.onclick = async () => {
+  await signOut(auth);
+  location.href = "login.html";
+};
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid #D1D5DB;
+}
+.input:focus {
+  outline: none;
+  border-color: #1E40AF;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+</style>
+
+</body>
+</html>

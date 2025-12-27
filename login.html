@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 font-inter">
+
+<!-- ================= CONTAINER ================= -->
+<div class="min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md
+              border border-gray-100 animate-fadeIn">
+
+    <!-- ================= HEADER ================= -->
+    <div class="mb-8 text-center">
+      <img
+        src="Assets/Images/mentora-edge-logo.png"
+        alt="Mentora Edge"
+        class="h-12 mx-auto mb-4 transition-transform duration-300 hover:scale-105"
+      />
+
+      <h2 class="text-2xl font-extrabold text-gray-800">
+        Admin / Student Login
+      </h2>
+
+      <p class="text-sm text-gray-500 mt-1">
+        Mentora Edge · Unified Login Portal
+      </p>
+    </div>
+
+    <!-- ================= FORM ================= -->
+    <form id="loginForm" class="space-y-4">
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Email address"
+        required
+        class="input"
+      />
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+        class="input"
+      />
+
+      <button
+        type="submit"
+        id="loginBtn"
+        class="w-full flex items-center justify-center gap-2
+               bg-gradient-to-r from-primary to-accent
+               text-white py-3 rounded-lg font-semibold
+               hover:opacity-90 active:scale-[0.98]
+               transition-all duration-150 shadow-md"
+      >
+        <span id="btnText">Login</span>
+
+        <!-- Spinner -->
+        <svg
+          id="spinner"
+          class="hidden w-5 h-5 animate-spin text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24">
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+      </button>
+
+      <p class="text-sm text-center text-gray-600">
+        Don’t have an account?
+        <a href="courses.html" class="text-primary font-semibold hover:underline">
+          Register here
+        </a>
+      </p>
+
+    </form>
+
+    <!-- ================= ERROR ================= -->
+    <div
+      id="error"
+      class="hidden mt-5 text-sm text-red-600 bg-red-50 border border-red-200
+             rounded-lg px-4 py-3 text-center">
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script type="module">
+  import { auth, db } from "./js/firebase.js";
+  import { signInWithEmailAndPassword } from
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { doc, getDoc } from
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const form = document.getElementById("loginForm");
+  const errorMsg = document.getElementById("error");
+  const loginBtn = document.getElementById("loginBtn");
+  const btnText = document.getElementById("btnText");
+  const spinner = document.getElementById("spinner");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    errorMsg.classList.add("hidden");
+    loginBtn.disabled = true;
+    btnText.textContent = "Logging in...";
+    spinner.classList.remove("hidden");
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth, email, password
+      );
+
+      const user = userCredential.user;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+
+      if (!userDoc.exists()) {
+        throw new Error("User profile not found. Please contact admin.");
+      }
+
+      const userData = userDoc.data();
+
+      if (userData.role === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "dashboard.html";
+      }
+
+    } catch (err) {
+      loginBtn.disabled = false;
+      btnText.textContent = "Login";
+      spinner.classList.add("hidden");
+
+      errorMsg.textContent =
+        err.code === "auth/wrong-password"
+          ? "Incorrect password. Please try again."
+          : err.code === "auth/user-not-found"
+          ? "No account found with this email."
+          : err.message;
+
+      errorMsg.classList.remove("hidden");
+    }
+  });
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #D1D5DB;
+  transition: all 0.2s ease;
+}
+.input:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+</style>
+
+</body>
+</html>
