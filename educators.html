@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Educators | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 font-inter text-gray-800 overflow-x-hidden">
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <h1 class="text-2xl font-extrabold text-primary">
+      Mentora Edge
+    </h1>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-primary">Home</a>
+      <a href="courses.html" class="hover:text-primary">Courses</a>
+      <a href="educators.html" class="text-primary font-semibold">Educators</a>
+      <a href="contact.html" class="hover:text-primary">Contact</a>
+
+      <a href="login.html"
+         class="px-4 py-2 rounded-lg border border-primary text-primary
+                hover:bg-primary hover:text-white transition">
+        Login
+      </a>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="educators.html" class="text-primary font-semibold">Educators</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html" class="text-primary font-semibold">Login</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-br from-primary to-accent text-white py-20 text-center px-6">
+  <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 animate-fadeIn">
+    Our Educators
+  </h2>
+  <p class="max-w-2xl mx-auto text-blue-100 text-base sm:text-lg">
+    Learn from mentors with decades of classroom excellence and leadership
+  </p>
+</section>
+
+<!-- ================= EDUCATORS ================= -->
+<section class="py-20">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+
+    <!-- ================= SUBIR MUNSHI ================= -->
+    <div class="educator-card reveal">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 text-center sm:text-left">
+        <div class="w-24 h-24 rounded-full bg-blue-100
+                    flex items-center justify-center text-3xl font-bold text-primary">
+          SM
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900">Subir Munshi</h3>
+          <p class="text-primary font-medium">
+            Co-Founder & Social Science Educator
+          </p>
+        </div>
+      </div>
+
+      <p class="text-gray-600 leading-relaxed mb-4">
+        Subir Munshi brings over <strong>25 years of experience</strong> in the
+        education sector, having served both as a <strong>Principal</strong> and
+        an <strong>Educator</strong>.
+      </p>
+
+      <p class="text-gray-600 leading-relaxed">
+        With deep subject expertise and administrative leadership, he focuses on
+        building conceptual clarity, discipline, and academic confidence in
+        students—preparing them not just for exams, but for lifelong learning.
+      </p>
+    </div>
+
+    <!-- ================= RANITA MUNSHI ================= -->
+    <div class="educator-card reveal">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 text-center sm:text-left">
+        <div class="w-24 h-24 rounded-full bg-pink-100
+                    flex items-center justify-center text-3xl font-bold text-pink-600">
+          RM
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900">Ranita Munshi</h3>
+          <p class="text-primary font-medium">
+            Co-Founder & English Educator
+          </p>
+        </div>
+      </div>
+
+      <p class="text-gray-600 leading-relaxed mb-4">
+        Ranita Munshi is a <strong>student-friendly English educator</strong>
+        with more than <strong>25 years of teaching experience</strong>.
+      </p>
+
+      <p class="text-gray-600 leading-relaxed">
+        Known for her clarity, patience, and engaging teaching style, she helps
+        students master language skills, literature, and expression—making
+        learning both effective and enjoyable.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="bg-secondary text-white py-16 text-center px-6">
+  <h3 class="text-2xl sm:text-3xl font-bold mb-4">
+    Learn from Experience. Learn with Confidence.
+  </h3>
+  <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+    Join Mentora Edge and be guided by educators who truly understand students.
+  </p>
+  <a href="courses.html"
+     class="bg-primary px-8 py-3 rounded-xl font-semibold
+            hover:bg-blue-700 transition shadow-lg">
+    Explore Courses
+  </a>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+  <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
+  <p class="text-sm mt-2 text-gray-500">
+    Shaping Minds, Sharpening Futures
+  </p>
+</footer>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  // Mobile menu
+  menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+
+  // Scroll reveal (staggered)
+  const cards = document.querySelectorAll(".reveal");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = `${index * 120}ms`;
+        entry.target.classList.add("reveal-active");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  cards.forEach(card => observer.observe(card));
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.educator-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.educator-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 45px rgba(0,0,0,0.12);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-out;
+}
+</style>
+
+</body>
+</html>

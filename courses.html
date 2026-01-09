@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Courses | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF',
+            secondary: '#0F172A',
+            accent: '#2563EB'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-inter overflow-x-hidden">
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <h1 class="text-2xl font-extrabold text-primary">
+      Mentora Edge
+    </h1>
+
+    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-primary">Home</a>
+      <a href="about.html" class="hover:text-primary">About Us</a>
+      <a href="courses.html" class="text-primary font-semibold">Courses</a>
+      <a href="educators.html" class="hover:text-primary">Educators</a>
+      <a href="contact.html" class="hover:text-primary">Contact</a>
+      <a href="login.html"
+         class="px-4 py-2 rounded-lg border border-primary text-primary
+                hover:bg-primary hover:text-white transition">
+        Login
+      </a>
+    </nav>
+
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
+  </div>
+
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="courses.html" class="text-primary font-semibold">Courses</a>
+      <a href="educators.html">Educators</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html" class="text-primary font-semibold">Login</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HEADER ================= -->
+<section class="relative bg-gradient-to-br from-primary to-accent text-white py-20 text-center">
+  <h2 class="text-4xl font-extrabold mb-3 animate-fadeIn">Our Courses</h2>
+  <p class="text-blue-100">CBSE-focused learning for Classes VIII, IX & X</p>
+</section>
+
+<!-- ================= COURSES ================= -->
+<section class="py-20">
+  <div class="max-w-7xl mx-auto px-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+    <!-- VIII -->
+    <div class="course-card reveal">
+      <h3>Class VIII – English</h3>
+      <p>Language & Literature</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=VIII&subject=English&fee=500">Enroll Now</a>
+    </div>
+
+    <div class="course-card reveal">
+      <h3>Class VIII – Social Science</h3>
+      <p>History, Geography, Civics & Economics</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=VIII&subject=Social+Science&fee=500">Enroll Now</a>
+    </div>
+
+    <div class="course-card featured reveal">
+      <h3>Class VIII – English + Social Science</h3>
+      <p>Complete combo for balanced preparation</p>
+      <span>₹1000 / month</span>
+      <a href="register.html?class=VIII&subject=English+Social+Science&fee=1000">Enroll Combo</a>
+    </div>
+
+    <!-- IX -->
+    <div class="course-card reveal">
+      <h3>Class IX – English</h3>
+      <p>Language & Literature</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=IX&subject=English&fee=500">Enroll Now</a>
+    </div>
+
+    <div class="course-card reveal">
+      <h3>Class IX – Social Science</h3>
+      <p>History, Geography, Civics & Economics</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=IX&subject=Social+Science&fee=500">Enroll Now</a>
+    </div>
+
+    <div class="course-card featured reveal">
+      <h3>Class IX – English + Social Science</h3>
+      <p>Best value combo course</p>
+      <span>₹1000 / month</span>
+      <a href="register.html?class=IX&subject=English+Social+Science&fee=1000">Enroll Combo</a>
+    </div>
+
+    <!-- X -->
+    <div class="course-card reveal">
+      <h3>Class X – English</h3>
+      <p>Board-focused preparation</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=X&subject=English&fee=500">Enroll Now</a>
+    </div>
+
+    <div class="course-card reveal">
+      <h3>Class X – Social Science</h3>
+      <p>Board exam mastery course</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=X&subject=Social+Science&fee=500">Enroll Now</a>
+    </div>
+
+    <div class="course-card featured reveal">
+      <h3>Class X – English + Social Science</h3>
+      <p>Complete board preparation combo</p>
+      <span>₹1000 / month</span>
+      <a href="register.html?class=X&subject=English+Social+Science&fee=1000">Enroll Combo</a>
+    </div>
+
+  </div>
+</section>
+
+<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+  © 2025 Mentora Edge. All Rights Reserved.
+</footer>
+
+<!-- ================= JS ================= -->
+<script>
+  menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+
+  const cards = document.querySelectorAll(".reveal");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = `${i * 80}ms`;
+        entry.target.classList.add("reveal-active");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  cards.forEach(card => observer.observe(card));
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.course-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1.4rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+}
+
+.course-card h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.course-card p {
+  font-size: 0.95rem;
+  color: #4B5563;
+  margin-top: 0.3rem;
+}
+
+.course-card span {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1E40AF;
+  margin-top: 0.8rem;
+}
+
+.course-card a {
+  margin-top: auto;
+  padding: 0.8rem;
+  background: #1E40AF;
+  color: white;
+  border-radius: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.course-card a:hover {
+  background: #2563EB;
+}
+
+.featured {
+  border: 2px solid #1E40AF;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.9s ease-out;
+}
+</style>
+
+</body>
+</html>

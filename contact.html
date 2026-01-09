@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Mentora Edge</title>
+
+  <link rel="icon" href="favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 font-inter text-gray-800 overflow-x-hidden">
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-primary transition">Home</a>
+      <a href="courses.html" class="hover:text-primary transition">Courses</a>
+      <a href="educators.html" class="hover:text-primary transition">Educators</a>
+      <a href="contact.html" class="text-primary font-semibold">Contact</a>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">
+      ☰
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="educators.html">Educators</a>
+      <a href="contact.html" class="text-primary font-semibold">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="bg-gradient-to-br from-primary to-accent text-white py-20 text-center px-6">
+  <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
+    Contact Us
+  </h2>
+  <p class="text-blue-100 text-base sm:text-lg">
+    We’d love to hear from you
+  </p>
+</section>
+
+<!-- ================= CONTACT INFO ================= -->
+<section class="py-20 px-6">
+  <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 text-center">
+
+    <p class="text-gray-600 mb-6">
+      For admissions, queries or support, reach out to us at:
+    </p>
+
+    <p class="text-lg sm:text-xl font-semibold text-primary mb-3 break-all">
+      📧 mentoraedge@gmail.com
+    </p>
+
+    <p class="text-lg sm:text-xl font-semibold text-primary">
+      📞 +91-8057081826
+    </p>
+
+    <p class="text-sm text-gray-500 mt-8">
+      We usually respond within 24 hours.
+    </p>
+
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+  <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
+  <p class="text-sm mt-2 text-gray-500">
+    Shaping Minds, Sharpening Futures
+  </p>
+</footer>
+
+<!-- ================= MOBILE MENU SCRIPT ================= -->
+<script>
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  menuBtn.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+</script>
+
+</body>
+</html>
