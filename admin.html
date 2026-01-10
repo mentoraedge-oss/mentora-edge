@@ -37,7 +37,7 @@
   </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-14 animate-fadeIn">
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-14">
 
 <!-- ================= ANNOUNCEMENT ================= -->
 <section class="bg-white rounded-2xl shadow border p-6">
@@ -131,6 +131,7 @@ const months = [
   "July","August","September","October","November","December"
 ];
 
+const studentsTable = document.getElementById("studentsTable");
 const feeStudent = document.getElementById("feeStudent");
 const feeYear = document.getElementById("feeYear");
 const feesGrid = document.getElementById("feesGrid");
@@ -139,12 +140,50 @@ const feesGrid = document.getElementById("feesGrid");
 onAuthStateChanged(auth, async (user) => {
   if (!user) return location.href = "login.html";
   const snap = await getDoc(doc(db,"users",user.uid));
-  if (snap.data().role !== "admin") return location.href="login.html";
-  loadStudents();
+  if (!snap.exists() || snap.data().role !== "admin") {
+    await signOut(auth);
+    return location.href = "login.html";
+  }
+
+  loadApprovalStudents();
+  loadFeeStudents();
 });
 
-/* ================= LOAD STUDENTS ================= */
-async function loadStudents(){
+/* ================= STUDENT APPROVALS ================= */
+async function loadApprovalStudents(){
+  studentsTable.innerHTML = "";
+  const snap = await getDocs(collection(db,"users"));
+
+  snap.forEach(d=>{
+    const u = d.data();
+    if(u.role !== "student") return;
+
+    studentsTable.innerHTML += `
+      <tr>
+        <td class="px-6 py-3">${u.name}</td>
+        <td class="px-6 py-3">${u.email}</td>
+        <td class="px-6 py-3 text-center">${u.class}</td>
+        <td class="px-6 py-3 text-center">${u.status}</td>
+        <td class="px-6 py-3 text-center">
+          ${
+            u.status === "pending"
+            ? `<button class="text-green-600 font-semibold"
+                onclick="approveStudent('${d.id}')">Approve</button>`
+            : "—"
+          }
+        </td>
+      </tr>
+    `;
+  });
+}
+
+window.approveStudent = async (id)=>{
+  await updateDoc(doc(db,"users",id),{ status:"active" });
+  loadApprovalStudents();
+};
+
+/* ================= FEES ================= */
+async function loadFeeStudents(){
   const snap = await getDocs(collection(db,"users"));
   snap.forEach(d=>{
     if(d.data().role==="student"){
@@ -153,17 +192,16 @@ async function loadStudents(){
   });
 }
 
-/* ================= FEES ================= */
 feeStudent.onchange = feeYear.onchange = loadFees;
 
 async function loadFees(){
   if(!feeStudent.value) return;
-  feesGrid.innerHTML="";
+  feesGrid.innerHTML = "";
 
   for(const month of months){
     const ref = doc(db,"users",feeStudent.value,"fees",feeYear.value,month);
     const snap = await getDoc(ref);
-    const paid = snap.exists() && snap.data().paid;
+    const paid = snap.exists() && snap.data().paid === true;
 
     feesGrid.innerHTML += `
       <div class="border rounded-xl p-4 flex justify-between items-center">
@@ -178,16 +216,14 @@ async function loadFees(){
           `<button class="text-sm text-primary font-semibold"
             onclick="markPaid('${month}')">Mark Paid</button>`
         }
-      </div>`;
+      </div>
+    `;
   }
 }
 
 window.markPaid = async (month)=>{
   const ref = doc(db,"users",feeStudent.value,"fees",feeYear.value,month);
-  await setDoc(ref,{
-    paid:true,
-    paidOn:serverTimestamp()
-  });
+  await setDoc(ref,{ paid:true, paidOn:serverTimestamp() });
   loadFees();
 };
 
