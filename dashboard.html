@@ -40,24 +40,22 @@
 
 <div class="bg-white rounded-2xl shadow-lg p-6">
 
-  <!-- HEADER -->
   <div class="flex justify-between mb-6">
     <div>
       <h2 class="text-xl font-semibold">
-        Welcome, <span id="studentName">Student</span>
+        Welcome, <span id="studentName"></span>
       </h2>
       <p class="text-sm text-gray-500">Mentora Edge • Student Portal</p>
     </div>
 
     <span id="studentStatus"
-      class="px-4 py-1.5 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
-      Pending
+      class="px-4 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+      Active
     </span>
   </div>
 
   <hr class="my-6">
 
-  <!-- INFO -->
   <div class="grid md:grid-cols-2 gap-6">
     <div class="info-card"><span>👤</span><div><p>Name</p><strong id="studentNameInfo"></strong></div></div>
     <div class="info-card"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
@@ -65,17 +63,16 @@
     <div class="info-card"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
   </div>
 
-  <!-- MATERIALS -->
-  <div id="materialsSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
+  <!-- STUDY MATERIALS -->
+  <div id="materialsSection" class="mt-10 bg-gray-50 rounded-2xl p-6">
     <h3 class="text-xl font-bold mb-6">📚 Study Materials</h3>
     <div id="materialsList" class="grid md:grid-cols-2 gap-6"></div>
   </div>
 
   <!-- FEES -->
-  <div id="feesSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
-    <h3 class="text-xl font-bold mb-4">💰 Monthly Fees Status</h3>
-    <p id="feesYearLabel" class="text-sm text-gray-500 mb-4"></p>
-    <div id="feesContainer" class="grid md:grid-cols-3 gap-4"></div>
+  <div id="feesSection" class="mt-10 bg-gray-50 rounded-2xl p-6">
+    <h3 class="text-xl font-bold mb-6">💰 Monthly Fees Status</h3>
+    <div id="feesGrid" class="grid md:grid-cols-3 gap-4"></div>
   </div>
 
 </div>
@@ -87,9 +84,7 @@ import { onAuthStateChanged, signOut }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-  doc, getDoc,
-  collection, getDocs,
-  query, where
+  doc, getDoc, getDocs, collection, query, where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const months = [
@@ -121,26 +116,14 @@ async function loadMaterials(studentClass) {
   });
 
   if (snap.empty) {
-    materialsList.innerHTML =
-      `<p class="text-gray-500">No materials uploaded yet.</p>`;
+    materialsList.innerHTML = `<p class="text-gray-500">No materials uploaded yet.</p>`;
   }
 }
 
-/* FEES */
+/* FEES – CORRECT SUBCOLLECTION READ */
 async function loadFees(uid) {
-  const feesContainer = document.getElementById("feesContainer");
-  const feesYearLabel = document.getElementById("feesYearLabel");
-  feesContainer.innerHTML = "";
-
-  const yearsSnap = await getDocs(collection(db, "users", uid, "fees"));
-  if (yearsSnap.empty) {
-    feesContainer.innerHTML =
-      `<p class="text-gray-500">No fee records available.</p>`;
-    return;
-  }
-
-  const year = yearsSnap.docs[0].id;
-  feesYearLabel.innerText = `Year ${year}`;
+  const year = new Date().getFullYear().toString();
+  feesGrid.innerHTML = "";
 
   for (const month of months) {
     const ref = doc(db, "users", uid, "fees", year, month);
@@ -152,10 +135,10 @@ async function loadFees(uid) {
     if (paid && snap.data().paidOn) {
       paidOnText = snap.data().paidOn
         .toDate()
-        .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+        .toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" });
     }
 
-    feesContainer.innerHTML += `
+    feesGrid.innerHTML += `
       <div class="bg-white rounded-xl p-4 border">
         <p class="font-semibold">${month}</p>
         <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
@@ -180,17 +163,8 @@ onAuthStateChanged(auth, async (user) => {
   studentSubject.innerText = data.subject;
   studentStatusText.innerText = data.status;
 
-  if (data.status === "active") {
-    studentStatus.innerText = "Active";
-    studentStatus.className =
-      "px-4 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-800";
-
-    materialsSection.classList.remove("hidden");
-    feesSection.classList.remove("hidden");
-
-    await loadMaterials(data.class);
-    await loadFees(user.uid);
-  }
+  await loadMaterials(data.class);
+  await loadFees(user.uid);
 });
 </script>
 
