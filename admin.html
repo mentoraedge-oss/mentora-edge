@@ -110,10 +110,11 @@
     </select>
 
     <button
-      id="showFeesBtn"
-      class="bg-primary text-white px-5 py-2 rounded-lg font-semibold hover:bg-accent">
-      Show Fee Status
-    </button>
+  id="showFeesBtn"
+  class="bg-primary text-white px-4 py-2 rounded-lg font-semibold hover:bg-accent">
+  Show Fee Status
+</button>
+
   </div>
 
   <div id="feesGrid" class="grid md:grid-cols-3 gap-4"></div>
@@ -142,6 +143,15 @@ const feeStudent = document.getElementById("feeStudent");
 const feeYear = document.getElementById("feeYear");
 const feesGrid = document.getElementById("feesGrid");
 const showFeesBtn = document.getElementById("showFeesBtn");
+
+showFeesBtn.onclick = () => {
+  if (!feeStudent.value) {
+    alert("Please select a student");
+    return;
+  }
+  loadFees();
+};
+
 
 /* ================= AUTH ================= */
 onAuthStateChanged(auth, async (user) => {
