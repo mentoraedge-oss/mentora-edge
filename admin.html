@@ -203,17 +203,32 @@ async function loadFeeStudents(){
 showFeesBtn.onclick = loadFees;
 
 async function loadFees(){
-  if(!feeStudent.value) {
+  if(!feeStudent.value){
     alert("Please select a student");
     return;
   }
 
   feesGrid.innerHTML = "";
 
+  const userRef = doc(db, "users", feeStudent.value);
+  const userSnap = await getDoc(userRef);
+
+  if(!userSnap.exists()){
+    feesGrid.innerHTML = "<p>User not found</p>";
+    return;
+  }
+
+  const data = userSnap.data();
+  const yearData = data.fees?.[feeYear.value];
+
+  if(!yearData){
+    feesGrid.innerHTML = `<p class="text-gray-500">No fee data for this year.</p>`;
+    return;
+  }
+
   for(const month of months){
-    const ref = doc(db,"users",feeStudent.value,"fees",feeYear.value,month);
-    const snap = await getDoc(ref);
-    const paid = snap.exists() && snap.data().paid === true;
+    const monthData = yearData[month];
+    const paid = monthData?.paid === true;
 
     feesGrid.innerHTML += `
       <div class="border rounded-xl p-4 flex justify-between items-center">
@@ -234,11 +249,31 @@ async function loadFees(){
   }
 }
 
+
 window.markPaid = async (month)=>{
-  const ref = doc(db,"users",feeStudent.value,"fees",feeYear.value,month);
-  await setDoc(ref,{ paid:true, paidOn:serverTimestamp() });
+  const userRef = doc(db, "users", feeStudent.value);
+  const userSnap = await getDoc(userRef);
+
+  if(!userSnap.exists()) return;
+
+  const data = userSnap.data();
+  const year = feeYear.value;
+
+  const updatedFees = {
+    ...data.fees,
+    [year]: {
+      ...(data.fees?.[year] || {}),
+      [month]: {
+        paid: true,
+        paidOn: serverTimestamp()
+      }
+    }
+  };
+
+  await updateDoc(userRef, { fees: updatedFees });
   loadFees();
 };
+
 
 /* ================= LOGOUT ================= */
 logoutBtn.onclick = async()=>{
