@@ -1,222 +1,289 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Dashboard | Mentora Edge</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
+<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8" />  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  <title>Student Dashboard | Mentora Edge</title>  <script src="https://cdn.tailwindcss.com"></script>  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">  <script>
+  
     tailwind.config = {
+  
       theme: {
+  
         extend: {
+  
           fontFamily: { inter: ['Inter', 'sans-serif'] },
+  
           colors: {
+  
             primary: '#1E40AF',
+  
             accent: '#2563EB'
+  
           }
+  
         }
+  
       }
+  
     }
-  </script>
-</head>
+  
+  </script></head><body class="bg-gray-100 font-inter text-gray-800"><!-- ================= HEADER ================= --><header class="bg-white shadow-sm sticky top-0 z-40">  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"><h1 class="text-xl font-extrabold text-primary">Mentora Edge</h1>
 
-<body class="bg-gray-100 font-inter text-gray-800">
+<button id="logoutBtn" class="text-sm font-semibold text-red-600 hover:underline">
 
-<!-- ================= HEADER ================= -->
-<header class="bg-white shadow-sm sticky top-0 z-40">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-extrabold text-primary">Mentora Edge</h1>
-    <button id="logoutBtn" class="text-sm font-semibold text-red-600 hover:underline">
-      Logout
-    </button>
-  </div>
-</header>
+  Logout
 
-<main class="max-w-6xl mx-auto px-6 py-10">
+</button>
 
-<h1 class="text-3xl font-extrabold mb-8">Student Dashboard</h1>
+  </div></header><main class="max-w-6xl mx-auto px-6 py-10 animate-fadeIn"><h1 class="text-3xl font-extrabold mb-8">Student Dashboard</h1><div class="bg-white rounded-2xl shadow-lg p-6">  <div class="flex justify-between mb-6"><div>
 
-<div class="bg-white rounded-2xl shadow-lg p-6">
+  <h2 class="text-xl font-semibold">
 
-  <!-- ================= BASIC INFO ================= -->
-  <div class="flex justify-between mb-6">
-    <div>
-      <h2 class="text-xl font-semibold">
-        Welcome, <span id="studentName">Student</span>
-      </h2>
-      <p class="text-sm text-gray-500">Mentora Edge • Student Portal</p>
-    </div>
+    Welcome, <span id="studentName">Student</span>
 
-    <span id="studentStatus"
-      class="px-4 py-1.5 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
-      Pending
-    </span>
-  </div>
+  </h2>
 
-  <hr class="my-6">
-
-  <div class="grid md:grid-cols-2 gap-6">
-    <div class="info-card"><span>👤</span><div><p>Name</p><strong id="studentNameInfo"></strong></div></div>
-    <div class="info-card"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
-    <div class="info-card"><span>📘</span><div><p>Subject</p><strong id="studentSubject"></strong></div></div>
-    <div class="info-card"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
-  </div>
-
-  <!-- ================= STUDY MATERIALS ================= -->
-  <div id="materialsSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
-    <h3 class="text-xl font-bold mb-6">📚 Study Materials</h3>
-    <div id="materialsList" class="grid md:grid-cols-2 gap-6"></div>
-  </div>
-
-  <!-- ================= FEES ================= -->
-  <div id="feesSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
-    <h3 class="text-xl font-bold mb-6">💰 Monthly Fees Status (2026)</h3>
-    <div id="feesContainer" class="grid md:grid-cols-3 gap-4"></div>
-  </div>
+  <p class="text-sm text-gray-500">Mentora Edge • Student Portal</p>
 
 </div>
-</main>
 
-<!-- ================= SCRIPT ================= -->
-<script type="module">
+
+
+<span id="studentStatus"
+
+  class="px-4 py-1.5 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+
+  Pending
+
+</span>
+
+  </div>  <hr class="my-6">  <div class="grid md:grid-cols-2 gap-6"><div class="info-card"><span>👤</span><div><p>Name</p><strong id="studentNameInfo"></strong></div></div>
+
+<div class="info-card"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
+
+<div class="info-card"><span>📘</span><div><p>Subject</p><strong id="studentSubject"></strong></div></div>
+
+<div class="info-card"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
+
+  </div>  <!-- ================= MATERIALS ================= -->  <div id="materialsSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6"><h3 class="text-xl font-bold mb-6">📚 Study Materials</h3>
+
+<div id="materialsList" class="grid md:grid-cols-2 gap-6"></div>
+
+  </div>  <!-- ================= FEES ================= -->  <div id="feesSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6"><h3 class="text-xl font-bold mb-6">💰 Monthly Fees Status</h3>
+
+<div id="feesContainer" class="space-y-4"></div>
+
+  </div></div></main><!-- ================= FIREBASE ================= --><script type="module">
+  
 import { auth, db } from "./js/firebase.js";
+  
 import { onAuthStateChanged, signOut }
+  
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  
 
+  
 import {
+  
   doc, getDoc,
+  
   collection, getDocs,
+  
   query, where
+  
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  
 
-const months = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
-];
-
+  
 logoutBtn.onclick = async () => {
+  
   await signOut(auth);
+  
   location.href = "login.html";
+  
 };
+  
 
-/* ========= FORMAT PAID DATE (FIXED) ========= */
-function formatPaidOn(timestamp) {
-  if (!timestamp) return "";
-
-  const date = timestamp.toDate();
-
-  const day = date.getDate();
-  const month = date.toLocaleString("en-IN", { month: "long" });
-  const year = date.getFullYear();
-
-  let hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const ampm = hours >= 12 ? "pm" : "am";
-  hours = hours % 12 || 12;
-
-  const suffix =
-    day % 10 === 1 && day !== 11 ? "st" :
-    day % 10 === 2 && day !== 12 ? "nd" :
-    day % 10 === 3 && day !== 13 ? "rd" : "th";
-
-  return `Paid on ${day}${suffix} ${month} ${year} at ${hours}.${minutes} ${ampm}`;
-}
-
-/* ========= MATERIALS ========= */
+  
 async function loadMaterials(studentClass) {
+  
   const q = query(collection(db, "materials"), where("class", "==", studentClass));
+  
   const snap = await getDocs(q);
+  
   materialsList.innerHTML = "";
+  
 
+  
   snap.forEach(d => {
+  
     const m = d.data();
+  
     materialsList.innerHTML += `
+  
       <div class="bg-white rounded-xl p-5 shadow">
+  
         <h4 class="font-semibold mb-2">${m.title}</h4>
+  
         <a href="${m.fileURL}" target="_blank"
+  
           class="text-primary text-sm font-medium hover:underline">
+  
           Download →
+  
         </a>
+  
       </div>`;
+  
   });
+  
 
-  if (snap.empty) {
-    materialsList.innerHTML =
-      `<p class="text-gray-500">No materials uploaded yet.</p>`;
-  }
+  
+  if (snap.empty)
+  
+    materialsList.innerHTML = `<p class="text-gray-500">No materials uploaded yet.</p>`;
+  
 }
+  
 
-/* ========= FEES (FIXED, 2026 ONLY) ========= */
+  
 async function loadFees(uid) {
+  
   const feesContainer = document.getElementById("feesContainer");
+  
   feesContainer.innerHTML = "";
+  
 
-  const year = "2026";
+  
+  const feesSnap = await getDoc(doc(db, "users", uid));
+  
+  const feesData = feesSnap.data().fees;
+  
 
-  for (const month of months) {
-    const ref = doc(db, "users", uid, "fees", year, month);
-    const snap = await getDoc(ref);
-
-    const paid = snap.exists() && snap.data().paid === true;
-    const paidOnText =
-      paid && snap.data().paidOn
-        ? formatPaidOn(snap.data().paidOn)
-        : "";
-
-    feesContainer.innerHTML += `
-      <div class="bg-white rounded-xl p-4 border">
-        <p class="font-semibold">${month}</p>
-        <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
-          ${paid ? "Paid ✔" : "Not Paid ✖"}
-        </p>
-        ${paidOnText ? `<p class="text-xs text-gray-500">${paidOnText}</p>` : ""}
-      </div>
-    `;
+  
+  if (!feesData) {
+  
+    feesContainer.innerHTML = `<p class="text-gray-500">No fee records available.</p>`;
+  
+    return;
+  
   }
-}
+  
 
-/* ========= AUTH ========= */
+  
+  Object.keys(feesData).forEach(year => {
+  
+    let html = `<div class="bg-white p-4 rounded-xl shadow">
+  
+      <h4 class="font-semibold mb-3">Year ${year}</h4>
+  
+      <div class="grid md:grid-cols-3 gap-3">`;
+  
+
+  
+    Object.keys(feesData[year]).forEach(month => {
+  
+      const m = feesData[year][month];
+  
+      html += `
+  
+        <div class="border rounded-lg p-3">
+  
+          <p class="font-medium">${month}</p>
+  
+          <p class="text-sm ${
+  
+            m.paid ? "text-green-600" : "text-red-600"
+  
+          }">
+  
+            ${m.paid ? "Paid ✔" : "Not Paid ✖"}
+  
+          </p>
+  
+          ${m.paidOn ? `<p class="text-xs text-gray-500">Paid on ${m.paidOn}</p>` : ""}
+  
+        </div>`;
+  
+    });
+  
+
+  
+    html += `</div></div>`;
+  
+    feesContainer.innerHTML += html;
+  
+  });
+  
+}
+  
+
+  
 onAuthStateChanged(auth, async (user) => {
+  
   if (!user) return location.href = "login.html";
+  
 
+  
   const snap = await getDoc(doc(db, "users", user.uid));
+  
   const data = snap.data();
+  
 
+  
   studentName.innerText = data.name;
+  
   studentNameInfo.innerText = data.name;
+  
   studentClass.innerText = data.class;
+  
   studentSubject.innerText = data.subject;
+  
   studentStatusText.innerText = data.status;
+  
 
+  
   if (data.status === "active") {
+  
     studentStatus.innerText = "Active";
+  
+    studentStatusText.innerText = "Active";
+  
     studentStatus.className =
+  
       "px-4 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-800";
+  
 
+  
     materialsSection.classList.remove("hidden");
+  
     feesSection.classList.remove("hidden");
+  
 
+  
     await loadMaterials(data.class);
+  
     await loadFees(user.uid);
+  
   }
+  
 });
-</script>
-
-<style>
+  
+</script><style>
+  
 .info-card {
+  
   display: flex;
+  
   align-items: center;
+  
   gap: 1rem;
+  
   background: #f9fafb;
+  
   padding: 1rem;
+  
   border-radius: 1rem;
+  
 }
+  
 .info-card span { font-size: 1.5rem; }
+  
 .info-card p { font-size: 0.75rem; color: #6b7280; }
-</style>
-
-</body>
-</html>
+  
+</style></body></html>  
