@@ -78,9 +78,6 @@ tailwind.config = {
   <h2 class="font-bold mb-4">💰 Monthly Fees Management</h2>
   <div class="flex gap-4 mb-4">
     <select id="feeStudent" class="border p-2 rounded"></select>
-    <select id="feeYear" class="border p-2 rounded">
-      <option value="2026">2026</option>
-    </select>
     <button id="showFeesBtn" class="bg-primary text-white px-4 rounded">Show Fee Status</button>
   </div>
   <div id="feesGrid" class="grid md:grid-cols-3 gap-4"></div>
@@ -98,6 +95,11 @@ const storage = getStorage();
 const studentsTable = document.getElementById("studentsTable");
 const feeStudent = document.getElementById("feeStudent");
 const feesGrid = document.getElementById("feesGrid");
+
+const months = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+];
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return location.href = "login.html";
@@ -131,13 +133,51 @@ window.approve=async(id)=>{
 };
 
 async function loadFeeStudents(){
-  feeStudent.innerHTML="<option>Select Student</option>";
+  feeStudent.innerHTML="<option value=''>Select Student</option>";
   const snap=await getDocs(collection(db,"users"));
   snap.forEach(d=>{
     if(d.data().role==="student")
       feeStudent.innerHTML+=`<option value="${d.id}">${d.data().name}</option>`;
   });
 }
+
+showFeesBtn.onclick = async () => {
+  if(!feeStudent.value) return alert("Select a student");
+  feesGrid.innerHTML="";
+
+  const refUser = doc(db,"users",feeStudent.value);
+  const snap = await getDoc(refUser);
+  const fees = snap.data().fees?.["2026"] || {};
+
+  months.forEach(m=>{
+    const paid = fees[m]?.paid === true;
+    feesGrid.innerHTML += `
+      <div class="border rounded p-4 flex justify-between items-center">
+        <div>
+          <p class="font-semibold">${m}</p>
+          <p class="text-sm ${paid?"text-green-600":"text-red-600"}">
+            ${paid?"Paid":"Not Paid"}
+          </p>
+        </div>
+        ${
+          paid ? "✔️" :
+          `<button class="text-primary text-sm" onclick="markPaid('${m}')">Mark Paid</button>`
+        }
+      </div>`;
+  });
+};
+
+window.markPaid = async (month)=>{
+  const refUser = doc(db,"users",feeStudent.value);
+  const snap = await getDoc(refUser);
+  const fees = snap.data().fees || {};
+
+  fees["2026"] = fees["2026"] || {};
+  fees["2026"][month] = { paid:true, paidOn:serverTimestamp() };
+
+  await updateDoc(refUser,{ fees });
+  showFeesBtn.click();
+};
 
 publishAnnouncementBtn.onclick=async()=>{
   if(!announcementText.value.trim()) return alert("Empty announcement");

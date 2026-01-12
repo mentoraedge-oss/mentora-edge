@@ -70,8 +70,8 @@
 
     <!-- FEES -->
     <div id="feesSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
-      <h3 class="text-xl font-bold mb-6">💰 Monthly Fees Status</h3>
-      <div id="feesContainer" class="space-y-4"></div>
+      <h3 class="text-xl font-bold mb-6">💰 Monthly Fees Status (2026)</h3>
+      <div id="feesContainer" class="grid md:grid-cols-3 gap-4"></div>
     </div>
 
   </div>
@@ -93,28 +93,27 @@ logoutBtn.onclick = async () => {
   location.href = "login.html";
 };
 
-function formatPaidOn(timestamp) {
-  const date = timestamp.toDate();
+function formatPaidOn(ts) {
+  const d = ts.toDate();
 
-  const day = date.getDate();
-  const daySuffix =
+  const day = d.getDate();
+  const suffix =
     day % 10 === 1 && day !== 11 ? "st" :
     day % 10 === 2 && day !== 12 ? "nd" :
     day % 10 === 3 && day !== 13 ? "rd" : "th";
 
-  const formattedDate = date.toLocaleDateString("en-IN", {
-    day: "numeric",
+  const datePart = d.toLocaleDateString("en-IN", {
     month: "long",
     year: "numeric"
   });
 
-  const formattedTime = date.toLocaleTimeString("en-IN", {
+  const timePart = d.toLocaleTimeString("en-IN", {
     hour: "numeric",
     minute: "2-digit",
     hour12: true
   });
 
-  return `Paid on ${day}${daySuffix} ${formattedDate.replace(day, "")} at ${formattedTime}`;
+  return `Paid on ${day}${suffix} ${datePart} at ${timePart}`;
 }
 
 /* MATERIALS */
@@ -140,42 +139,37 @@ async function loadMaterials(studentClass) {
   }
 }
 
-/* FEES */
+/* FEES — ONLY 2026 */
 async function loadFees(uid) {
   const feesContainer = document.getElementById("feesContainer");
   feesContainer.innerHTML = "";
 
-  const snap = await getDoc(doc(db, "users", uid));
-  const feesData = snap.data().fees;
+  const userSnap = await getDoc(doc(db, "users", uid));
+  const feesData = userSnap.data().fees?.["2026"];
 
   if (!feesData) {
-    feesContainer.innerHTML = `<p class="text-gray-500">No fee records available.</p>`;
+    feesContainer.innerHTML = `<p class="text-gray-500">No fee records for 2026.</p>`;
     return;
   }
 
-  Object.keys(feesData).forEach(year => {
-    let html = `<div class="bg-white p-4 rounded-xl shadow">
-      <h4 class="font-semibold mb-3">Year ${year}</h4>
-      <div class="grid md:grid-cols-3 gap-3">`;
+  const months = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
 
-    Object.keys(feesData[year]).forEach(month => {
-      const m = feesData[year][month];
-      html += `
-        <div class="border rounded-lg p-3">
-          <p class="font-medium">${month}</p>
-          <p class="text-sm ${m.paid ? "text-green-600" : "text-red-600"}">
-            ${m.paid ? "Paid ✔" : "Not Paid ✖"}
-          </p>
-          ${
-            m.paid && m.paidOn
-              ? `<p class="text-xs text-gray-500">${formatPaidOn(m.paidOn)}</p>`
-              : ""
-          }
-        </div>`;
-    });
+  months.forEach(month => {
+    const m = feesData[month];
+    const paid = m?.paid === true;
 
-    html += `</div></div>`;
-    feesContainer.innerHTML += html;
+    feesContainer.innerHTML += `
+      <div class="bg-white rounded-xl p-4 border">
+        <p class="font-semibold">${month}</p>
+        <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
+          ${paid ? "Paid ✔" : "Not Paid ✖"}
+        </p>
+        ${paid && m.paidOn ? `<p class="text-xs text-gray-500">${formatPaidOn(m.paidOn)}</p>` : ""}
+      </div>
+    `;
   });
 }
 
