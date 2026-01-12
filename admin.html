@@ -93,11 +93,14 @@ tailwind.config = {
 
 <script type="module">
 import { auth, db } from "./js/firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged, signOut } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
   collection, getDocs, doc, getDoc,
-  addDoc, updateDoc, serverTimestamp
+  addDoc, updateDoc, deleteDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 import {
   getStorage, ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
@@ -126,25 +129,49 @@ onAuthStateChanged(auth, async (user) => {
 async function loadStudents(){
   studentsTable.innerHTML="";
   const snap = await getDocs(collection(db,"users"));
+
   snap.forEach(d=>{
-    const u=d.data();
-    if(u.role!=="student") return;
-    studentsTable.innerHTML+=`
-    <tr>
-      <td class="px-6 py-3">${u.name}</td>
-      <td>${u.email}</td>
-      <td>${u.class}</td>
-      <td>${u.status}</td>
-      <td>${u.status==="pending"
-        ? `<button onclick="approve('${d.id}')" class="text-green-600">Approve</button>`
-        : "—"}
-      </td>
-    </tr>`;
+    const u = d.data();
+    if(u.role !== "student") return;
+
+    studentsTable.innerHTML += `
+      <tr>
+        <td class="px-6 py-3">${u.name}</td>
+        <td>${u.email}</td>
+        <td>${u.class}</td>
+        <td>${u.status}</td>
+        <td class="space-x-3">
+          ${
+            u.status === "pending"
+            ? `
+              <button onclick="approve('${d.id}')" class="text-green-600 font-medium">Approve</button>
+              <button onclick="rejectStudent('${d.id}')" class="text-red-600 font-medium">Reject</button>
+            `
+            : `
+              <button onclick="removeStudent('${d.id}')" class="text-red-600 font-medium">Remove</button>
+            `
+          }
+        </td>
+      </tr>`;
   });
 }
 
-window.approve = async(id)=>{
-  await updateDoc(doc(db,"users",id),{status:"active"});
+window.approve = async (id) => {
+  await updateDoc(doc(db,"users",id), { status:"active" });
+  loadStudents();
+};
+
+window.rejectStudent = async (id) => {
+  if(!confirm("Reject this student? This will permanently delete them.")) return;
+  await deleteDoc(doc(db,"users",id));
+  alert("Student rejected");
+  loadStudents();
+};
+
+window.removeStudent = async (id) => {
+  if(!confirm("Remove this student permanently?")) return;
+  await deleteDoc(doc(db,"users",id));
+  alert("Student removed");
   loadStudents();
 };
 
@@ -179,9 +206,7 @@ showFeesBtn.onclick = async () => {
         </div>
         ${
           paid ? "✔️" :
-          `<button class="text-primary text-sm" onclick="markPaid('${m}')">
-            Mark Paid
-          </button>`
+          `<button class="text-primary text-sm" onclick="markPaid('${m}')">Mark Paid</button>`
         }
       </div>`;
   });
@@ -202,15 +227,17 @@ window.markPaid = async (month)=>{
 /* ANNOUNCEMENT */
 publishAnnouncementBtn.onclick = async () => {
   if(!announcementText.value.trim()) return alert("Empty announcement");
+
   await addDoc(collection(db,"announcements"),{
     text:announcementText.value,
     createdAt:serverTimestamp()
   });
+
   announcementText.value="";
   alert("Announcement published");
 };
 
-/* MATERIAL UPLOAD — FIXED */
+/* MATERIAL UPLOAD */
 uploadMaterialBtn.onclick = async () => {
   try {
     if(!materialClass.value || !materialTitle.value || !materialFile.files[0]){
@@ -218,13 +245,13 @@ uploadMaterialBtn.onclick = async () => {
       return;
     }
 
-    uploadMaterialBtn.innerText = "Uploading...";
-    uploadMaterialBtn.disabled = true;
+    uploadMaterialBtn.innerText="Uploading...";
+    uploadMaterialBtn.disabled=true;
 
     const file = materialFile.files[0];
     const storageRef = ref(storage, `materials/${Date.now()}_${file.name}`);
 
-    await uploadBytes(storageRef, file);
+    await uploadBytes(storageRef,file);
     const url = await getDownloadURL(storageRef);
 
     await addDoc(collection(db,"materials"),{
@@ -234,18 +261,19 @@ uploadMaterialBtn.onclick = async () => {
       createdAt: serverTimestamp()
     });
 
-    alert("Material uploaded successfully");
+    alert("Material uploaded");
 
     materialClass.value="";
     materialTitle.value="";
     materialFile.value="";
-
-  } catch (err) {
+  }
+  catch(err){
     console.error(err);
     alert("Upload failed. Check console.");
-  } finally {
-    uploadMaterialBtn.innerText = "Upload";
-    uploadMaterialBtn.disabled = false;
+  }
+  finally{
+    uploadMaterialBtn.innerText="Upload";
+    uploadMaterialBtn.disabled=false;
   }
 };
 
