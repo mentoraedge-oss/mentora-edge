@@ -128,7 +128,7 @@ async function loadAnnouncements() {
   const q = query(
     collection(db, "announcements"),
     orderBy("createdAt", "desc"),
-    limit(3)
+    limit(1)
   );
 
   const snap = await getDocs(q);
