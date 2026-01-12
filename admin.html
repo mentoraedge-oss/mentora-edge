@@ -36,7 +36,9 @@ tailwind.config = {
   <h2 class="font-bold mb-4">📢 Global Announcement</h2>
   <textarea id="announcementText" class="w-full border rounded p-3" rows="4"></textarea>
   <div class="text-right mt-3">
-    <button id="publishAnnouncementBtn" class="bg-primary text-white px-5 py-2 rounded">Publish</button>
+    <button id="publishAnnouncementBtn" class="bg-primary text-white px-5 py-2 rounded">
+      Publish
+    </button>
   </div>
 </section>
 
@@ -52,7 +54,9 @@ tailwind.config = {
     </select>
     <input id="materialTitle" class="border p-2 rounded" placeholder="Title">
     <input id="materialFile" type="file">
-    <button id="uploadMaterialBtn" class="bg-primary text-white rounded px-4">Upload</button>
+    <button id="uploadMaterialBtn" class="bg-primary text-white rounded px-4">
+      Upload
+    </button>
   </div>
 </section>
 
@@ -78,7 +82,9 @@ tailwind.config = {
   <h2 class="font-bold mb-4">💰 Monthly Fees Management</h2>
   <div class="flex gap-4 mb-4">
     <select id="feeStudent" class="border p-2 rounded"></select>
-    <button id="showFeesBtn" class="bg-primary text-white px-4 rounded">Show Fee Status</button>
+    <button id="showFeesBtn" class="bg-primary text-white px-4 rounded">
+      Show Fee Status
+    </button>
   </div>
   <div id="feesGrid" class="grid md:grid-cols-3 gap-4"></div>
 </section>
@@ -88,10 +94,16 @@ tailwind.config = {
 <script type="module">
 import { auth, db } from "./js/firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import {
+  collection, getDocs, doc, getDoc,
+  addDoc, updateDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const storage = getStorage();
+
 const studentsTable = document.getElementById("studentsTable");
 const feeStudent = document.getElementById("feeStudent");
 const feesGrid = document.getElementById("feesGrid");
@@ -110,6 +122,7 @@ onAuthStateChanged(auth, async (user) => {
   loadFeeStudents();
 });
 
+/* STUDENTS */
 async function loadStudents(){
   studentsTable.innerHTML="";
   const snap = await getDocs(collection(db,"users"));
@@ -122,22 +135,27 @@ async function loadStudents(){
       <td>${u.email}</td>
       <td>${u.class}</td>
       <td>${u.status}</td>
-      <td>${u.status==="pending"?`<button onclick="approve('${d.id}')" class="text-green-600">Approve</button>`:"—"}</td>
+      <td>${u.status==="pending"
+        ? `<button onclick="approve('${d.id}')" class="text-green-600">Approve</button>`
+        : "—"}
+      </td>
     </tr>`;
   });
 }
 
-window.approve=async(id)=>{
+window.approve = async(id)=>{
   await updateDoc(doc(db,"users",id),{status:"active"});
   loadStudents();
 };
 
+/* FEES */
 async function loadFeeStudents(){
   feeStudent.innerHTML="<option value=''>Select Student</option>";
   const snap=await getDocs(collection(db,"users"));
   snap.forEach(d=>{
-    if(d.data().role==="student")
+    if(d.data().role==="student"){
       feeStudent.innerHTML+=`<option value="${d.id}">${d.data().name}</option>`;
+    }
   });
 }
 
@@ -161,7 +179,9 @@ showFeesBtn.onclick = async () => {
         </div>
         ${
           paid ? "✔️" :
-          `<button class="text-primary text-sm" onclick="markPaid('${m}')">Mark Paid</button>`
+          `<button class="text-primary text-sm" onclick="markPaid('${m}')">
+            Mark Paid
+          </button>`
         }
       </div>`;
   });
@@ -179,7 +199,8 @@ window.markPaid = async (month)=>{
   showFeesBtn.click();
 };
 
-publishAnnouncementBtn.onclick=async()=>{
+/* ANNOUNCEMENT */
+publishAnnouncementBtn.onclick = async () => {
   if(!announcementText.value.trim()) return alert("Empty announcement");
   await addDoc(collection(db,"announcements"),{
     text:announcementText.value,
@@ -189,26 +210,50 @@ publishAnnouncementBtn.onclick=async()=>{
   alert("Announcement published");
 };
 
-uploadMaterialBtn.onclick=async()=>{
-  if(!materialClass.value||!materialTitle.value||!materialFile.files[0])
-    return alert("Fill all fields");
+/* MATERIAL UPLOAD — FIXED */
+uploadMaterialBtn.onclick = async () => {
+  try {
+    if(!materialClass.value || !materialTitle.value || !materialFile.files[0]){
+      alert("Fill all fields");
+      return;
+    }
 
-  const file=materialFile.files[0];
-  const storageRef=ref(storage,`materials/${Date.now()}_${file.name}`);
-  await uploadBytes(storageRef,file);
-  const url=await getDownloadURL(storageRef);
+    uploadMaterialBtn.innerText = "Uploading...";
+    uploadMaterialBtn.disabled = true;
 
-  await addDoc(collection(db,"materials"),{
-    title:materialTitle.value,
-    class:materialClass.value,
-    fileURL:url,
-    createdAt:serverTimestamp()
-  });
+    const file = materialFile.files[0];
+    const storageRef = ref(storage, `materials/${Date.now()}_${file.name}`);
 
-  alert("Material uploaded");
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+
+    await addDoc(collection(db,"materials"),{
+      title: materialTitle.value,
+      class: materialClass.value,
+      fileURL: url,
+      createdAt: serverTimestamp()
+    });
+
+    alert("Material uploaded successfully");
+
+    materialClass.value="";
+    materialTitle.value="";
+    materialFile.value="";
+
+  } catch (err) {
+    console.error(err);
+    alert("Upload failed. Check console.");
+  } finally {
+    uploadMaterialBtn.innerText = "Upload";
+    uploadMaterialBtn.disabled = false;
+  }
 };
 
-logoutBtn.onclick=async()=>{await signOut(auth);location.href="login.html";}
+/* LOGOUT */
+logoutBtn.onclick = async()=>{
+  await signOut(auth);
+  location.href="login.html";
+};
 </script>
 
 </body>
