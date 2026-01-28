@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1E40AF">
+<link rel="apple-touch-icon" href="/icons/ios/180.png">
   <title>Mentora Edge | Shaping Minds, Sharpening Futures</title>
 
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -194,6 +197,15 @@
   transform: translateY(0);
 }
 </style>
-
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("Service Worker Registered"))
+        .catch(err => console.log("SW registration failed", err));
+    });
+  }
+</script>
 </body>
 </html>
