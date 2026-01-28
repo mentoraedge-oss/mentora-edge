@@ -243,6 +243,36 @@ onAuthStateChanged(auth, async (user) => {
 .info-card span { font-size: 1.5rem; }
 .info-card p { font-size: 0.75rem; color: #6b7280; }
 </style>
+<script type="module">
+  import { messaging } from "./js/firebase.js";
+  import { getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
+  async function enableNotifications() {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        alert("Notifications are disabled");
+        return;
+      }
+
+      const token = await getToken(messaging, {
+        vapidKey: "BAPt7wzX1iIYrPc3NqQt7HcCvaKi3-00yIgrdPYjWHaKd6teibD6VeCoWYl4wEstfNJPTOoqN_Q6Kk_nXl6eXxA"
+      });
+
+      if (token) {
+        console.log("FCM Token:", token);
+
+        // 🔜 Next step: save this token in Firestore
+      } else {
+        console.log("No registration token available");
+      }
+    } catch (err) {
+      console.error("Notification error:", err);
+    }
+  }
+
+  // Ask permission when dashboard loads
+  enableNotifications();
+</script>
 </body>
 </html>
