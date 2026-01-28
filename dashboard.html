@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1E40AF">
-<link rel="apple-touch-icon" href="/icons/ios/180.png">
+  <meta name="theme-color" content="#1E40AF">
+  <link rel="apple-touch-icon" href="/icons/ios/180.png">
+
   <title>Student Dashboard | Mentora Edge</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -88,10 +89,11 @@
   </div>
 </main>
 
+<!-- MAIN DASHBOARD LOGIC -->
 <script type="module">
 import { auth, db } from "./js/firebase.js";
-import { onAuthStateChanged, signOut }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged, signOut } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
   doc, getDoc,
@@ -112,28 +114,16 @@ function formatPaidOn(ts) {
     day % 10 === 2 && day !== 12 ? "nd" :
     day % 10 === 3 && day !== 13 ? "rd" : "th";
 
-  const datePart = d.toLocaleDateString("en-IN", {
-    month: "long",
-    year: "numeric"
-  });
-
-  const timePart = d.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-  });
-
-  return `Paid on ${day}${suffix} ${datePart} at ${timePart}`;
+  return `Paid on ${day}${suffix} ${d.toLocaleDateString("en-IN", {
+    month: "long", year: "numeric"
+  })} at ${d.toLocaleTimeString("en-IN", {
+    hour: "numeric", minute: "2-digit", hour12: true
+  })}`;
 }
 
 /* ANNOUNCEMENTS */
 async function loadAnnouncements() {
-  const q = query(
-    collection(db, "announcements"),
-    orderBy("createdAt", "desc"),
-    limit(1)
-  );
-
+  const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(1));
   const snap = await getDocs(q);
   if (snap.empty) return;
 
@@ -171,7 +161,7 @@ async function loadMaterials(studentClass) {
   }
 }
 
-/* FEES — ONLY 2026 */
+/* FEES */
 async function loadFees(uid) {
   feesContainer.innerHTML = "";
   const snap = await getDoc(doc(db, "users", uid));
@@ -182,10 +172,7 @@ async function loadFees(uid) {
     return;
   }
 
-  const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
-  ];
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
   months.forEach(month => {
     const m = fees[month];
@@ -231,6 +218,49 @@ onAuthStateChanged(auth, async (user) => {
 });
 </script>
 
+<!-- 🔔 FCM TOKEN SAVE (SAFE & LINKED TO USER) -->
+<script type="module">
+import { messaging, auth, db } from "./js/firebase.js";
+import { getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+import { doc, setDoc, serverTimestamp } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+async function enableNotifications() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
+
+    const token = await getToken(messaging, {
+      vapidKey: "BAPt7wzX1iIYrPc3NqQt7HcCvaKi3-00yIgrdPYjWHaKd6teibD6VeCoWYl4wEstfNJPTOoqN_Q6Kk_nXl6eXxA"
+    });
+
+    if (!token) return;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      await setDoc(
+        doc(db, "fcmTokens", user.uid),
+        {
+          token,
+          role: "student",
+          updatedAt: serverTimestamp()
+        },
+        { merge: true }
+      );
+
+      console.log("✅ FCM token saved to Firestore");
+    });
+  } catch (err) {
+    console.error("Notification error:", err);
+  }
+}
+
+enableNotifications();
+</script>
+
 <style>
 .info-card {
   display: flex;
@@ -243,36 +273,6 @@ onAuthStateChanged(auth, async (user) => {
 .info-card span { font-size: 1.5rem; }
 .info-card p { font-size: 0.75rem; color: #6b7280; }
 </style>
-<script type="module">
-  import { messaging } from "./js/firebase.js";
-  import { getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
-  async function enableNotifications() {
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        alert("Notifications are disabled");
-        return;
-      }
-
-      const token = await getToken(messaging, {
-        vapidKey: "BAPt7wzX1iIYrPc3NqQt7HcCvaKi3-00yIgrdPYjWHaKd6teibD6VeCoWYl4wEstfNJPTOoqN_Q6Kk_nXl6eXxA"
-      });
-
-      if (token) {
-        console.log("FCM Token:", token);
-
-        // 🔜 Next step: save this token in Firestore
-      } else {
-        console.log("No registration token available");
-      }
-    } catch (err) {
-      console.error("Notification error:", err);
-    }
-  }
-
-  // Ask permission when dashboard loads
-  enableNotifications();
-</script>
 </body>
 </html>
