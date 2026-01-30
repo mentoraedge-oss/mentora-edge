@@ -83,7 +83,25 @@
           Time left: 03:00
         </p>
       </div>
-
+<!-- Terms & Conditions Agreement -->
+<div class="flex items-start gap-2 mt-4">
+  <input
+    type="checkbox"
+    id="agreeTerms"
+    class="mt-1 accent-blue-600"
+    required
+  />
+  <label for="agreeTerms" class="text-sm text-gray-700">
+    I agree to the
+    <a
+      href="/terms.html"
+      target="_blank"
+      class="text-blue-600 font-medium hover:underline"
+    >
+      Terms & Conditions
+    </a>
+  </label>
+</div>
       <!-- ================= BUTTONS ================= -->
       <button
         type="button"
@@ -250,6 +268,16 @@ payBtn.onclick = async () => {
   animation: scaleIn 0.4s ease-out;
 }
 </style>
-
+<footer class="mt-16 bg-gray-100 border-t">
+  <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-600">
+    <p>
+      © 2026 <strong>Mentora Edge</strong>. All rights reserved.
+      ·
+      <a href="/terms.html" class="text-primary hover:underline">
+        Terms & Conditions
+      </a>
+    </p>
+  </div>
+</footer>
 </body>
 </html>
