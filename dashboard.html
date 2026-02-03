@@ -66,6 +66,15 @@
       <div class="info-card"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
       <div class="info-card"><span>📘</span><div><p>Subject</p><strong id="studentSubject"></strong></div></div>
       <div class="info-card"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
+
+      <!-- ✅ STUDENT ID CARD -->
+      <div class="info-card">
+        <span>🆔</span>
+        <div>
+          <p>Student ID</p>
+          <strong id="studentIdText" class="font-mono text-primary"></strong>
+        </div>
+      </div>
     </div>
 
     <!-- ANNOUNCEMENTS -->
@@ -108,17 +117,7 @@ logoutBtn.onclick = async () => {
 
 function formatPaidOn(ts) {
   const d = ts.toDate();
-  const day = d.getDate();
-  const suffix =
-    day % 10 === 1 && day !== 11 ? "st" :
-    day % 10 === 2 && day !== 12 ? "nd" :
-    day % 10 === 3 && day !== 13 ? "rd" : "th";
-
-  return `Paid on ${day}${suffix} ${d.toLocaleDateString("en-IN", {
-    month: "long", year: "numeric"
-  })} at ${d.toLocaleTimeString("en-IN", {
-    hour: "numeric", minute: "2-digit", hour12: true
-  })}`;
+  return d.toLocaleString("en-IN");
 }
 
 /* ANNOUNCEMENTS */
@@ -155,10 +154,6 @@ async function loadMaterials(studentClass) {
         </a>
       </div>`;
   });
-
-  if (snap.empty) {
-    materialsList.innerHTML = `<p class="text-gray-500">No materials uploaded yet.</p>`;
-  }
 }
 
 /* FEES */
@@ -166,25 +161,16 @@ async function loadFees(uid) {
   feesContainer.innerHTML = "";
   const snap = await getDoc(doc(db, "users", uid));
   const fees = snap.data().fees?.["2026"];
+  if (!fees) return;
 
-  if (!fees) {
-    feesContainer.innerHTML = `<p class="text-gray-500">No fee records for 2026.</p>`;
-    return;
-  }
-
-  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-  months.forEach(month => {
+  Object.keys(fees).forEach(month => {
     const m = fees[month];
-    const paid = m?.paid === true;
-
     feesContainer.innerHTML += `
       <div class="bg-white rounded-xl p-4 border">
         <p class="font-semibold">${month}</p>
-        <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
-          ${paid ? "Paid ✔" : "Not Paid ✖"}
+        <p class="text-sm ${m.paid ? "text-green-600" : "text-red-600"}">
+          ${m.paid ? "Paid ✔" : "Not Paid ✖"}
         </p>
-        ${paid && m.paidOn ? `<p class="text-xs text-gray-500">${formatPaidOn(m.paidOn)}</p>` : ""}
       </div>`;
   });
 }
@@ -202,6 +188,9 @@ onAuthStateChanged(auth, async (user) => {
   studentSubject.innerText = data.subject;
   studentStatusText.innerText = data.status;
 
+  // ✅ STUDENT ID BINDING
+  studentIdText.innerText = data.studentId || "Not Assigned";
+
   if (data.status === "active") {
     studentStatus.innerText = "Active";
     studentStatus.className =
@@ -216,49 +205,6 @@ onAuthStateChanged(auth, async (user) => {
     await loadFees(user.uid);
   }
 });
-</script>
-
-<!-- 🔔 FCM TOKEN SAVE (SAFE & LINKED TO USER) -->
-<script type="module">
-import { messaging, auth, db } from "./js/firebase.js";
-import { getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
-import { doc, setDoc, serverTimestamp } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-async function enableNotifications() {
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") return;
-
-    const token = await getToken(messaging, {
-      vapidKey: "BAPt7wzX1iIYrPc3NqQt7HcCvaKi3-00yIgrdPYjWHaKd6teibD6VeCoWYl4wEstfNJPTOoqN_Q6Kk_nXl6eXxA"
-    });
-
-    if (!token) return;
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
-
-      await setDoc(
-        doc(db, "fcmTokens", user.uid),
-        {
-          token,
-          role: "student",
-          updatedAt: serverTimestamp()
-        },
-        { merge: true }
-      );
-
-      console.log("✅ FCM token saved to Firestore");
-    });
-  } catch (err) {
-    console.error("Notification error:", err);
-  }
-}
-
-enableNotifications();
 </script>
 
 <style>
