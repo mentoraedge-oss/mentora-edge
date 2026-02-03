@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Student Verification | Mentora Edge</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: '#1E40AF'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-100 font-inter text-gray-800 min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white max-w-md w-full rounded-2xl shadow-xl p-8">
+
+    <!-- HEADER -->
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
+      <p class="text-sm text-gray-500 mt-1">Student Verification</p>
+    </div>
+
+    <!-- FORM -->
+    <div id="formSection">
+      <label class="block text-sm font-medium mb-2">
+        Enter Student ID
+      </label>
+
+      <input
+        id="studentIdInput"
+        type="text"
+        placeholder="e.g. ME0001"
+        class="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+
+      <button
+        id="verifyBtn"
+        class="w-full bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition">
+        Verify Student
+      </button>
+
+      <p id="errorMsg" class="hidden text-red-600 text-sm mt-4 text-center">
+        ❌ Student ID not found
+      </p>
+    </div>
+
+    <!-- RESULT -->
+    <div id="resultSection" class="hidden mt-6">
+
+      <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
+        <div>
+          <p class="text-xs text-gray-500">Student Name</p>
+          <p id="resName" class="font-semibold"></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-500">Class</p>
+          <p id="resClass" class="font-semibold"></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-500">Father's Name</p>
+          <p id="resFather" class="font-semibold"></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-500">Mother's Name</p>
+          <p id="resMother" class="font-semibold"></p>
+        </div>
+      </div>
+
+      <p class="text-green-600 text-sm font-medium mt-4 text-center">
+        ✅ Student Verified Successfully
+      </p>
+    </div>
+
+  </div>
+
+<!-- FIREBASE LOGIC -->
+<script type="module">
+import { db } from "./js/firebase.js";
+import {
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const verifyBtn = document.getElementById("verifyBtn");
+const studentIdInput = document.getElementById("studentIdInput");
+const errorMsg = document.getElementById("errorMsg");
+const formSection = document.getElementById("formSection");
+const resultSection = document.getElementById("resultSection");
+
+verifyBtn.onclick = async () => {
+  const studentId = studentIdInput.value.trim().toUpperCase();
+  if (!studentId) return;
+
+  errorMsg.classList.add("hidden");
+
+  try {
+    const q = query(
+      collection(db, "users"),
+      where("studentId", "==", studentId),
+      where("role", "==", "student")
+    );
+
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      errorMsg.classList.remove("hidden");
+      return;
+    }
+
+    snap.forEach(doc => {
+      const d = doc.data();
+
+      document.getElementById("resName").innerText = d.name || "-";
+      document.getElementById("resClass").innerText = d.class || "-";
+      document.getElementById("resFather").innerText = d.fatherName || "-";
+      document.getElementById("resMother").innerText = d.motherName || "-";
+    });
+
+    formSection.classList.add("hidden");
+    resultSection.classList.remove("hidden");
+
+  } catch (err) {
+    console.error(err);
+    errorMsg.classList.remove("hidden");
+  }
+};
+</script>
+
+</body>
+</html>
