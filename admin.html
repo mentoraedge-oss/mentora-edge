@@ -102,7 +102,7 @@ import { onAuthStateChanged, signOut } from
 
 import {
   collection, getDocs, doc, getDoc,
-  addDoc, updateDoc, deleteDoc, serverTimestamp
+  addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -141,8 +141,7 @@ async function getNextStudentId() {
     }
   });
 
-  const next = max + 1;
-  return "ME" + String(next).padStart(4,"0");
+  return "ME" + String(max + 1).padStart(4,"0");
 }
 
 /* STUDENTS */
@@ -160,20 +159,20 @@ async function loadStudents(){
         <td>${u.email}</td>
         <td>${u.class}</td>
         <td>${u.status}</td>
-        <td class="font-mono text-sm">${u.studentId || "-"}</td>
+        <td class="font-mono">${u.studentId || "-"}</td>
         <td class="space-x-3">
           ${
             u.status === "pending"
             ? `
-              <button onclick="approve('${d.id}')" class="text-green-600 font-medium">Approve</button>
-              <button onclick="rejectStudent('${d.id}')" class="text-red-600 font-medium">Reject</button>
+              <button onclick="approve('${d.id}')" class="text-green-600">Approve</button>
+              <button onclick="rejectStudent('${d.id}')" class="text-red-600">Reject</button>
             `
             : `
               ${!u.studentId
-                ? `<button onclick="generateId('${d.id}')" class="text-blue-600 font-medium">Generate ID</button>`
+                ? `<button onclick="generateId('${d.id}')" class="text-blue-600">Generate ID</button>`
                 : ""
               }
-              <button onclick="removeStudent('${d.id}')" class="text-red-600 font-medium">Remove</button>
+              <button onclick="removeStudent('${d.id}')" class="text-red-600">Remove</button>
             `
           }
         </td>
@@ -181,10 +180,28 @@ async function loadStudents(){
   });
 }
 
-window.generateId = async (id) => {
-  const newId = await getNextStudentId();
-  await updateDoc(doc(db,"users",id),{ studentId:newId });
-  alert("Student ID generated: " + newId);
+/* 🔑 GENERATE ID + CREATE VERIFICATION RECORD */
+window.generateId = async (uid) => {
+  const userRef = doc(db,"users",uid);
+  const snap = await getDoc(userRef);
+  const u = snap.data();
+
+  const studentId = await getNextStudentId();
+
+  // Save in users
+  await updateDoc(userRef,{ studentId });
+
+  // Create public verification record
+  await setDoc(doc(db,"studentVerifications", studentId), {
+    studentId,
+    name: u.name,
+    class: u.class,
+    fatherName: u.fatherName || "",
+    motherName: u.motherName || "",
+    verifiedAt: serverTimestamp()
+  });
+
+  alert("Student ID generated: " + studentId);
   loadStudents();
 };
 
@@ -194,13 +211,13 @@ window.approve = async (id) => {
 };
 
 window.rejectStudent = async (id) => {
-  if(!confirm("Reject this student permanently?")) return;
+  if(!confirm("Reject student permanently?")) return;
   await deleteDoc(doc(db,"users",id));
   loadStudents();
 };
 
 window.removeStudent = async (id) => {
-  if(!confirm("Remove this student permanently?")) return;
+  if(!confirm("Remove student permanently?")) return;
   await deleteDoc(doc(db,"users",id));
   loadStudents();
 };
@@ -220,24 +237,20 @@ showFeesBtn.onclick = async () => {
   if(!feeStudent.value) return alert("Select a student");
   feesGrid.innerHTML="";
 
-  const refUser = doc(db,"users",feeStudent.value);
-  const snap = await getDoc(refUser);
+  const snap = await getDoc(doc(db,"users",feeStudent.value));
   const fees = snap.data().fees?.["2026"] || {};
 
   months.forEach(m=>{
     const paid = fees[m]?.paid === true;
     feesGrid.innerHTML += `
-      <div class="border rounded p-4 flex justify-between items-center">
+      <div class="border rounded p-4 flex justify-between">
         <div>
           <p class="font-semibold">${m}</p>
-          <p class="text-sm ${paid?"text-green-600":"text-red-600"}">
+          <p class="${paid?"text-green-600":"text-red-600"} text-sm">
             ${paid?"Paid":"Not Paid"}
           </p>
         </div>
-        ${
-          paid ? "✔️" :
-          `<button class="text-primary text-sm" onclick="markPaid('${m}')">Mark Paid</button>`
-        }
+        ${paid ? "✔️" : `<button onclick="markPaid('${m}')" class="text-primary text-sm">Mark Paid</button>`}
       </div>`;
   });
 };
@@ -246,10 +259,8 @@ window.markPaid = async (month)=>{
   const refUser = doc(db,"users",feeStudent.value);
   const snap = await getDoc(refUser);
   const fees = snap.data().fees || {};
-
   fees["2026"] = fees["2026"] || {};
   fees["2026"][month] = { paid:true, paidOn:serverTimestamp() };
-
   await updateDoc(refUser,{ fees });
   showFeesBtn.click();
 };
@@ -267,41 +278,23 @@ publishAnnouncementBtn.onclick = async () => {
 
 /* MATERIAL UPLOAD */
 uploadMaterialBtn.onclick = async () => {
-  try {
-    if(!materialClass.value || !materialTitle.value || !materialFile.files[0]){
-      alert("Fill all fields");
-      return;
-    }
-
-    uploadMaterialBtn.innerText="Uploading...";
-    uploadMaterialBtn.disabled=true;
-
-    const file = materialFile.files[0];
-    const storageRef = ref(storage, `materials/${Date.now()}_${file.name}`);
-
-    await uploadBytes(storageRef,file);
-    const url = await getDownloadURL(storageRef);
-
-    await addDoc(collection(db,"materials"),{
-      title: materialTitle.value,
-      class: materialClass.value,
-      fileURL: url,
-      createdAt: serverTimestamp()
-    });
-
-    alert("Material uploaded");
-    materialClass.value="";
-    materialTitle.value="";
-    materialFile.value="";
+  if(!materialClass.value || !materialTitle.value || !materialFile.files[0]){
+    alert("Fill all fields"); return;
   }
-  catch(err){
-    console.error(err);
-    alert("Upload failed");
-  }
-  finally{
-    uploadMaterialBtn.innerText="Upload";
-    uploadMaterialBtn.disabled=false;
-  }
+  uploadMaterialBtn.disabled=true;
+  const file = materialFile.files[0];
+  const storageRef = ref(storage, `materials/${Date.now()}_${file.name}`);
+  await uploadBytes(storageRef,file);
+  const url = await getDownloadURL(storageRef);
+  await addDoc(collection(db,"materials"),{
+    title: materialTitle.value,
+    class: materialClass.value,
+    fileURL: url,
+    createdAt: serverTimestamp()
+  });
+  uploadMaterialBtn.disabled=false;
+  materialClass.value=""; materialTitle.value=""; materialFile.value="";
+  alert("Material uploaded");
 };
 
 /* LOGOUT */
