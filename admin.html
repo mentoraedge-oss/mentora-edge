@@ -73,6 +73,7 @@ tailwind.config = {
         <th>Email</th>
         <th>Class</th>
         <th>Status</th>
+        <th>Student ID</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -109,7 +110,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const storage = getStorage();
-
 const studentsTable = document.getElementById("studentsTable");
 const feeStudent = document.getElementById("feeStudent");
 const feesGrid = document.getElementById("feesGrid");
@@ -128,6 +128,23 @@ onAuthStateChanged(auth, async (user) => {
   loadFeeStudents();
 });
 
+/* STUDENT ID GENERATOR */
+async function getNextStudentId() {
+  const snap = await getDocs(collection(db, "users"));
+  let max = 0;
+
+  snap.forEach(d => {
+    const id = d.data().studentId;
+    if (id && id.startsWith("ME")) {
+      const num = parseInt(id.replace("ME",""));
+      if (num > max) max = num;
+    }
+  });
+
+  const next = max + 1;
+  return "ME" + String(next).padStart(4,"0");
+}
+
 /* STUDENTS */
 async function loadStudents(){
   studentsTable.innerHTML="";
@@ -143,6 +160,7 @@ async function loadStudents(){
         <td>${u.email}</td>
         <td>${u.class}</td>
         <td>${u.status}</td>
+        <td class="font-mono text-sm">${u.studentId || "-"}</td>
         <td class="space-x-3">
           ${
             u.status === "pending"
@@ -151,6 +169,10 @@ async function loadStudents(){
               <button onclick="rejectStudent('${d.id}')" class="text-red-600 font-medium">Reject</button>
             `
             : `
+              ${!u.studentId
+                ? `<button onclick="generateId('${d.id}')" class="text-blue-600 font-medium">Generate ID</button>`
+                : ""
+              }
               <button onclick="removeStudent('${d.id}')" class="text-red-600 font-medium">Remove</button>
             `
           }
@@ -159,22 +181,27 @@ async function loadStudents(){
   });
 }
 
+window.generateId = async (id) => {
+  const newId = await getNextStudentId();
+  await updateDoc(doc(db,"users",id),{ studentId:newId });
+  alert("Student ID generated: " + newId);
+  loadStudents();
+};
+
 window.approve = async (id) => {
   await updateDoc(doc(db,"users",id), { status:"active" });
   loadStudents();
 };
 
 window.rejectStudent = async (id) => {
-  if(!confirm("Reject this student? This will permanently delete them.")) return;
+  if(!confirm("Reject this student permanently?")) return;
   await deleteDoc(doc(db,"users",id));
-  alert("Student rejected");
   loadStudents();
 };
 
 window.removeStudent = async (id) => {
   if(!confirm("Remove this student permanently?")) return;
   await deleteDoc(doc(db,"users",id));
-  alert("Student removed");
   loadStudents();
 };
 
@@ -230,12 +257,10 @@ window.markPaid = async (month)=>{
 /* ANNOUNCEMENT */
 publishAnnouncementBtn.onclick = async () => {
   if(!announcementText.value.trim()) return alert("Empty announcement");
-
   await addDoc(collection(db,"announcements"),{
     text:announcementText.value,
     createdAt:serverTimestamp()
   });
-
   announcementText.value="";
   alert("Announcement published");
 };
@@ -265,14 +290,13 @@ uploadMaterialBtn.onclick = async () => {
     });
 
     alert("Material uploaded");
-
     materialClass.value="";
     materialTitle.value="";
     materialFile.value="";
   }
   catch(err){
     console.error(err);
-    alert("Upload failed. Check console.");
+    alert("Upload failed");
   }
   finally{
     uploadMaterialBtn.innerText="Upload";
