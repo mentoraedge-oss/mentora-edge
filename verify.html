@@ -30,7 +30,7 @@
     <!-- HEADER -->
     <div class="text-center mb-6">
       <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
-      <p class="text-sm text-gray-500 mt-1">Student Verification</p>
+      <p class="text-sm text-gray-500 mt-1">Student Verification Portal</p>
     </div>
 
     <!-- FORM -->
@@ -53,17 +53,29 @@
       </button>
 
       <p id="errorMsg" class="hidden text-red-600 text-sm mt-4 text-center">
-        ❌ Student ID not found
+        ❌ Student ID not found or invalid
       </p>
     </div>
 
     <!-- RESULT -->
     <div id="resultSection" class="hidden mt-6">
 
-      <div class="border rounded-xl p-4 bg-gray-50 space-y-3">
+      <!-- VERIFIED BADGE -->
+      <div class="flex justify-center mb-4 animate-pulse">
+        <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-semibold">
+          ✔ Verified by Mentora Edge
+        </span>
+      </div>
+
+      <div class="border rounded-xl p-4 bg-gray-50 space-y-3" id="certificate">
         <div>
           <p class="text-xs text-gray-500">Student Name</p>
           <p id="resName" class="font-semibold"></p>
+        </div>
+
+        <div>
+          <p class="text-xs text-gray-500">Student ID</p>
+          <p id="resId" class="font-semibold"></p>
         </div>
 
         <div>
@@ -80,11 +92,17 @@
           <p class="text-xs text-gray-500">Mother's Name</p>
           <p id="resMother" class="font-semibold"></p>
         </div>
+
+        <p class="text-xs text-gray-500 mt-2">
+          Verified on <span id="verifiedDate"></span>
+        </p>
       </div>
 
-      <p class="text-green-600 text-sm font-medium mt-4 text-center">
-        ✅ Student Verified Successfully
-      </p>
+      <button
+        onclick="window.print()"
+        class="mt-6 w-full border border-primary text-primary py-2.5 rounded-lg font-semibold hover:bg-blue-50 transition">
+        🖨️ Print Verification Certificate
+      </button>
     </div>
 
   </div>
@@ -93,10 +111,8 @@
 <script type="module">
 import { db } from "./js/firebase.js";
 import {
-  collection,
-  query,
-  where,
-  getDocs
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const verifyBtn = document.getElementById("verifyBtn");
@@ -105,34 +121,46 @@ const errorMsg = document.getElementById("errorMsg");
 const formSection = document.getElementById("formSection");
 const resultSection = document.getElementById("resultSection");
 
-verifyBtn.onclick = async () => {
+/* AUTO-FILL FROM QR (?id=ME0001) */
+const params = new URLSearchParams(window.location.search);
+const qrId = params.get("id");
+if (qrId) {
+  studentIdInput.value = qrId.toUpperCase();
+  verifyStudent();
+}
+
+verifyBtn.onclick = verifyStudent;
+
+async function verifyStudent() {
   const studentId = studentIdInput.value.trim().toUpperCase();
   if (!studentId) return;
 
   errorMsg.classList.add("hidden");
 
   try {
-    const q = query(
-      collection(db, "users"),
-      where("studentId", "==", studentId),
-      where("role", "==", "student")
-    );
+    const ref = doc(db, "studentVerifications", studentId);
+    const snap = await getDoc(ref);
 
-    const snap = await getDocs(q);
-
-    if (snap.empty) {
+    if (!snap.exists()) {
       errorMsg.classList.remove("hidden");
       return;
     }
 
-    snap.forEach(doc => {
-      const d = doc.data();
+    const d = snap.data();
 
-      document.getElementById("resName").innerText = d.name || "-";
-      document.getElementById("resClass").innerText = d.class || "-";
-      document.getElementById("resFather").innerText = d.fatherName || "-";
-      document.getElementById("resMother").innerText = d.motherName || "-";
-    });
+    document.getElementById("resName").innerText = d.name || "-";
+    document.getElementById("resId").innerText = d.studentId || studentId;
+    document.getElementById("resClass").innerText = d.class || "-";
+    document.getElementById("resFather").innerText = d.fatherName || "-";
+    document.getElementById("resMother").innerText = d.motherName || "-";
+
+    const date = new Date();
+    document.getElementById("verifiedDate").innerText =
+      date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
 
     formSection.classList.add("hidden");
     resultSection.classList.remove("hidden");
@@ -141,8 +169,19 @@ verifyBtn.onclick = async () => {
     console.error(err);
     errorMsg.classList.remove("hidden");
   }
-};
+}
 </script>
+
+<style>
+@media print {
+  body {
+    background: white;
+  }
+  #verifyBtn, #formSection {
+    display: none !important;
+  }
+}
+</style>
 
 </body>
 </html>
