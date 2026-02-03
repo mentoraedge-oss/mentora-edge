@@ -161,19 +161,29 @@ async function loadFees(uid) {
   feesContainer.innerHTML = "";
   const snap = await getDoc(doc(db, "users", uid));
   const fees = snap.data().fees?.["2026"];
-  if (!fees) return;
 
-  Object.keys(fees).forEach(month => {
+  if (!fees) {
+    feesContainer.innerHTML = `<p class="text-gray-500">No fee records for 2026.</p>`;
+    return;
+  }
+
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  months.forEach(month => {
     const m = fees[month];
+    const paid = m?.paid === true;
+
     feesContainer.innerHTML += `
       <div class="bg-white rounded-xl p-4 border">
         <p class="font-semibold">${month}</p>
-        <p class="text-sm ${m.paid ? "text-green-600" : "text-red-600"}">
-          ${m.paid ? "Paid ✔" : "Not Paid ✖"}
+        <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
+          ${paid ? "Paid ✔" : "Not Paid ✖"}
         </p>
+        ${paid && m.paidOn ? `<p class="text-xs text-gray-500">${formatPaidOn(m.paidOn)}</p>` : ""}
       </div>`;
   });
 }
+
 
 /* AUTH */
 onAuthStateChanged(auth, async (user) => {
