@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1E40AF">
-<link rel="apple-touch-icon" href="/icons/ios/180.png">
-  <title>Student Registration | Mentora Edge</title>
+  <meta name="theme-color" content="#1E40AF">
+  <link rel="apple-touch-icon" href="/icons/ios/180.png">
 
+  <title>Student Registration | Mentora Edge</title>
   <link rel="icon" href="favicon.ico">
 
   <!-- Tailwind -->
@@ -56,10 +56,17 @@
 
     <form id="registerForm" class="space-y-4">
 
-      <input id="name" type="text" placeholder="Full Name" class="input"/>
-      <input id="email" type="email" placeholder="Email Address" class="input"/>
-      <input id="password" type="password" placeholder="Create Password" class="input"/>
-      <input id="mobile" type="tel" placeholder="Mobile Number" class="input"/>
+      <input id="name" type="text" placeholder="Full Name" class="input" required />
+
+      <input id="fatherName" type="text" placeholder="Father's Full Name" class="input" required />
+
+      <input id="motherName" type="text" placeholder="Mother's Full Name" class="input" required />
+
+      <input id="email" type="email" placeholder="Email Address" class="input" required />
+
+      <input id="password" type="password" placeholder="Create Password" class="input" required />
+
+      <input id="mobile" type="tel" placeholder="Mobile Number" class="input" required />
 
       <input id="classField" readonly class="input bg-gray-100"/>
       <input id="subjectField" readonly class="input bg-gray-100"/>
@@ -83,25 +90,18 @@
           Time left: 03:00
         </p>
       </div>
-<!-- Terms & Conditions Agreement -->
-<div class="flex items-start gap-2 mt-4">
-  <input
-    type="checkbox"
-    id="agreeTerms"
-    class="mt-1 accent-blue-600"
-    required
-  />
-  <label for="agreeTerms" class="text-sm text-gray-700">
-    I agree to the
-    <a
-      href="/terms.html"
-      target="_blank"
-      class="text-blue-600 font-medium hover:underline"
-    >
-      Terms & Conditions
-    </a>
-  </label>
-</div>
+
+      <!-- ================= TERMS ================= -->
+      <div class="flex items-start gap-2 mt-4">
+        <input type="checkbox" id="agreeTerms" class="mt-1 accent-blue-600" required />
+        <label for="agreeTerms" class="text-sm text-gray-700">
+          I agree to the
+          <a href="/terms.html" target="_blank" class="text-blue-600 font-medium hover:underline">
+            Terms & Conditions
+          </a>
+        </label>
+      </div>
+
       <!-- ================= BUTTONS ================= -->
       <button
         type="button"
@@ -149,6 +149,8 @@ const fee = params.get("fee");
 
 /* ===== ELEMENTS ===== */
 const nameInput = document.getElementById("name");
+const fatherInput = document.getElementById("fatherName");
+const motherInput = document.getElementById("motherName");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const mobileInput = document.getElementById("mobile");
@@ -161,26 +163,27 @@ subjectField.value = subject;
 feeField.value = `₹${fee}`;
 feeAmount.innerText = fee;
 
-/* ===== FORM VALIDATION ===== */
+/* ===== VALIDATION ===== */
 function validateForm() {
   const valid =
     nameInput.value.trim() &&
+    fatherInput.value.trim() &&
+    motherInput.value.trim() &&
     emailInput.value.trim() &&
     passwordInput.value.trim() &&
-    mobileInput.value.trim();
+    mobileInput.value.trim() &&
+    agreeTerms.checked;
 
-  if (valid) {
-    payBtn.disabled = false;
-    payBtn.classList.remove("opacity-50", "cursor-not-allowed");
-    payBtn.classList.add("hover:bg-green-700", "hover:scale-[1.02]");
-  } else {
-    payBtn.disabled = true;
-    payBtn.classList.add("opacity-50", "cursor-not-allowed");
-  }
+  payBtn.disabled = !valid;
+  payBtn.classList.toggle("opacity-50", !valid);
+  payBtn.classList.toggle("cursor-not-allowed", !valid);
 }
 
-[nameInput, emailInput, passwordInput, mobileInput]
-  .forEach(i => i.addEventListener("input", validateForm));
+[
+  nameInput, fatherInput, motherInput,
+  emailInput, passwordInput, mobileInput,
+  agreeTerms
+].forEach(el => el.addEventListener("input", validateForm));
 
 /* ===== QR CODE ===== */
 const upi = `upi://pay?pa=abirmunshi200@okhdfcbank&pn=Mentora Edge&am=${fee}&cu=INR`;
@@ -194,9 +197,6 @@ const interval = setInterval(() => {
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
   const s = String(seconds % 60).padStart(2, "0");
   timerEl.innerText = `Time left: ${m}:${s}`;
-
-  if (seconds <= 30) timerEl.classList.add("animate-pulse");
-
   if (seconds <= 0) {
     clearInterval(interval);
     alert("Payment session expired");
@@ -219,6 +219,8 @@ payBtn.onclick = async () => {
 
     await setDoc(doc(db, "users", cred.user.uid), {
       name: nameInput.value,
+      fatherName: fatherInput.value,
+      motherName: motherInput.value,
       email: emailInput.value,
       mobile: mobileInput.value,
       class: cls,
@@ -230,7 +232,6 @@ payBtn.onclick = async () => {
 
     registerForm.classList.add("hidden");
     successMsg.classList.remove("hidden");
-
     setTimeout(() => location.href = "index.html", 2500);
 
   } catch (err) {
@@ -268,17 +269,14 @@ payBtn.onclick = async () => {
   animation: scaleIn 0.4s ease-out;
 }
 </style>
+
 <footer class="mt-16 bg-gray-100 border-t">
   <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-600">
-    <p>
-      © 2025 <strong>Mentora Edge</strong>. All rights reserved.
-      ·
-      <a href="/terms.html" class="text-primary hover:underline">
-        Terms & Conditions
-      </a>
-      <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
-    </p>
+    © 2025 <strong>Mentora Edge</strong>. All rights reserved ·
+    <a href="/terms.html" class="text-primary hover:underline">Terms & Conditions</a> ·
+    <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
   </div>
 </footer>
+
 </body>
 </html>
