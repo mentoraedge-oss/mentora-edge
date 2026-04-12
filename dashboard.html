@@ -1,50 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#1E40AF">
-  <link rel="apple-touch-icon" href="/icons/ios/180.png">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Student Dashboard | Mentora Edge</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0F2A44">
+<link rel="apple-touch-icon" href="/icons/ios/180.png">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Student Dashboard | Mentora Edge</title>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { inter: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: '#1E40AF',
-            accent: '#2563EB'
-          }
-        }
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      colors: {
+        primary: '#0F2A44',
+        accent: '#22C55E',
+        accentSoft: '#4ADE80'
       }
     }
-  </script>
+  }
+}
+</script>
 </head>
 
-<body class="bg-gray-100 font-inter text-gray-800">
+<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
 
-<header class="bg-white shadow-sm sticky top-0 z-40">
+<!-- BACKGROUND GLOW -->
+<div class="fixed w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+<div class="fixed w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-40 border-b">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-extrabold text-primary">Mentora Edge</h1>
-    <button id="logoutBtn" class="text-sm font-semibold text-red-600 hover:underline">
+
+    <h1 class="text-xl font-extrabold text-primary tracking-tight">
+      Mentora Edge
+    </h1>
+
+    <button id="logoutBtn"
+      class="px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold
+             hover:bg-red-100 transition">
       Logout
     </button>
+
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-6 py-10">
-  <h1 class="text-3xl font-extrabold mb-8">Student Dashboard</h1>
+<!-- ================= MAIN ================= -->
+<main class="max-w-6xl mx-auto px-6 py-10 relative z-10">
 
-  <div class="bg-white rounded-2xl shadow-lg p-6">
+  <h1 class="text-3xl font-extrabold mb-10 text-primary reveal">
+    Student Dashboard
+  </h1>
+
+  <div class="glass-card reveal">
 
     <!-- HEADER -->
-    <div class="flex justify-between mb-6">
+    <div class="flex justify-between items-center mb-6">
+
       <div>
         <h2 class="text-xl font-semibold">
           Welcome, <span id="studentName">Student</span>
@@ -56,49 +75,63 @@
         class="px-4 py-1.5 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
         Pending
       </span>
+
     </div>
 
     <hr class="my-6">
 
     <!-- INFO -->
     <div class="grid md:grid-cols-2 gap-6">
-      <div class="info-card"><span>👤</span><div><p>Name</p><strong id="studentNameInfo"></strong></div></div>
-      <div class="info-card"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
-      <div class="info-card"><span>📘</span><div><p>Subject</p><strong id="studentSubject"></strong></div></div>
-      <div class="info-card"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
 
-      <!-- ✅ STUDENT ID CARD -->
-      <div class="info-card">
+      <div class="info-card reveal"><span>👤</span><div><p>Name</p><strong id="studentNameInfo"></strong></div></div>
+
+      <div class="info-card reveal"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
+
+      <div class="info-card reveal"><span>📘</span><div><p>Subject</p><strong id="studentSubject"></strong></div></div>
+
+      <div class="info-card reveal"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
+
+      <div class="info-card reveal">
         <span>🆔</span>
         <div>
           <p>Student ID</p>
-          <strong id="studentIdText" class="font-mono text-primary"></strong>
+          <strong id="studentIdText" class="font-mono text-accent"></strong>
         </div>
       </div>
+
     </div>
 
     <!-- ANNOUNCEMENTS -->
-    <div id="announcementSection" class="hidden mt-10 bg-blue-50 border border-blue-200 rounded-2xl p-6">
-      <h3 class="text-xl font-bold mb-4">📢 Global Announcements</h3>
-      <div id="announcementList" class="space-y-3"></div>
+    <div id="announcementSection"
+      class="hidden mt-10 glass-subcard reveal">
+
+      <h3 class="section-title">📢 Global Announcements</h3>
+      <div id="announcementList" class="space-y-3 mt-4"></div>
+
     </div>
 
-    <!-- STUDY MATERIALS -->
-    <div id="materialsSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
-      <h3 class="text-xl font-bold mb-6">📚 Study Materials</h3>
-      <div id="materialsList" class="grid md:grid-cols-2 gap-6"></div>
+    <!-- MATERIALS -->
+    <div id="materialsSection"
+      class="hidden mt-10 glass-subcard reveal">
+
+      <h3 class="section-title">📚 Study Materials</h3>
+      <div id="materialsList" class="grid md:grid-cols-2 gap-6 mt-6"></div>
+
     </div>
 
     <!-- FEES -->
-    <div id="feesSection" class="hidden mt-10 bg-gray-50 rounded-2xl p-6">
-      <h3 class="text-xl font-bold mb-6">💰 Monthly Fees Status (2026)</h3>
-      <div id="feesContainer" class="grid md:grid-cols-3 gap-4"></div>
+    <div id="feesSection"
+      class="hidden mt-10 glass-subcard reveal">
+
+      <h3 class="section-title">💰 Monthly Fees Status (2026)</h3>
+      <div id="feesContainer" class="grid md:grid-cols-3 gap-4 mt-6"></div>
+
     </div>
 
   </div>
 </main>
 
-<!-- MAIN DASHBOARD LOGIC -->
+<!-- ================= LOGIC (UNCHANGED) ================= -->
 <script type="module">
 import { auth, db } from "./js/firebase.js";
 import { onAuthStateChanged, signOut } from
@@ -120,7 +153,6 @@ function formatPaidOn(ts) {
   return d.toLocaleString("en-IN");
 }
 
-/* ANNOUNCEMENTS */
 async function loadAnnouncements() {
   const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(1));
   const snap = await getDocs(q);
@@ -131,13 +163,12 @@ async function loadAnnouncements() {
 
   snap.forEach(d => {
     announcementList.innerHTML += `
-      <div class="bg-white border rounded-lg p-4 shadow-sm">
+      <div class="bg-white/70 backdrop-blur p-4 rounded-xl shadow-sm">
         <p class="text-sm">${d.data().text}</p>
       </div>`;
   });
 }
 
-/* MATERIALS */
 async function loadMaterials(studentClass) {
   const q = query(collection(db, "materials"), where("class", "==", studentClass));
   const snap = await getDocs(q);
@@ -146,17 +177,16 @@ async function loadMaterials(studentClass) {
   snap.forEach(d => {
     const m = d.data();
     materialsList.innerHTML += `
-      <div class="bg-white rounded-xl p-5 shadow">
+      <div class="material-card">
         <h4 class="font-semibold mb-2">${m.title}</h4>
         <a href="${m.fileURL}" target="_blank"
-          class="text-primary text-sm font-medium hover:underline">
+          class="text-accent text-sm font-medium hover:underline">
           Download →
         </a>
       </div>`;
   });
 }
 
-/* FEES */
 async function loadFees(uid) {
   feesContainer.innerHTML = "";
   const snap = await getDoc(doc(db, "users", uid));
@@ -174,7 +204,7 @@ async function loadFees(uid) {
     const paid = m?.paid === true;
 
     feesContainer.innerHTML += `
-      <div class="bg-white rounded-xl p-4 border">
+      <div class="fee-card">
         <p class="font-semibold">${month}</p>
         <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
           ${paid ? "Paid ✔" : "Not Paid ✖"}
@@ -184,8 +214,6 @@ async function loadFees(uid) {
   });
 }
 
-
-/* AUTH */
 onAuthStateChanged(auth, async (user) => {
   if (!user) return location.href = "login.html";
 
@@ -197,8 +225,6 @@ onAuthStateChanged(auth, async (user) => {
   studentClass.innerText = data.class;
   studentSubject.innerText = data.subject;
   studentStatusText.innerText = data.status;
-
-  // ✅ STUDENT ID BINDING
   studentIdText.innerText = data.studentId || "Not Assigned";
 
   if (data.status === "active") {
@@ -217,18 +243,90 @@ onAuthStateChanged(auth, async (user) => {
 });
 </script>
 
+<!-- ================= STYLES ================= -->
 <style>
+.glass-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.glass-subcard {
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(12px);
+  border-radius: 1.2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0F2A44;
+}
+
 .info-card {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: #f9fafb;
+  background: white;
   padding: 1rem;
   border-radius: 1rem;
+  transition: 0.3s;
 }
-.info-card span { font-size: 1.5rem; }
-.info-card p { font-size: 0.75rem; color: #6b7280; }
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.material-card {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 1rem;
+  transition: 0.3s;
+}
+.material-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+}
+
+.fee-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  transition: 0.3s;
+}
+.fee-card:hover {
+  transform: translateY(-5px);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease;
+}
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
+
+<script>
+const reveals = document.querySelectorAll(".reveal");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal-active");
+    }
+  });
+});
+
+reveals.forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>
