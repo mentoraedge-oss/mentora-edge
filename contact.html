@@ -1,88 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1E40AF">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0F2A44">
 <link rel="apple-touch-icon" href="/icons/ios/180.png">
-  <title>Contact Us | Mentora Edge</title>
 
-  <link rel="icon" href="favicon.ico">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Contact Us | Mentora Edge</title>
+<link rel="icon" href="favicon.ico">
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { inter: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: '#1E40AF'
-          }
-        }
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      colors: {
+        primary: '#0F2A44',
+        accent: '#22C55E',
+        accentSoft: '#4ADE80'
       }
     }
-  </script>
+  }
+}
+</script>
 </head>
 
-<body class="bg-gray-50 font-inter text-gray-800 overflow-x-hidden">
+<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
+
+<!-- BACKGROUND GLOW -->
+<div class="fixed pointer-events-none w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+<div class="fixed pointer-events-none w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
 
 <!-- ================= NAVBAR ================= -->
-<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+<header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 border-b">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
 
-    <!-- Desktop Nav -->
+    <h1 class="text-2xl font-extrabold text-primary tracking-tight">
+      Mentora Edge
+    </h1>
+
     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-primary transition">Home</a>
-      <a href="courses.html" class="hover:text-primary transition">Courses</a>
-      <a href="educators.html" class="hover:text-primary transition">Educators</a>
-      <a href="contact.html" class="text-primary font-semibold">Contact</a>
+      <a href="index.html" class="hover:text-accent transition">Home</a>
+      <a href="courses.html" class="hover:text-accent transition">Courses</a>
+      <a href="educators.html" class="hover:text-accent transition">Educators</a>
+      <a href="contact.html" class="text-accent font-semibold">Contact</a>
     </nav>
 
-    <!-- Mobile Hamburger -->
-    <button id="menuBtn" class="md:hidden text-2xl text-primary">
-      ☰
-    </button>
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
   </div>
 
-  <!-- Mobile Menu -->
+  <!-- MOBILE MENU -->
   <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
     <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
       <a href="index.html">Home</a>
       <a href="courses.html">Courses</a>
       <a href="educators.html">Educators</a>
-      <a href="contact.html" class="text-primary font-semibold">Contact</a>
+      <a href="contact.html" class="text-accent font-semibold">Contact</a>
     </nav>
   </div>
 </header>
 
 <!-- ================= HERO ================= -->
-<section class="bg-gradient-to-br from-primary to-accent text-white py-20 text-center px-6">
-  <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
-    Contact Us
-  </h2>
-  <p class="text-blue-100 text-base sm:text-lg">
-    We’d love to hear from you
-  </p>
+<section class="relative py-28 text-center overflow-hidden bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79] text-white">
+
+  <div class="absolute w-96 h-96 bg-green-400 opacity-20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+  <div class="absolute w-96 h-96 bg-blue-500 opacity-20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+
+  <div class="relative z-10 max-w-4xl mx-auto px-6 reveal">
+
+    <h2 class="text-4xl md:text-6xl font-extrabold mb-6">
+      Let’s <span class="text-accent">Connect</span>
+    </h2>
+
+    <p class="text-lg md:text-xl text-gray-200">
+      We’re here to help you start your journey with Mentora Edge
+    </p>
+
+  </div>
 </section>
 
-<!-- ================= CONTACT INFO ================= -->
-<section class="py-20 px-6">
-  <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 text-center">
+<!-- ================= CONTACT CARD ================= -->
+<section class="py-24 px-6">
+  <div class="max-w-xl mx-auto glass-card text-center reveal">
 
-    <p class="text-gray-600 mb-6">
-      For admissions, queries or support, reach out to us at:
+    <p class="text-gray-600 mb-6 text-lg">
+      For admissions, queries or support, reach out to us:
     </p>
 
-    <p class="text-lg sm:text-xl font-semibold text-primary mb-3 break-all">
-      📧 mentoraedge@gmail.com
-    </p>
+    <!-- EMAIL -->
+    <a href="mailto:mentoraedge@gmail.com?subject=Inquiry%20from%20Mentora%20Edge%20Website"
+       class="info-item group">
+      📧
+      <span class="group-hover:underline">
+        mentoraedge@gmail.com
+      </span>
+    </a>
 
-    <p class="text-lg sm:text-xl font-semibold text-primary">
-      📞 +91-8057081826
-    </p>
+    <!-- PHONE -->
+    <a href="tel:+918057081826" class="info-item group">
+      📞
+      <span class="group-hover:underline">
+        +91-8057081826
+      </span>
+    </a>
 
     <p class="text-sm text-gray-500 mt-8">
       We usually respond within 24 hours.
@@ -91,26 +117,95 @@
   </div>
 </section>
 
+<!-- ================= CTA ================= -->
+<section class="py-20 text-center px-6 reveal">
+
+  <h3 class="text-3xl font-bold text-primary mb-4">
+    Ready to Start?
+    <span class="text-accent">Join Mentora Edge</span>
+  </h3>
+
+  <p class="text-gray-500 mb-6 max-w-2xl mx-auto">
+    Begin your learning journey with structured guidance.
+  </p>
+
+  <a href="courses.html"
+    class="inline-block bg-accent text-white px-8 py-3 rounded-xl font-semibold
+           hover:bg-green-600 transition shadow-lg shadow-green-500/20 hover:scale-105">
+    Explore Courses
+  </a>
+
+</section>
+
 <!-- ================= FOOTER ================= -->
 <footer class="bg-gray-900 text-gray-400 py-10 text-center">
-  <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
-  <p class="text-sm mt-2 text-gray-500">
-    Shaping Minds, Sharpening Futures
-    <a href="terms.html" class="text-blue-600 hover:underline">
-      Terms & Conditions
-    </a>
-    <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
+  <p>© 2025 Mentora Edge. All Rights Reserved.</p>
+  <p class="text-sm mt-2">
+    Shaping Minds, Sharpening Futures ·
+    <a href="terms.html" class="text-green-400">Terms</a> ·
+    <a href="privacy.html" class="text-green-400">Privacy</a>
   </p>
 </footer>
 
-<!-- ================= MOBILE MENU SCRIPT ================= -->
+<!-- ================= SCRIPTS ================= -->
 <script>
-  const menuBtn = document.getElementById("menuBtn");
-  const mobileMenu = document.getElementById("mobileMenu");
+menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
 
-  menuBtn.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden");
+const reveals = document.querySelectorAll(".reveal");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal-active");
+    }
   });
+});
+
+reveals.forEach(el => observer.observe(el));
 </script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.glass-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+.glass-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.info-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0F2A44;
+  margin: 12px 0;
+  transition: 0.3s;
+}
+.info-item:hover {
+  transform: scale(1.05);
+  color: #22C55E;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease;
+}
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
 </body>
 </html>
