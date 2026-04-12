@@ -21,7 +21,8 @@ tailwind.config = {
       fontFamily: { inter: ['Inter', 'sans-serif'] },
       colors: {
         primary: '#1E40AF',
-        accent: '#2563EB'
+        accent: '#2563EB',
+        brandGreen: '#22C55E'
       }
     }
   }
@@ -29,7 +30,7 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 font-inter text-gray-800 overflow-x-hidden">
+<body class="bg-gradient-to-br from-gray-50 via-blue-50/30 to-green-50 font-inter text-gray-800 overflow-x-hidden">
 
 <!-- ================= NAVBAR ================= -->
 <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-b border-white/20">
@@ -67,9 +68,8 @@ tailwind.config = {
 </header>
 
 <!-- ================= HERO ================= -->
-<section class="relative overflow-hidden bg-gradient-to-br from-primary via-accent to-blue-500 text-white py-24 text-center px-6">
+<section class="relative overflow-hidden bg-gradient-to-br from-primary via-accent to-brandGreen text-white py-24 text-center px-6">
 
-  <!-- Glow -->
   <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.15),transparent_60%)]"></div>
 
   <h2 class="relative text-4xl sm:text-5xl font-extrabold mb-4 animate-fadeIn">
@@ -86,7 +86,7 @@ tailwind.config = {
 <section class="py-24">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-14">
 
-    <!-- ================= SUBIR ================= -->
+    <!-- SUBIR -->
     <div class="educator-card reveal group">
 
       <div class="flex flex-col items-center text-center mb-6">
@@ -97,7 +97,7 @@ tailwind.config = {
 
         <h3 class="text-2xl font-bold text-gray-900">Subir Munshi</h3>
 
-        <p class="text-primary font-medium">
+        <p class="text-green-600 font-medium">
           Co-Founder & Social Science Educator
         </p>
       </div>
@@ -115,7 +115,7 @@ tailwind.config = {
 
     </div>
 
-    <!-- ================= RANITA ================= -->
+    <!-- RANITA -->
     <div class="educator-card reveal group">
 
       <div class="flex flex-col items-center text-center mb-6">
@@ -126,7 +126,7 @@ tailwind.config = {
 
         <h3 class="text-2xl font-bold text-gray-900">Ranita Munshi</h3>
 
-        <p class="text-primary font-medium">
+        <p class="text-green-600 font-medium">
           Co-Founder & English Educator
         </p>
       </div>
@@ -147,7 +147,7 @@ tailwind.config = {
 </section>
 
 <!-- ================= CTA ================= -->
-<section class="bg-gradient-to-r from-primary to-accent text-white py-20 text-center px-6">
+<section class="bg-gradient-to-r from-primary to-brandGreen text-white py-20 text-center px-6">
 
   <h3 class="text-3xl font-bold mb-4">
     Learn from Experience. Grow with Confidence.
@@ -158,7 +158,7 @@ tailwind.config = {
   </p>
 
   <a href="courses.html"
-    class="inline-block bg-white text-primary px-8 py-3 rounded-xl font-semibold
+    class="inline-block bg-white text-green-600 px-8 py-3 rounded-xl font-semibold
            hover:scale-105 hover:shadow-xl transition duration-300">
     Explore Courses
   </a>
@@ -170,8 +170,8 @@ tailwind.config = {
   <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
   <p class="text-sm mt-2 text-gray-500">
     Shaping Minds, Sharpening Futures ·
-    <a href="terms.html" class="text-blue-400 hover:underline">Terms</a> ·
-    <a href="privacy.html" class="text-blue-400 hover:underline">Privacy</a>
+    <a href="terms.html" class="text-green-400 hover:underline">Terms</a> ·
+    <a href="privacy.html" class="text-green-400 hover:underline">Privacy</a>
   </p>
 </footer>
 
@@ -209,7 +209,6 @@ elements.forEach(el => observer.observe(el));
   box-shadow: 0 30px 60px rgba(0,0,0,0.12);
 }
 
-/* Reveal */
 .reveal {
   opacity: 0;
   transform: translateY(25px);
@@ -221,7 +220,6 @@ elements.forEach(el => observer.observe(el));
   transform: translateY(0);
 }
 
-/* Hero animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
