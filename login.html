@@ -18,19 +18,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { inter: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: '#0F2A44',
-            accent: '#22C55E',
-            accentSoft: '#4ADE80'
-          }
-        }
+tailwind.config = {
+  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
+
+  theme: {
+    extend: {
+      fontFamily: { inter: ['Inter', 'sans-serif'] },
+
+      colors: {
+        primary: '#0F2A44',
+        accent: '#22C55E',
+        accentSoft: '#4ADE80'
       }
     }
-  </script>
+  }
+}
+</script>
 </head>
 
 <body class="min-h-screen bg-[#F8FAFC] font-inter overflow-x-hidden">
@@ -274,6 +277,17 @@
     </a>
   </div>
 </footer>
+<script>
+const savedTheme = localStorage.getItem("theme");
 
+if (savedTheme) {
+  document.documentElement.classList.toggle("dark", savedTheme === "dark");
+} else {
+  // Auto detect system theme
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add("dark");
+  }
+}
+</script>
 </body>
 </html>

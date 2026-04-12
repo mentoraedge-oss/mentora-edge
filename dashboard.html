@@ -7,7 +7,7 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0F2A44">
 <link rel="apple-touch-icon" href="/icons/ios/180.png">
-
+<link rel="stylesheet" href="css/theme.css">
 <title>Student Dashboard | Mentora Edge</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -15,9 +15,12 @@
 
 <script>
 tailwind.config = {
+  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
+
   theme: {
     extend: {
       fontFamily: { inter: ['Inter', 'sans-serif'] },
+
       colors: {
         primary: '#0F2A44',
         accent: '#22C55E',
@@ -327,6 +330,17 @@ const observer = new IntersectionObserver(entries => {
 
 reveals.forEach(el => observer.observe(el));
 </script>
+<script>
+const savedTheme = localStorage.getItem("theme");
 
+if (savedTheme) {
+  document.documentElement.classList.toggle("dark", savedTheme === "dark");
+} else {
+  // Auto detect system theme
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add("dark");
+  }
+}
+</script>
 </body>
 </html>
