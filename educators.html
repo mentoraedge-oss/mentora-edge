@@ -1,65 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="manifest" href="/manifest.json">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#1E40AF">
 <link rel="apple-touch-icon" href="/icons/ios/180.png">
-  <title>Educators | Mentora Edge</title>
 
-  <link rel="icon" href="favicon.ico">
+<title>Educators | Mentora Edge</title>
+<link rel="icon" href="favicon.ico">
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { inter: ['Inter', 'sans-serif'] },
-          colors: {
-            primary: '#1E40AF',
-            accent: '#2563EB'
-          }
-        }
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      colors: {
+        primary: '#1E40AF',
+        accent: '#2563EB'
       }
     }
-  </script>
+  }
+}
+</script>
 </head>
 
-<body class="bg-gray-50 font-inter text-gray-800 overflow-x-hidden">
+<body class="bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 font-inter text-gray-800 overflow-x-hidden">
 
 <!-- ================= NAVBAR ================= -->
-<header class="bg-white/90 backdrop-blur shadow-sm sticky top-0 z-50">
+<header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-b border-white/20">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <h1 class="text-2xl font-extrabold text-primary">
+    <h1 class="text-2xl font-extrabold text-primary tracking-tight">
       Mentora Edge
     </h1>
 
-    <!-- Desktop Nav -->
     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-primary">Home</a>
-      <a href="courses.html" class="hover:text-primary">Courses</a>
+      <a href="index.html" class="hover:text-primary transition">Home</a>
+      <a href="courses.html" class="hover:text-primary transition">Courses</a>
       <a href="educators.html" class="text-primary font-semibold">Educators</a>
-      <a href="contact.html" class="hover:text-primary">Contact</a>
+      <a href="contact.html" class="hover:text-primary transition">Contact</a>
 
       <a href="login.html"
-         class="px-4 py-2 rounded-lg border border-primary text-primary
-                hover:bg-primary hover:text-white transition">
+        class="px-4 py-2 rounded-xl border border-primary text-primary
+               hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
         Login
       </a>
     </nav>
 
-    <!-- Mobile Hamburger -->
     <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
   </div>
 
-  <!-- Mobile Menu -->
   <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
     <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
       <a href="index.html">Home</a>
@@ -72,147 +67,152 @@
 </header>
 
 <!-- ================= HERO ================= -->
-<section class="bg-gradient-to-br from-primary to-accent text-white py-20 text-center px-6">
-  <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 animate-fadeIn">
+<section class="relative overflow-hidden bg-gradient-to-br from-primary via-accent to-blue-500 text-white py-24 text-center px-6">
+
+  <!-- Glow -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.15),transparent_60%)]"></div>
+
+  <h2 class="relative text-4xl sm:text-5xl font-extrabold mb-4 animate-fadeIn">
     Our Educators
   </h2>
-  <p class="max-w-2xl mx-auto text-blue-100 text-base sm:text-lg">
-    Learn from mentors with decades of classroom excellence and leadership
+
+  <p class="relative max-w-2xl mx-auto text-blue-100 text-lg">
+    Learn from mentors with decades of excellence and real classroom impact
   </p>
+
 </section>
 
 <!-- ================= EDUCATORS ================= -->
-<section class="py-20">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+<section class="py-24">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-14">
 
-    <!-- ================= SUBIR MUNSHI ================= -->
-    <div class="educator-card reveal">
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 text-center sm:text-left">
-        <div class="w-24 h-24 rounded-full bg-blue-100
-                    flex items-center justify-center text-3xl font-bold text-primary">
-          SM
-        </div>
+    <!-- ================= SUBIR ================= -->
+    <div class="educator-card reveal group">
 
-        <div>
-          <h3 class="text-2xl font-bold text-gray-900">Subir Munshi</h3>
-          <p class="text-primary font-medium">
-            Co-Founder & Social Science Educator
-          </p>
-        </div>
+      <div class="flex flex-col items-center text-center mb-6">
+
+        <img src="Assets/Images/subir-munshi.jpeg"
+             class="w-28 h-28 rounded-full object-cover shadow-lg
+                    group-hover:scale-105 transition duration-300 mb-4"/>
+
+        <h3 class="text-2xl font-bold text-gray-900">Subir Munshi</h3>
+
+        <p class="text-primary font-medium">
+          Co-Founder & Social Science Educator
+        </p>
       </div>
 
-      <p class="text-gray-600 leading-relaxed mb-4">
-        Subir Munshi brings over <strong>25 years of experience</strong> in the
-        education sector, having served both as a <strong>Principal</strong> and
-        an <strong>Educator</strong>.
+      <p class="text-gray-600 leading-relaxed mb-4 text-center">
+        Bringing over <strong>25 years of experience</strong> as both a
+        <strong>Principal</strong> and <strong>Educator</strong>, he focuses on
+        building deep conceptual clarity and discipline.
       </p>
 
-      <p class="text-gray-600 leading-relaxed">
-        With deep subject expertise and administrative leadership, he focuses on
-        building conceptual clarity, discipline, and academic confidence in
-        students—preparing them not just for exams, but for lifelong learning.
+      <p class="text-gray-600 leading-relaxed text-center">
+        His teaching empowers students with confidence, structured thinking,
+        and long-term academic excellence.
       </p>
+
     </div>
 
-    <!-- ================= RANITA MUNSHI ================= -->
-    <div class="educator-card reveal">
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 text-center sm:text-left">
-        <div class="w-24 h-24 rounded-full bg-pink-100
-                    flex items-center justify-center text-3xl font-bold text-pink-600">
-          RM
-        </div>
+    <!-- ================= RANITA ================= -->
+    <div class="educator-card reveal group">
 
-        <div>
-          <h3 class="text-2xl font-bold text-gray-900">Ranita Munshi</h3>
-          <p class="text-primary font-medium">
-            Co-Founder & English Educator
-          </p>
-        </div>
+      <div class="flex flex-col items-center text-center mb-6">
+
+        <img src="Assets/Images/ranita-munshi.jpeg"
+             class="w-28 h-28 rounded-full object-cover shadow-lg
+                    group-hover:scale-105 transition duration-300 mb-4"/>
+
+        <h3 class="text-2xl font-bold text-gray-900">Ranita Munshi</h3>
+
+        <p class="text-primary font-medium">
+          Co-Founder & English Educator
+        </p>
       </div>
 
-      <p class="text-gray-600 leading-relaxed mb-4">
-        Ranita Munshi is a <strong>student-friendly English educator</strong>
-        with more than <strong>25 years of teaching experience</strong>.
+      <p class="text-gray-600 leading-relaxed mb-4 text-center">
+        A <strong>student-friendly English educator</strong> with over
+        <strong>25 years of experience</strong>, known for clarity and patience.
       </p>
 
-      <p class="text-gray-600 leading-relaxed">
-        Known for her clarity, patience, and engaging teaching style, she helps
-        students master language skills, literature, and expression—making
-        learning both effective and enjoyable.
+      <p class="text-gray-600 leading-relaxed text-center">
+        She transforms language learning into an engaging journey of expression,
+        confidence, and academic mastery.
       </p>
+
     </div>
 
   </div>
 </section>
 
 <!-- ================= CTA ================= -->
-<section class="bg-blue-700 text-white py-16 text-center px-6">
-  <h3 class="text-2xl sm:text-3xl font-bold mb-4">
-    Learn from Experience. Learn with Confidence.
+<section class="bg-gradient-to-r from-primary to-accent text-white py-20 text-center px-6">
+
+  <h3 class="text-3xl font-bold mb-4">
+    Learn from Experience. Grow with Confidence.
   </h3>
 
   <p class="text-blue-100 mb-6 max-w-2xl mx-auto">
-    Join Mentora Edge and be guided by educators who truly understand students.
+    Join Mentora Edge and experience guidance from educators who truly understand students.
   </p>
 
   <a href="courses.html"
-     class="inline-block bg-white text-blue-700 px-8 py-3 rounded-xl font-semibold
-            hover:bg-blue-100 transition shadow-lg">
+    class="inline-block bg-white text-primary px-8 py-3 rounded-xl font-semibold
+           hover:scale-105 hover:shadow-xl transition duration-300">
     Explore Courses
   </a>
+
 </section>
 
 <!-- ================= FOOTER ================= -->
 <footer class="bg-gray-900 text-gray-400 py-10 text-center">
   <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
   <p class="text-sm mt-2 text-gray-500">
-    Shaping Minds, Sharpening Futures
-    <a href="terms.html" class="text-blue-600 hover:underline">
-      Terms & Conditions
-    </a>
-    <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
+    Shaping Minds, Sharpening Futures ·
+    <a href="terms.html" class="text-blue-400 hover:underline">Terms</a> ·
+    <a href="privacy.html" class="text-blue-400 hover:underline">Privacy</a>
   </p>
 </footer>
 
 <!-- ================= SCRIPTS ================= -->
 <script>
-  // Mobile menu
-  menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
 
-  // Scroll reveal (staggered)
-  const cards = document.querySelectorAll(".reveal");
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-      if (entry.isIntersecting) {
-        entry.target.style.transitionDelay = `${index * 120}ms`;
-        entry.target.classList.add("reveal-active");
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
+const elements = document.querySelectorAll(".reveal");
 
-  cards.forEach(card => observer.observe(card));
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal-active");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+elements.forEach(el => observer.observe(el));
 </script>
 
 <!-- ================= STYLES ================= -->
 <style>
 .educator-card {
-  background: white;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
   border-radius: 1.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 2rem;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
 }
 
 .educator-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 45px rgba(0,0,0,0.12);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.12);
 }
 
-/* Scroll reveal */
+/* Reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(25px);
   transition: all 0.8s ease;
 }
 
@@ -230,5 +230,6 @@
   animation: fadeIn 0.8s ease-out;
 }
 </style>
+
 </body>
 </html>
