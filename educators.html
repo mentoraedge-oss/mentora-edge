@@ -193,6 +193,13 @@ const observer = new IntersectionObserver(entries => {
 
 reveals.forEach(el => observer.observe(el));
 </script>
+<script>
+const menuBtn = document.getElementById("menuBtn");
+const mobileMenu = document.getElementById("mobileMenu");
 
+menuBtn.onclick = () => {
+  mobileMenu.classList.toggle("hidden");
+};
+</script>
 </body>
 </html>
