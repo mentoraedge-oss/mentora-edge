@@ -33,22 +33,23 @@ tailwind.config = {
 
 <body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
 
-<!-- GLOW BACKGROUND -->
+<!-- BACKGROUND GLOW -->
 <div class="fixed pointer-events-none w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-
 <div class="fixed pointer-events-none w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
 <header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 border-b">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
+    <h1 class="text-2xl font-extrabold text-primary tracking-tight">
+      Mentora Edge
+    </h1>
 
     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html">Home</a>
-      <a href="courses.html">Courses</a>
+      <a href="index.html" class="hover:text-accent transition">Home</a>
+      <a href="courses.html" class="hover:text-accent transition">Courses</a>
       <a href="educators.html" class="text-accent font-semibold">Educators</a>
-      <a href="contact.html">Contact</a>
+      <a href="contact.html" class="hover:text-accent transition">Contact</a>
 
       <a href="login.html"
         class="px-4 py-2 rounded-lg border border-primary text-primary
@@ -59,64 +60,78 @@ tailwind.config = {
 
     <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
   </div>
+
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+      <a href="index.html">Home</a>
+      <a href="courses.html">Courses</a>
+      <a href="educators.html" class="text-accent font-semibold">Educators</a>
+      <a href="contact.html">Contact</a>
+      <a href="login.html" class="text-primary font-semibold">Login</a>
+    </nav>
+  </div>
 </header>
 
-<!-- HERO -->
-<section class="relative py-24 text-center overflow-hidden bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79] text-white">
+<!-- ================= HERO ================= -->
+<section class="relative py-28 text-center overflow-hidden bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79] text-white">
 
   <div class="absolute w-96 h-96 bg-green-400 opacity-20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
   <div class="absolute w-96 h-96 bg-blue-500 opacity-20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
 
-  <div class="relative z-10 max-w-4xl mx-auto px-6 reveal">
+  <div class="relative z-10 max-w-5xl mx-auto px-6 reveal">
 
-  <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Learn from the
-    <span class="text-accent">Best Educators</span>
-  </h2>
+    <h2 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+      Learn from the <span class="text-accent">Best Educators</span>
+    </h2>
 
-  <p class="max-w-2xl mx-auto text-gray-500 text-lg reveal">
-    Decades of experience. Real classroom impact. Proven results.
-  </p>
+    <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
+      Experience. Clarity. Real academic transformation.
+    </p>
 
+  </div>
 </section>
 
-<!-- EDUCATORS -->
-<section class="py-10">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
+<!-- ================= EDUCATORS ================= -->
+<section class="py-24">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
 
     <!-- SUBIR -->
-    <div class="glass-card reveal text-center">
+    <div class="glass-card reveal text-center group">
 
       <img src="Assets/Images/subir-munshi.jpeg"
-        class="w-28 h-28 rounded-full mx-auto object-cover shadow-md mb-4"/>
+        class="w-28 h-28 rounded-full mx-auto object-cover shadow-lg mb-4
+               group-hover:scale-105 transition duration-300"/>
 
       <h3 class="text-xl font-bold text-primary">Subir Munshi</h3>
 
-      <p class="text-accent font-medium mb-3">
+      <p class="text-accent font-medium mb-4">
         Co-Founder & Social Science Educator
       </p>
 
       <p class="text-gray-600 text-sm leading-relaxed">
-        Bringing over <strong>25 years of experience</strong> as both a Principal
-        and Educator, he builds strong conceptual clarity and discipline.
+        With over <strong>25 years of experience</strong> as Principal and Educator,
+        he builds strong conceptual clarity, discipline, and academic confidence.
       </p>
 
     </div>
 
     <!-- RANITA -->
-    <div class="glass-card reveal text-center">
+    <div class="glass-card reveal text-center group">
 
       <img src="Assets/Images/ranita-munshi.jpeg"
-        class="w-28 h-28 rounded-full mx-auto object-cover shadow-md mb-4"/>
+        class="w-28 h-28 rounded-full mx-auto object-cover shadow-lg mb-4
+               group-hover:scale-105 transition duration-300"/>
 
       <h3 class="text-xl font-bold text-primary">Ranita Munshi</h3>
 
-      <p class="text-accent font-medium mb-3">
+      <p class="text-accent font-medium mb-4">
         Co-Founder & English Educator
       </p>
 
       <p class="text-gray-600 text-sm leading-relaxed">
-        A student-friendly English educator with over 25 years of experience,
-        known for clarity, patience, and engaging teaching.
+        A student-friendly educator with 25+ years of experience,
+        making English learning clear, engaging, and effective.
       </p>
 
     </div>
@@ -124,8 +139,8 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- CTA -->
-<section class="py-20 text-center px-6">
+<!-- ================= CTA ================= -->
+<section class="py-20 text-center px-6 reveal">
 
   <h3 class="text-3xl font-bold text-primary mb-4">
     Learn from Experience.
@@ -133,18 +148,18 @@ tailwind.config = {
   </h3>
 
   <p class="text-gray-500 mb-6 max-w-2xl mx-auto">
-    Join Mentora Edge and experience real transformation.
+    Join Mentora Edge and elevate your academic journey.
   </p>
 
   <a href="courses.html"
     class="inline-block bg-accent text-white px-8 py-3 rounded-xl font-semibold
-           hover:bg-green-600 transition shadow-lg shadow-green-500/20">
+           hover:bg-green-600 transition shadow-lg shadow-green-500/20 hover:scale-105">
     Explore Courses
   </a>
 
 </section>
 
-<!-- FOOTER -->
+<!-- ================= FOOTER ================= -->
 <footer class="bg-gray-900 text-gray-400 py-10 text-center">
   <p>© 2025 Mentora Edge. All Rights Reserved.</p>
   <p class="text-sm mt-2">
@@ -154,7 +169,24 @@ tailwind.config = {
   </p>
 </footer>
 
-<!-- STYLES -->
+<!-- ================= SCRIPTS ================= -->
+<script>
+menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+
+const reveals = document.querySelectorAll(".reveal");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal-active");
+    }
+  });
+});
+
+reveals.forEach(el => observer.observe(el));
+</script>
+
+<!-- ================= STYLES ================= -->
 <style>
 .glass-card {
   background: rgba(255,255,255,0.6);
@@ -166,7 +198,8 @@ tailwind.config = {
   transition: 0.3s;
 }
 .glass-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
 }
 
 .reveal {
@@ -180,26 +213,5 @@ tailwind.config = {
 }
 </style>
 
-<script>
-const reveals = document.querySelectorAll(".reveal");
-
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("reveal-active");
-    }
-  });
-});
-
-reveals.forEach(el => observer.observe(el));
-</script>
-<script>
-const menuBtn = document.getElementById("menuBtn");
-const mobileMenu = document.getElementById("mobileMenu");
-
-menuBtn.onclick = () => {
-  mobileMenu.classList.toggle("hidden");
-};
-</script>
 </body>
 </html>
