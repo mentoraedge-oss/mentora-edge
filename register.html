@@ -197,17 +197,18 @@ payBtn.onclick = async () => {
     );
 
     await setDoc(doc(db, "users", cred.user.uid), {
-  name: name.value || "",
-  fatherName: fatherName.value || "",
-  motherName: motherName.value || "",
-  email: email.value || "",
-  mobile: mobile.value || "",
-  class: cls || "",
-  subject: subject || "",
-  role: "student",
-  status: "pending",
-  createdAt: serverTimestamp()
-});
+      name: nameInput.value,
+      fatherName: fatherInput.value,
+      motherName: motherInput.value,
+      email: emailInput.value,
+      mobile: mobileInput.value,
+      class: cls,
+      subject,
+      role: "student",
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
 
     registerForm.classList.add("hidden");
     successMsg.classList.remove("hidden");
