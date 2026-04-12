@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1E40AF">
-<link rel="apple-touch-icon" href="/icons/ios/180.png">
+  <meta name="theme-color" content="#1E40AF">
+  <link rel="apple-touch-icon" href="/icons/ios/180.png">
+
   <title>About Us | Mentora Edge</title>
 
   <link rel="icon" href="favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
@@ -35,7 +37,6 @@
 
     <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
 
-    <!-- Desktop Nav -->
     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
       <a href="index.html" class="hover:text-primary">Home</a>
       <a href="about.html" class="text-primary font-semibold">About Us</a>
@@ -44,11 +45,9 @@
       <a href="contact.html" class="hover:text-primary">Contact</a>
     </nav>
 
-    <!-- Mobile Hamburger -->
     <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
   </div>
 
-  <!-- Mobile Menu -->
   <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
     <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
       <a href="index.html">Home</a>
@@ -62,12 +61,26 @@
 
 <!-- ================= HERO ================= -->
 <section class="bg-gradient-to-br from-primary to-accent text-white py-20 text-center px-6">
+
+  <!-- LOGO -->
+  <div class="mb-6">
+    <img 
+      src="Assets/Images/mentora-edge-logo.png" 
+      alt="Mentora Edge Logo"
+      class="mx-auto w-28 sm:w-32 md:w-36 drop-shadow-xl 
+             hover:scale-110 hover:rotate-1 transition duration-500 ease-in-out">
+  </div>
+
+  <!-- HEADING -->
   <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 animate-fadeIn">
     About Mentora Edge
   </h2>
+
+  <!-- TAGLINE -->
   <p class="max-w-2xl mx-auto text-blue-100 text-base sm:text-lg">
     Shaping Minds. Sharpening Futures.
   </p>
+
 </section>
 
 <!-- ================= ABOUT CONTENT ================= -->
@@ -98,17 +111,15 @@
 
     <div class="grid md:grid-cols-2 gap-12 items-center">
 
-      <!-- MD PHOTO -->
       <div class="flex justify-center reveal-left">
         <img
           src="Assets/Images/abir-munshi.jpeg"
-          alt="Abir Munshi - Founder & Managing Director"
+          alt="Abir Munshi"
           class="w-60 sm:w-72 h-60 sm:h-72 object-cover rounded-2xl shadow-xl
                  hover:scale-105 transition duration-300"
         />
       </div>
 
-      <!-- MD MESSAGE -->
       <div class="bg-gray-50 p-6 sm:p-8 rounded-2xl shadow-lg reveal-right">
 
         <p class="text-gray-700 leading-relaxed mb-5">
@@ -147,37 +158,32 @@
 <footer class="bg-gray-900 text-gray-400 py-10 text-center">
   <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
   <p class="text-sm mt-2 text-gray-500">
-    Shaping Minds, Sharpening Futures
-    <a href="terms.html" class="text-blue-600 hover:underline">
-      Terms & Conditions
-    </a>
-    <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
+    Shaping Minds, Sharpening Futures ·
+    <a href="terms.html" class="text-blue-400 hover:underline">Terms</a> ·
+    <a href="privacy.html" class="text-blue-400 hover:underline">Privacy</a>
   </p>
 </footer>
 
 <!-- ================= SCRIPTS ================= -->
 <script>
-  // Mobile menu
-  menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
 
-  // Scroll animations
-  const elements = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
+const elements = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("reveal-active");
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal-active");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
 
-  elements.forEach(el => observer.observe(el));
+elements.forEach(el => observer.observe(el));
 </script>
 
 <!-- ================= STYLES ================= -->
 <style>
-/* Hero fade */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
@@ -186,7 +192,6 @@
   animation: fadeIn 0.9s ease-out;
 }
 
-/* Scroll reveals */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -207,5 +212,6 @@
   transform: translate(0, 0);
 }
 </style>
+
 </body>
 </html>
