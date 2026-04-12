@@ -30,54 +30,54 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-[#0B1E3A] font-inter text-gray-200 overflow-x-hidden">
+<body class="bg-gradient-to-br from-gray-50 via-blue-50/40 to-green-50 font-inter text-gray-800 overflow-x-hidden">
 
 <!-- ================= NAVBAR ================= -->
-<header class="bg-[#0B1E3A]/90 backdrop-blur-lg sticky top-0 z-50 border-b border-white/10">
+<header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-white/30 shadow-sm">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <h1 class="text-2xl font-extrabold text-white tracking-tight">
+    <h1 class="text-2xl font-extrabold text-primary tracking-tight">
       Mentora Edge
     </h1>
 
     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-green-400 transition">Home</a>
-      <a href="courses.html" class="hover:text-green-400 transition">Courses</a>
-      <a href="educators.html" class="text-green-400 font-semibold">Educators</a>
-      <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+      <a href="index.html" class="hover:text-primary transition">Home</a>
+      <a href="courses.html" class="hover:text-primary transition">Courses</a>
+      <a href="educators.html" class="text-primary font-semibold">Educators</a>
+      <a href="contact.html" class="hover:text-primary transition">Contact</a>
 
       <a href="login.html"
-        class="px-4 py-2 rounded-xl border border-green-400 text-green-400
-               hover:bg-green-500 hover:text-white transition-all duration-300">
+        class="px-4 py-2 rounded-xl border border-primary text-primary
+               hover:bg-primary hover:text-white transition-all duration-300">
         Login
       </a>
     </nav>
 
-    <button id="menuBtn" class="md:hidden text-2xl text-white">☰</button>
+    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
   </div>
 
-  <div id="mobileMenu" class="hidden md:hidden bg-[#0B1E3A] border-t border-white/10">
-    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium text-gray-300">
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
       <a href="index.html">Home</a>
       <a href="courses.html">Courses</a>
-      <a href="educators.html" class="text-green-400 font-semibold">Educators</a>
+      <a href="educators.html" class="text-primary font-semibold">Educators</a>
       <a href="contact.html">Contact</a>
-      <a href="login.html" class="text-green-400 font-semibold">Login</a>
+      <a href="login.html" class="text-primary font-semibold">Login</a>
     </nav>
   </div>
 </header>
 
 <!-- ================= HERO ================= -->
-<section class="relative bg-[#0B1E3A] py-28 text-center px-6 overflow-hidden">
+<section class="relative py-28 text-center px-6 overflow-hidden bg-gradient-to-br from-primary via-accent to-brandGreen text-white">
 
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,197,94,0.15),transparent_70%)]"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15),transparent_70%)]"></div>
 
-  <h2 class="relative text-4xl sm:text-5xl font-extrabold mb-4 text-white">
+  <h2 class="relative text-4xl sm:text-5xl font-extrabold mb-4">
     Learn from the
-    <span class="text-green-400">Best Educators</span>
+    <span class="text-green-200">Best Educators</span>
   </h2>
 
-  <p class="relative max-w-2xl mx-auto text-gray-400 text-lg">
+  <p class="relative max-w-2xl mx-auto text-blue-100 text-lg">
     Decades of experience. Real classroom impact. Proven results.
   </p>
 
@@ -96,22 +96,20 @@ tailwind.config = {
              class="w-28 h-28 rounded-full object-cover shadow-lg
                     group-hover:scale-105 transition duration-300 mb-4"/>
 
-        <h3 class="text-2xl font-bold text-white">Subir Munshi</h3>
+        <h3 class="text-2xl font-bold text-gray-900">Subir Munshi</h3>
 
-        <p class="text-green-400 font-medium">
+        <p class="text-green-600 font-medium">
           Co-Founder & Social Science Educator
         </p>
       </div>
 
-      <p class="text-gray-400 leading-relaxed mb-4 text-center">
+      <p class="text-gray-600 leading-relaxed mb-4 text-center">
         Bringing over <strong>25 years of experience</strong> as both a
-        <strong>Principal</strong> and <strong>Educator</strong>, he focuses on
-        building deep conceptual clarity and discipline.
+        <strong>Principal</strong> and <strong>Educator</strong>.
       </p>
 
-      <p class="text-gray-400 leading-relaxed text-center">
-        His teaching empowers students with confidence, structured thinking,
-        and long-term academic excellence.
+      <p class="text-gray-600 leading-relaxed text-center">
+        Builds conceptual clarity, discipline, and confidence in students.
       </p>
 
     </div>
@@ -125,21 +123,19 @@ tailwind.config = {
              class="w-28 h-28 rounded-full object-cover shadow-lg
                     group-hover:scale-105 transition duration-300 mb-4"/>
 
-        <h3 class="text-2xl font-bold text-white">Ranita Munshi</h3>
+        <h3 class="text-2xl font-bold text-gray-900">Ranita Munshi</h3>
 
-        <p class="text-green-400 font-medium">
+        <p class="text-green-600 font-medium">
           Co-Founder & English Educator
         </p>
       </div>
 
-      <p class="text-gray-400 leading-relaxed mb-4 text-center">
-        A <strong>student-friendly English educator</strong> with over
-        <strong>25 years of experience</strong>, known for clarity and patience.
+      <p class="text-gray-600 leading-relaxed mb-4 text-center">
+        A student-friendly educator with over 25 years of experience.
       </p>
 
-      <p class="text-gray-400 leading-relaxed text-center">
-        She transforms language learning into an engaging journey of expression,
-        confidence, and academic mastery.
+      <p class="text-gray-600 leading-relaxed text-center">
+        Makes language learning engaging and impactful.
       </p>
 
     </div>
@@ -148,28 +144,28 @@ tailwind.config = {
 </section>
 
 <!-- ================= CTA ================= -->
-<section class="bg-[#0B1E3A] py-20 text-center px-6 border-t border-white/10">
+<section class="bg-gradient-to-r from-primary to-brandGreen py-20 text-center px-6 text-white">
 
-  <h3 class="text-3xl font-bold mb-4 text-white">
+  <h3 class="text-3xl font-bold mb-4">
     Learn from Experience.
-    <span class="text-green-400">Grow with Confidence.</span>
+    <span class="text-green-200">Grow with Confidence.</span>
   </h3>
 
-  <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+  <p class="text-blue-100 mb-6 max-w-2xl mx-auto">
     Join Mentora Edge and experience real transformation.
   </p>
 
   <a href="courses.html"
-    class="inline-block bg-green-500 text-white px-8 py-3 rounded-xl font-semibold
-           hover:bg-green-600 transition shadow-lg shadow-green-500/20">
+    class="inline-block bg-white text-green-600 px-8 py-3 rounded-xl font-semibold
+           hover:scale-105 hover:shadow-xl transition">
     Explore Courses
   </a>
 
 </section>
 
 <!-- ================= FOOTER ================= -->
-<footer class="bg-black text-gray-500 py-10 text-center border-t border-white/10">
-  <p class="font-medium text-gray-400">© 2025 Mentora Edge. All Rights Reserved.</p>
+<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+  <p class="font-medium">© 2025 Mentora Edge. All Rights Reserved.</p>
   <p class="text-sm mt-2">
     Shaping Minds, Sharpening Futures ·
     <a href="terms.html" class="text-green-400 hover:underline">Terms</a> ·
@@ -198,18 +194,18 @@ elements.forEach(el => observer.observe(el));
 <!-- ================= STYLES ================= -->
 <style>
 .educator-card {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.75);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.4);
   border-radius: 1.5rem;
   padding: 2rem;
   transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .educator-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(34,197,94,0.5);
-  box-shadow: 0 0 25px rgba(34,197,94,0.2);
+  box-shadow: 0 20px 50px rgba(34,197,94,0.15);
 }
 
 .reveal {
