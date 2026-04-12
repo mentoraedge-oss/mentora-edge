@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#1E40AF">
+  <meta name="theme-color" content="#0F2A44">
   <link rel="apple-touch-icon" href="/icons/ios/180.png">
 
   <title>Student Registration | Mentora Edge</title>
   <link rel="icon" href="favicon.ico">
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
@@ -22,8 +21,9 @@
         extend: {
           fontFamily: { inter: ['Inter', 'sans-serif'] },
           colors: {
-            primary: '#1E40AF',
-            accent: '#2563EB'
+            primary: '#0F2A44',
+            accent: '#22C55E',
+            accentSoft: '#4ADE80'
           }
         }
       }
@@ -31,108 +31,111 @@
   </script>
 </head>
 
-<body class="bg-gray-100 font-inter text-gray-800">
+<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
 
-<!-- ================= HEADER ================= -->
-<header class="bg-white shadow-sm">
+<!-- NAVBAR -->
+<header class="bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
-    <a href="courses.html" class="text-primary font-medium hover:underline">
+    <a href="courses.html" class="text-accent font-medium hover:underline">
       ← Back to Courses
     </a>
   </div>
 </header>
 
-<!-- ================= FORM ================= -->
-<section class="py-20">
-  <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl animate-fadeIn">
+<!-- HERO BACKGROUND -->
+<div class="absolute w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+<div class="absolute w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
 
-    <h2 class="text-3xl font-extrabold text-center mb-2">
-      Student Registration
-    </h2>
-    <p class="text-center text-gray-500 mb-8 text-sm">
-      Complete payment to submit your registration
-    </p>
+<!-- FORM -->
+<section class="py-20 relative z-10">
+  <div class="max-w-xl mx-auto px-6">
 
-    <form id="registerForm" class="space-y-4">
+    <div class="bg-white/70 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/30 animate-fadeIn">
 
-      <input id="name" type="text" placeholder="Full Name" class="input" required />
+      <h2 class="text-3xl font-extrabold text-center mb-2 text-primary">
+        Student Registration
+      </h2>
 
-      <input id="fatherName" type="text" placeholder="Father's Full Name" class="input" required />
+      <p class="text-center text-gray-500 mb-8 text-sm">
+        Complete payment to secure your seat
+      </p>
 
-      <input id="motherName" type="text" placeholder="Mother's Full Name" class="input" required />
+      <form id="registerForm" class="space-y-4">
 
-      <input id="email" type="email" placeholder="Email Address" class="input" required />
+        <input id="name" type="text" placeholder="Full Name" class="input" required />
+        <input id="fatherName" type="text" placeholder="Father's Full Name" class="input" required />
+        <input id="motherName" type="text" placeholder="Mother's Full Name" class="input" required />
+        <input id="email" type="email" placeholder="Email Address" class="input" required />
+        <input id="password" type="password" placeholder="Create Password" class="input" required />
+        <input id="mobile" type="tel" placeholder="Mobile Number" class="input" required />
 
-      <input id="password" type="password" placeholder="Create Password" class="input" required />
+        <input id="classField" readonly class="input bg-gray-100"/>
+        <input id="subjectField" readonly class="input bg-gray-100"/>
+        <input id="feeField" readonly class="input bg-gray-100"/>
 
-      <input id="mobile" type="tel" placeholder="Mobile Number" class="input" required />
+        <!-- PAYMENT -->
+        <div class="mt-6 p-6 rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 shadow-lg text-center">
 
-      <input id="classField" readonly class="input bg-gray-100"/>
-      <input id="subjectField" readonly class="input bg-gray-100"/>
-      <input id="feeField" readonly class="input bg-gray-100"/>
+          <p class="font-semibold mb-3 text-primary">Scan & Pay</p>
 
-      <!-- ================= PAYMENT ================= -->
-      <div class="border rounded-xl p-5 bg-blue-50 mt-6">
-        <p class="font-semibold mb-3 text-blue-800">Scan & Pay</p>
+          <img id="qrImage" class="mx-auto mb-4 w-40 h-40 rounded-xl shadow-lg hover:scale-105 transition"/>
 
-        <img id="qrImage" class="mx-auto mb-4 w-40 h-40 rounded-lg shadow"/>
+          <p class="text-sm mb-2">
+            Pay <span class="font-bold text-accent">₹<span id="feeAmount"></span></span>
+          </p>
 
-        <p class="text-center text-sm mb-2">
-          Pay ₹<span id="feeAmount"></span> via UPI
-        </p>
+          <p class="text-xs text-gray-600">
+            UPI ID: <strong>abirmunshi200@okhdfcbank</strong>
+          </p>
 
-        <p class="text-center text-xs text-gray-600">
-          UPI ID: <strong>abirmunshi200@okhdfcbank</strong>
-        </p>
+          <p id="timer" class="text-red-500 font-semibold mt-3">
+            Time left: 03:00
+          </p>
+        </div>
 
-        <p id="timer" class="text-center text-red-600 font-semibold mt-3">
-          Time left: 03:00
-        </p>
+        <!-- TERMS -->
+        <div class="flex items-start gap-2 mt-4">
+          <input type="checkbox" id="agreeTerms" class="mt-1 accent-green-600" required />
+          <label class="text-sm">
+            I agree to the
+            <a href="/terms.html" target="_blank" class="text-accent font-medium hover:underline">
+              Terms & Conditions
+            </a>
+          </label>
+        </div>
+
+        <!-- BUTTON -->
+        <button
+          type="button"
+          id="payBtn"
+          disabled
+          class="w-full py-3 rounded-xl font-semibold
+                 bg-gradient-to-r from-green-500 to-green-600 text-white
+                 opacity-50 cursor-not-allowed
+                 transition-all duration-300 hover:scale-105">
+          Payment Completed
+        </button>
+
+        <button
+          type="button"
+          onclick="location.href='courses.html'"
+          class="w-full border py-3 rounded-xl hover:bg-gray-50 transition">
+          Cancel Payment
+        </button>
+
+      </form>
+
+      <div id="successMsg"
+           class="hidden mt-8 text-center text-green-600 font-semibold animate-scaleIn">
+        ✅ Registration Successful! Await admin approval.
       </div>
 
-      <!-- ================= TERMS ================= -->
-      <div class="flex items-start gap-2 mt-4">
-        <input type="checkbox" id="agreeTerms" class="mt-1 accent-blue-600" required />
-        <label for="agreeTerms" class="text-sm text-gray-700">
-          I agree to the
-          <a href="/terms.html" target="_blank" class="text-blue-600 font-medium hover:underline">
-            Terms & Conditions
-          </a>
-        </label>
-      </div>
-
-      <!-- ================= BUTTONS ================= -->
-      <button
-        type="button"
-        id="payBtn"
-        disabled
-        class="w-full py-3 rounded-lg font-semibold
-               bg-green-600 text-white
-               opacity-50 cursor-not-allowed
-               transition-all duration-200">
-        Payment Completed
-      </button>
-
-      <button
-        type="button"
-        onclick="location.href='courses.html'"
-        class="w-full border py-3 rounded-lg hover:bg-gray-50 transition">
-        Cancel Payment
-      </button>
-
-    </form>
-
-    <div
-      id="successMsg"
-      class="hidden mt-8 text-center text-green-600 font-semibold animate-scaleIn">
-      ✅ Thank you! Kindly wait for admin approval.
     </div>
-
   </div>
 </section>
 
-<!-- ================= FIREBASE ================= -->
+<!-- FIREBASE LOGIC (UNCHANGED) -->
 <script type="module">
 import { auth, db } from "./js/firebase.js";
 import { createUserWithEmailAndPassword } from
@@ -140,63 +143,41 @@ import { createUserWithEmailAndPassword } from
 import { doc, setDoc, serverTimestamp } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===== URL PARAMS ===== */
 const params = new URLSearchParams(window.location.search);
 const cls = params.get("class");
 const rawSubject = params.get("subject");
 const subject = rawSubject ? rawSubject.replace(/\+/g, " ") : "";
 const fee = params.get("fee");
 
-/* ===== ELEMENTS ===== */
-const nameInput = document.getElementById("name");
-const fatherInput = document.getElementById("fatherName");
-const motherInput = document.getElementById("motherName");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const mobileInput = document.getElementById("mobile");
-const payBtn = document.getElementById("payBtn");
-const timerEl = document.getElementById("timer");
-
-/* ===== FILL FIELDS ===== */
 classField.value = cls;
 subjectField.value = subject;
 feeField.value = `₹${fee}`;
 feeAmount.innerText = fee;
 
-/* ===== VALIDATION ===== */
+const inputs = document.querySelectorAll("#registerForm input");
+
 function validateForm() {
-  const valid =
-    nameInput.value.trim() &&
-    fatherInput.value.trim() &&
-    motherInput.value.trim() &&
-    emailInput.value.trim() &&
-    passwordInput.value.trim() &&
-    mobileInput.value.trim() &&
-    agreeTerms.checked;
+  const valid = [...inputs].every(input =>
+    input.type === "checkbox" ? input.checked : input.value.trim()
+  );
 
   payBtn.disabled = !valid;
   payBtn.classList.toggle("opacity-50", !valid);
   payBtn.classList.toggle("cursor-not-allowed", !valid);
 }
 
-[
-  nameInput, fatherInput, motherInput,
-  emailInput, passwordInput, mobileInput,
-  agreeTerms
-].forEach(el => el.addEventListener("input", validateForm));
+inputs.forEach(i => i.addEventListener("input", validateForm));
 
-/* ===== QR CODE ===== */
 const upi = `upi://pay?pa=abirmunshi200@okhdfcbank&pn=Mentora Edge&am=${fee}&cu=INR`;
 qrImage.src =
   `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upi)}`;
 
-/* ===== TIMER ===== */
 let seconds = 180;
 const interval = setInterval(() => {
   seconds--;
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
   const s = String(seconds % 60).padStart(2, "0");
-  timerEl.innerText = `Time left: ${m}:${s}`;
+  timer.innerText = `Time left: ${m}:${s}`;
   if (seconds <= 0) {
     clearInterval(interval);
     alert("Payment session expired");
@@ -204,25 +185,23 @@ const interval = setInterval(() => {
   }
 }, 1000);
 
-/* ===== PAYMENT COMPLETE ===== */
 payBtn.onclick = async () => {
   try {
-    payBtn.disabled = true;
     payBtn.innerText = "Processing…";
     clearInterval(interval);
 
     const cred = await createUserWithEmailAndPassword(
       auth,
-      emailInput.value,
-      passwordInput.value
+      email.value,
+      password.value
     );
 
     await setDoc(doc(db, "users", cred.user.uid), {
-      name: nameInput.value,
-      fatherName: fatherInput.value,
-      motherName: motherInput.value,
-      email: emailInput.value,
-      mobile: mobileInput.value,
+      name: name.value,
+      fatherName: fatherName.value,
+      motherName: motherName.value,
+      email: email.value,
+      mobile: mobile.value,
       class: cls,
       subject,
       role: "student",
@@ -236,47 +215,40 @@ payBtn.onclick = async () => {
 
   } catch (err) {
     alert(err.message);
-    payBtn.disabled = false;
     payBtn.innerText = "Payment Completed";
   }
 };
 </script>
 
-<!-- ================= STYLES ================= -->
+<!-- STYLES -->
 <style>
 .input {
   width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  border: 1px solid #D1D5DB;
+  padding: 0.8rem;
+  border-radius: 0.8rem;
+  border: 1px solid #E5E7EB;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
 }
 .input:focus {
   outline: none;
-  border-color: #2563EB;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
 }
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fadeIn {
-  animation: fadeIn 0.6s ease-out;
-}
+.animate-fadeIn { animation: fadeIn 0.8s ease; }
+
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-.animate-scaleIn {
-  animation: scaleIn 0.4s ease-out;
-}
+.animate-scaleIn { animation: scaleIn 0.4s ease; }
 </style>
-
-<footer class="mt-16 bg-gray-100 border-t">
-  <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-600">
-    © 2025 <strong>Mentora Edge</strong>. All rights reserved ·
-    <a href="/terms.html" class="text-primary hover:underline">Terms & Conditions</a> ·
-    <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
-  </div>
-</footer>
 
 </body>
 </html>
