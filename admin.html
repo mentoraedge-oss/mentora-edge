@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1E40AF">
+<meta name="theme-color" content="#0F2A44">
 <link rel="apple-touch-icon" href="/icons/ios/180.png">
+
 <title>Admin Panel | Mentora Edge</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -16,85 +18,123 @@ tailwind.config = {
   theme: {
     extend: {
       fontFamily: { inter: ['Inter', 'sans-serif'] },
-      colors: { primary: '#1E40AF', accent: '#2563EB' }
+      colors: {
+        primary: '#0F2A44',
+        accent: '#22C55E',
+        accentSoft: '#4ADE80'
+      }
     }
   }
 }
 </script>
 </head>
 
-<body class="bg-gray-100 font-inter text-gray-800">
+<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
 
-<header class="bg-white shadow sticky top-0 z-40">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between">
-    <h1 class="text-xl font-extrabold text-primary">Mentora Edge — Admin Panel</h1>
-    <button id="logoutBtn" class="text-red-600 font-semibold">Logout</button>
+<!-- BACKGROUND GLOW -->
+<div class="fixed w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+<div class="fixed w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+
+<!-- ================= NAVBAR ================= -->
+<header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-40 border-b">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <h1 class="text-xl font-extrabold text-primary tracking-tight">
+      Mentora Edge Admin
+    </h1>
+
+    <button id="logoutBtn"
+      class="px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold
+             hover:bg-red-100 transition">
+      Logout
+    </button>
+
   </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+<!-- ================= MAIN ================= -->
+<main class="max-w-7xl mx-auto px-6 py-10 space-y-12 relative z-10">
 
 <!-- ANNOUNCEMENT -->
-<section class="bg-white p-6 rounded-xl shadow">
-  <h2 class="font-bold mb-4">📢 Global Announcement</h2>
-  <textarea id="announcementText" class="w-full border rounded p-3" rows="4"></textarea>
-  <div class="text-right mt-3">
-    <button id="publishAnnouncementBtn" class="bg-primary text-white px-5 py-2 rounded">
+<section class="glass-card">
+  <h2 class="section-title">📢 Global Announcement</h2>
+
+  <textarea id="announcementText"
+    class="input mt-3"
+    rows="4"
+    placeholder="Write announcement..."></textarea>
+
+  <div class="text-right mt-4">
+    <button id="publishAnnouncementBtn" class="btn-primary">
       Publish
     </button>
   </div>
 </section>
 
 <!-- MATERIAL UPLOAD -->
-<section class="bg-white p-6 rounded-xl shadow">
-  <h2 class="font-bold mb-4">📚 Upload Study Material</h2>
-  <div class="grid md:grid-cols-4 gap-4">
-    <select id="materialClass" class="border p-2 rounded">
+<section class="glass-card">
+  <h2 class="section-title">📚 Upload Study Material</h2>
+
+  <div class="grid md:grid-cols-4 gap-4 mt-4">
+
+    <select id="materialClass" class="input">
       <option value="">Class</option>
       <option value="VIII">VIII</option>
       <option value="IX">IX</option>
       <option value="X">X</option>
     </select>
-    <input id="materialTitle" class="border p-2 rounded" placeholder="Title">
-    <input id="materialFile" type="file">
-    <button id="uploadMaterialBtn" class="bg-primary text-white rounded px-4">
+
+    <input id="materialTitle" class="input" placeholder="Title">
+
+    <input id="materialFile" type="file" class="input-file">
+
+    <button id="uploadMaterialBtn" class="btn-primary">
       Upload
     </button>
+
   </div>
 </section>
 
-<!-- STUDENT APPROVAL -->
-<section class="bg-white rounded-xl shadow overflow-hidden">
-  <h2 class="font-bold px-6 py-4 border-b">👥 Student Approvals</h2>
-  <table class="w-full text-sm">
-    <thead class="bg-gray-50">
-      <tr>
-        <th class="px-6 py-3 text-left">Name</th>
-        <th>Email</th>
-        <th>Class</th>
-        <th>Status</th>
-        <th>Student ID</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="studentsTable"></tbody>
-  </table>
+<!-- STUDENTS -->
+<section class="glass-card overflow-hidden">
+  <h2 class="section-title">👥 Student Approvals</h2>
+
+  <div class="overflow-x-auto mt-4">
+    <table class="w-full text-sm">
+      <thead class="bg-white/50 backdrop-blur">
+        <tr>
+          <th class="px-6 py-3 text-left">Name</th>
+          <th>Email</th>
+          <th>Class</th>
+          <th>Status</th>
+          <th>Student ID</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="studentsTable" class="divide-y"></tbody>
+    </table>
+  </div>
 </section>
 
 <!-- FEES -->
-<section class="bg-white p-6 rounded-xl shadow">
-  <h2 class="font-bold mb-4">💰 Monthly Fees Management</h2>
-  <div class="flex gap-4 mb-4">
-    <select id="feeStudent" class="border p-2 rounded"></select>
-    <button id="showFeesBtn" class="bg-primary text-white px-4 rounded">
+<section class="glass-card">
+  <h2 class="section-title">💰 Monthly Fees Management</h2>
+
+  <div class="flex gap-4 mt-4">
+    <select id="feeStudent" class="input"></select>
+
+    <button id="showFeesBtn" class="btn-primary">
       Show Fee Status
     </button>
   </div>
-  <div id="feesGrid" class="grid md:grid-cols-3 gap-4"></div>
+
+  <div id="feesGrid" class="grid md:grid-cols-3 gap-4 mt-6"></div>
 </section>
 
 </main>
 
+<!-- ================= SCRIPT (UNCHANGED LOGIC) ================= -->
 <script type="module">
 import { auth, db } from "./js/firebase.js";
 import { onAuthStateChanged, signOut } from
@@ -128,7 +168,6 @@ onAuthStateChanged(auth, async (user) => {
   loadFeeStudents();
 });
 
-/* STUDENT ID GENERATOR */
 async function getNextStudentId() {
   const snap = await getDocs(collection(db, "users"));
   let max = 0;
@@ -144,7 +183,6 @@ async function getNextStudentId() {
   return "ME" + String(max + 1).padStart(4,"0");
 }
 
-/* STUDENTS */
 async function loadStudents(){
   studentsTable.innerHTML="";
   const snap = await getDocs(collection(db,"users"));
@@ -154,25 +192,25 @@ async function loadStudents(){
     if(u.role !== "student") return;
 
     studentsTable.innerHTML += `
-      <tr>
-        <td class="px-6 py-3">${u.name}</td>
+      <tr class="hover:bg-gray-50 transition">
+        <td class="px-6 py-3 font-medium">${u.name}</td>
         <td>${u.email}</td>
         <td>${u.class}</td>
-        <td>${u.status}</td>
+        <td class="${u.status==="active"?"text-green-600":"text-orange-500"}">${u.status}</td>
         <td class="font-mono">${u.studentId || "-"}</td>
         <td class="space-x-3">
           ${
             u.status === "pending"
             ? `
-              <button onclick="approve('${d.id}')" class="text-green-600">Approve</button>
-              <button onclick="rejectStudent('${d.id}')" class="text-red-600">Reject</button>
+              <button onclick="approve('${d.id}')" class="text-green-600 hover:underline">Approve</button>
+              <button onclick="rejectStudent('${d.id}')" class="text-red-600 hover:underline">Reject</button>
             `
             : `
               ${!u.studentId
-                ? `<button onclick="generateId('${d.id}')" class="text-blue-600">Generate ID</button>`
+                ? `<button onclick="generateId('${d.id}')" class="text-blue-600 hover:underline">Generate ID</button>`
                 : ""
               }
-              <button onclick="removeStudent('${d.id}')" class="text-red-600">Remove</button>
+              <button onclick="removeStudent('${d.id}')" class="text-red-600 hover:underline">Remove</button>
             `
           }
         </td>
@@ -180,7 +218,7 @@ async function loadStudents(){
   });
 }
 
-/* 🔑 GENERATE ID + CREATE VERIFICATION RECORD */
+/* (ALL YOUR LOGIC BELOW IS EXACT SAME — NO CHANGE) */
 window.generateId = async (uid) => {
   const userRef = doc(db,"users",uid);
   const snap = await getDoc(userRef);
@@ -188,10 +226,8 @@ window.generateId = async (uid) => {
 
   const studentId = await getNextStudentId();
 
-  // Save in users
   await updateDoc(userRef,{ studentId });
 
-  // Create public verification record
   await setDoc(doc(db,"studentVerifications", studentId), {
     studentId,
     name: u.name,
@@ -222,7 +258,6 @@ window.removeStudent = async (id) => {
   loadStudents();
 };
 
-/* FEES */
 async function loadFeeStudents(){
   feeStudent.innerHTML="<option value=''>Select Student</option>";
   const snap=await getDocs(collection(db,"users"));
@@ -243,14 +278,14 @@ showFeesBtn.onclick = async () => {
   months.forEach(m=>{
     const paid = fees[m]?.paid === true;
     feesGrid.innerHTML += `
-      <div class="border rounded p-4 flex justify-between">
+      <div class="fee-card">
         <div>
           <p class="font-semibold">${m}</p>
-          <p class="${paid?"text-green-600":"text-red-600"} text-sm">
+          <p class="${paid?"text-green-600":"text-red-500"} text-sm">
             ${paid?"Paid":"Not Paid"}
           </p>
         </div>
-        ${paid ? "✔️" : `<button onclick="markPaid('${m}')" class="text-primary text-sm">Mark Paid</button>`}
+        ${paid ? "✔️" : `<button onclick="markPaid('${m}')" class="text-accent text-sm">Mark Paid</button>`}
       </div>`;
   });
 };
@@ -265,7 +300,6 @@ window.markPaid = async (month)=>{
   showFeesBtn.click();
 };
 
-/* ANNOUNCEMENT */
 publishAnnouncementBtn.onclick = async () => {
   if(!announcementText.value.trim()) return alert("Empty announcement");
   await addDoc(collection(db,"announcements"),{
@@ -276,7 +310,6 @@ publishAnnouncementBtn.onclick = async () => {
   alert("Announcement published");
 };
 
-/* MATERIAL UPLOAD */
 uploadMaterialBtn.onclick = async () => {
   if(!materialClass.value || !materialTitle.value || !materialFile.files[0]){
     alert("Fill all fields"); return;
@@ -297,12 +330,67 @@ uploadMaterialBtn.onclick = async () => {
   alert("Material uploaded");
 };
 
-/* LOGOUT */
 logoutBtn.onclick = async()=>{
   await signOut(auth);
   location.href="login.html";
 };
 </script>
+
+<!-- ================= STYLES ================= -->
+<style>
+.glass-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(14px);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #0F2A44;
+}
+
+.input {
+  padding: 0.6rem;
+  border-radius: 0.6rem;
+  border: 1px solid #E5E7EB;
+  width: 100%;
+}
+
+.input-file {
+  border: 1px dashed #CBD5E1;
+  padding: 0.5rem;
+  border-radius: 0.6rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg,#22C55E,#16A34A);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.btn-primary:hover {
+  transform: scale(1.05);
+}
+
+.fee-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  transition: 0.3s;
+}
+.fee-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+</style>
 
 </body>
 </html>
