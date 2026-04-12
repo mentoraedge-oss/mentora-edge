@@ -330,17 +330,6 @@ const observer = new IntersectionObserver(entries => {
 
 reveals.forEach(el => observer.observe(el));
 </script>
-<script>
-const savedTheme = localStorage.getItem("theme");
 
-if (savedTheme) {
-  document.documentElement.classList.toggle("dark", savedTheme === "dark");
-} else {
-  // Auto detect system theme
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add("dark");
-  }
-}
-</script>
 </body>
 </html>

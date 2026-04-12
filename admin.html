@@ -394,17 +394,6 @@ logoutBtn.onclick = async()=>{
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 </style>
-<script>
-const savedTheme = localStorage.getItem("theme");
 
-if (savedTheme) {
-  document.documentElement.classList.toggle("dark", savedTheme === "dark");
-} else {
-  // Auto detect system theme
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add("dark");
-  }
-}
-</script>
 </body>
 </html>

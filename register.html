@@ -258,17 +258,6 @@ payBtn.onclick = async () => {
 }
 .animate-scaleIn { animation: scaleIn 0.4s ease; }
 </style>
-<script>
-const savedTheme = localStorage.getItem("theme");
 
-if (savedTheme) {
-  document.documentElement.classList.toggle("dark", savedTheme === "dark");
-} else {
-  // Auto detect system theme
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.classList.add("dark");
-  }
-}
-</script>
 </body>
 </html>
