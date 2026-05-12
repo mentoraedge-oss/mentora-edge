@@ -396,40 +396,6 @@
   }, { threshold: 0.15 });
 
   reveals.forEach(el => observer.observe(el));
-
-  // THEME TOGGLE
-  const toggleBtn = document.getElementById("themeToggle");
-  const toggleMobile = document.getElementById("themeToggleMobile");
-
-  const icon = document.getElementById("themeIcon");
-  const iconMobile = document.getElementById("themeIconMobile");
-
-  function updateIcons() {
-    if(document.documentElement.classList.contains("dark")) {
-      icon.textContent = "☀️";
-      iconMobile.textContent = "☀️";
-    } else {
-      icon.textContent = "🌙";
-      iconMobile.textContent = "🌙";
-    }
-  }
-
-  updateIcons();
-
-  function toggleTheme() {
-    document.documentElement.classList.toggle("dark");
-
-    if(document.documentElement.classList.contains("dark")) {
-      localStorage.theme = "dark";
-    } else {
-      localStorage.theme = "light";
-    }
-
-    updateIcons();
-  }
-
-  toggleBtn.onclick = toggleTheme;
-  toggleMobile.onclick = toggleTheme;
 </script>
 
 <!-- STYLES -->
