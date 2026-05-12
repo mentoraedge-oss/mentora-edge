@@ -7,7 +7,9 @@
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0F2A44">
   <link rel="apple-touch-icon" href="/icons/ios/180.png">
-<link rel="stylesheet" href="css/theme.css">
+
+  <link rel="stylesheet" href="css/theme.css">
+
   <title>Courses | Mentora Edge</title>
 
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -17,179 +19,459 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script>
-tailwind.config = {
-  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
+    tailwind.config = {
+      darkMode: 'class',
 
-  theme: {
-    extend: {
-      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
 
-      colors: {
-        primary: '#0F2A44',
-        accent: '#22C55E',
-        accentSoft: '#4ADE80'
+          colors: {
+            primary: '#0F2A44',
+            accent: '#22C55E',
+            accentSoft: '#4ADE80'
+          }
+        }
       }
     }
-  }
-}
-</script>
+  </script>
+
+  <!-- AUTO DARK MODE -->
+  <script>
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
 </head>
 
-<body class="bg-[#F8FAFC] text-darkText font-inter overflow-x-hidden">
+<body class="bg-[#F8FAFC] text-darkText font-inter overflow-x-hidden dark:bg-[#07162B]">
 
 <!-- NAVBAR -->
-<header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-200">
+<header class="bg-white/80 dark:bg-[#0B1E3A]/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-200 dark:border-white/10">
+
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
+    <h1 class="text-2xl font-extrabold text-primary dark:text-white">
+      Mentora Edge
+    </h1>
 
-    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-accent">Home</a>
-      <a href="about.html" class="hover:text-accent">About Us</a>
-      <a href="courses.html" class="text-accent font-semibold">Courses</a>
-      <a href="educators.html" class="hover:text-accent">Educators</a>
-      <a href="contact.html" class="hover:text-accent">Contact</a>
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium dark:text-gray-200">
+
+      <a href="index.html" class="hover:text-accent transition">
+        Home
+      </a>
+
+      <a href="about.html" class="hover:text-accent transition">
+        About Us
+      </a>
+
+      <a href="courses.html"
+         class="text-accent font-semibold glow-text">
+        Courses
+      </a>
+
+      <a href="educators.html" class="hover:text-accent transition">
+        Educators
+      </a>
+
+      <a href="contact.html" class="hover:text-accent transition">
+        Contact
+      </a>
+
       <a href="login.html"
-         class="px-4 py-2 rounded-lg border border-primary text-primary
+         class="px-4 py-2 rounded-lg border border-primary dark:border-white/20
+                text-primary dark:text-white
                 hover:bg-primary hover:text-white transition">
         Login
       </a>
+
+      <!-- THEME TOGGLE -->
+      <button id="themeToggle"
+        class="w-11 h-11 rounded-full bg-white/10 border border-white/10
+               flex items-center justify-center text-lg
+               hover:scale-110 transition">
+
+        <span id="themeIcon">🌙</span>
+      </button>
+
     </nav>
 
-    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
+    <!-- MOBILE BUTTON -->
+    <div class="flex items-center gap-3 md:hidden">
+
+      <button id="themeToggleMobile"
+        class="w-10 h-10 rounded-full bg-white/10 border border-white/10
+               flex items-center justify-center text-sm">
+
+        <span id="themeIconMobile">🌙</span>
+      </button>
+
+      <button id="menuBtn"
+        class="text-2xl text-primary dark:text-white">
+        ☰
+      </button>
+
+    </div>
   </div>
 
-  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
-    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu"
+       class="hidden md:hidden bg-white dark:bg-[#0B1E3A] border-t dark:border-white/10 shadow-sm">
+
+    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium dark:text-gray-200">
+
       <a href="index.html">Home</a>
+
       <a href="about.html">About Us</a>
-      <a href="courses.html" class="text-accent font-semibold">Courses</a>
+
+      <a href="courses.html"
+         class="text-accent font-semibold">
+        Courses
+      </a>
+
       <a href="educators.html">Educators</a>
+
       <a href="contact.html">Contact</a>
+
+      <a href="login.html">Login</a>
+
     </nav>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="relative py-24 text-center overflow-hidden bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79] text-white">
+<section class="relative py-24 text-center overflow-hidden
+                bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79]
+                text-white">
 
   <div class="absolute w-96 h-96 bg-green-400 opacity-20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+
   <div class="absolute w-96 h-96 bg-blue-500 opacity-20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
 
   <div class="relative z-10 max-w-4xl mx-auto px-6 reveal">
-    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Our Courses</h2>
-    <p class="text-lg text-gray-200">CBSE-focused learning for Classes VIII, IX & X</p>
+
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
+      Explore Our
+      <span class="text-accent glow-text">Courses</span>
+    </h2>
+
+    <p class="text-lg text-gray-200">
+      Structured CBSE learning for Classes VI to XII
+    </p>
+
   </div>
 </section>
 
-<div class="h-20 bg-gradient-to-b from-transparent to-[#F8FAFC]"></div>
+<div class="h-20 bg-gradient-to-b from-transparent to-[#F8FAFC] dark:to-[#07162B]"></div>
 
 <!-- COURSES -->
-<section class="py-24">
+<section class="py-24 dark:bg-[#07162B]">
+
   <div class="max-w-7xl mx-auto px-6 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
 
-    <!-- CLASS VIII -->
-    <div class="course-card reveal">
+    <!-- ================= CLASS VI ================= -->
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class VI – English</h3>
+      <p>Grammar, Writing & Literature</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=VI&subject=English&fee=500">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class VI – Social Science</h3>
+      <p>History, Geography & Civics</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=VI&subject=Social+Science&fee=500">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card featured glow-hover reveal">
+      <h3>Class VI – Combo</h3>
+      <p>English + Social Science</p>
+      <span>₹1000 / month</span>
+      <a href="register.html?class=VI&subject=English+Social+Science&fee=1000">
+        Enroll Combo
+      </a>
+    </div>
+
+    <!-- ================= CLASS VII ================= -->
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class VII – English</h3>
+      <p>Reading, Writing & Communication</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=VII&subject=English&fee=500">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class VII – Social Science</h3>
+      <p>Concept-focused social studies</p>
+      <span>₹500 / month</span>
+      <a href="register.html?class=VII&subject=Social+Science&fee=500">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card featured glow-hover reveal">
+      <h3>Class VII – Combo</h3>
+      <p>English + Social Science</p>
+      <span>₹1000 / month</span>
+      <a href="register.html?class=VII&subject=English+Social+Science&fee=1000">
+        Enroll Combo
+      </a>
+    </div>
+
+    <!-- ================= CLASS VIII ================= -->
+
+    <div class="course-card glow-hover reveal">
       <h3>Class VIII – English</h3>
       <p>Language & Literature</p>
       <span>₹500 / month</span>
-      <a href="register.html?class=VIII&subject=English&fee=500">Enroll Now</a>
+      <a href="register.html?class=VIII&subject=English&fee=500">
+        Enroll Now
+      </a>
     </div>
 
-    <div class="course-card reveal">
+    <div class="course-card glow-hover reveal">
       <h3>Class VIII – Social Science</h3>
       <p>History, Geography, Civics & Economics</p>
       <span>₹500 / month</span>
-      <a href="register.html?class=VIII&subject=Social+Science&fee=500">Enroll Now</a>
+      <a href="register.html?class=VIII&subject=Social+Science&fee=500">
+        Enroll Now
+      </a>
     </div>
 
-    <div class="course-card featured reveal">
+    <div class="course-card featured glow-hover reveal">
       <h3>Class VIII – Combo</h3>
       <p>English + Social Science</p>
       <span>₹1000 / month</span>
-      <a href="register.html?class=VIII&subject=English+Social+Science&fee=1000">Enroll Combo</a>
+      <a href="register.html?class=VIII&subject=English+Social+Science&fee=1000">
+        Enroll Combo
+      </a>
     </div>
 
-    <!-- CLASS IX -->
-    <div class="course-card reveal">
+    <!-- ================= CLASS IX ================= -->
+
+    <div class="course-card glow-hover reveal">
       <h3>Class IX – English</h3>
       <p>Language & Literature</p>
       <span>₹500 / month</span>
-      <a href="register.html?class=IX&subject=English&fee=500">Enroll Now</a>
+      <a href="register.html?class=IX&subject=English&fee=500">
+        Enroll Now
+      </a>
     </div>
 
-    <div class="course-card reveal">
+    <div class="course-card glow-hover reveal">
       <h3>Class IX – Social Science</h3>
       <p>Full syllabus coverage</p>
       <span>₹500 / month</span>
-      <a href="register.html?class=IX&subject=Social+Science&fee=500">Enroll Now</a>
+      <a href="register.html?class=IX&subject=Social+Science&fee=500">
+        Enroll Now
+      </a>
     </div>
 
-    <div class="course-card featured reveal">
+    <div class="course-card featured glow-hover reveal">
       <h3>Class IX – Combo</h3>
       <p>Best value course</p>
       <span>₹1000 / month</span>
-      <a href="register.html?class=IX&subject=English+Social+Science&fee=1000">Enroll Combo</a>
+      <a href="register.html?class=IX&subject=English+Social+Science&fee=1000">
+        Enroll Combo
+      </a>
     </div>
 
-    <!-- CLASS X -->
-    <div class="course-card reveal">
+    <!-- ================= CLASS X ================= -->
+
+    <div class="course-card glow-hover reveal">
       <h3>Class X – English</h3>
-      <p>Board-focused prep</p>
+      <p>Board-focused preparation</p>
       <span>₹500 / month</span>
-      <a href="register.html?class=X&subject=English&fee=500">Enroll Now</a>
+      <a href="register.html?class=X&subject=English&fee=500">
+        Enroll Now
+      </a>
     </div>
 
-    <div class="course-card reveal">
+    <div class="course-card glow-hover reveal">
       <h3>Class X – Social Science</h3>
       <p>Board mastery course</p>
       <span>₹500 / month</span>
-      <a href="register.html?class=X&subject=Social+Science&fee=500">Enroll Now</a>
+      <a href="register.html?class=X&subject=Social+Science&fee=500">
+        Enroll Now
+      </a>
     </div>
 
-    <div class="course-card featured reveal">
+    <div class="course-card featured glow-hover reveal">
       <h3>Class X – Combo</h3>
       <p>Complete board preparation</p>
       <span>₹1000 / month</span>
-      <a href="register.html?class=X&subject=English+Social+Science&fee=1000">Enroll Combo</a>
+      <a href="register.html?class=X&subject=English+Social+Science&fee=1000">
+        Enroll Combo
+      </a>
+    </div>
+
+    <!-- ================= CLASS XI ================= -->
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class XI – English</h3>
+      <p>Advanced language & literature</p>
+      <span>₹700 / month</span>
+      <a href="register.html?class=XI&subject=English&fee=700">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class XI – Social Science</h3>
+      <p>In-depth humanities concepts</p>
+      <span>₹700 / month</span>
+      <a href="register.html?class=XI&subject=Social+Science&fee=700">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card featured glow-hover reveal">
+      <h3>Class XI – Combo</h3>
+      <p>Complete humanities support</p>
+      <span>₹1400 / month</span>
+      <a href="register.html?class=XI&subject=English+Social+Science&fee=1400">
+        Enroll Combo
+      </a>
+    </div>
+
+    <!-- ================= CLASS XII ================= -->
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class XII – English</h3>
+      <p>Board & competitive preparation</p>
+      <span>₹700 / month</span>
+      <a href="register.html?class=XII&subject=English&fee=700">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card glow-hover reveal">
+      <h3>Class XII – Social Science</h3>
+      <p>Exam-focused humanities course</p>
+      <span>₹700 / month</span>
+      <a href="register.html?class=XII&subject=Social+Science&fee=700">
+        Enroll Now
+      </a>
+    </div>
+
+    <div class="course-card featured glow-hover reveal">
+      <h3>Class XII – Combo</h3>
+      <p>Complete board preparation</p>
+      <span>₹1400 / month</span>
+      <a href="register.html?class=XII&subject=English+Social+Science&fee=1400">
+        Enroll Combo
+      </a>
     </div>
 
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="bg-gray-900 text-gray-400 py-10 text-center">
+<footer class="bg-gray-900 dark:bg-[#061120] text-gray-400 py-10 text-center">
+
   © 2025 Mentora Edge. All Rights Reserved.
+
   <br>
-  <a href="terms.html" class="text-green-400 hover:underline">Terms</a> |
-  <a href="privacy.html" class="text-green-400 hover:underline">Privacy</a>
+
+  <a href="terms.html"
+     class="text-green-400 hover:underline">
+    Terms
+  </a>
+
+  |
+
+  <a href="privacy.html"
+     class="text-green-400 hover:underline">
+    Privacy
+  </a>
+
 </footer>
 
-<!-- JS -->
+<!-- SCRIPTS -->
 <script>
-menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+  // MOBILE MENU
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
 
-const reveals = document.querySelectorAll(".reveal");
+  menuBtn.onclick = () => {
+    mobileMenu.classList.toggle("hidden");
+  };
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      entry.target.style.transitionDelay = `${i * 80}ms`;
-      entry.target.classList.add("reveal-active");
+  // REVEAL ANIMATION
+  const reveals = document.querySelectorAll(".reveal");
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = `${i * 80}ms`;
+        entry.target.classList.add("reveal-active");
+      }
+    });
+  }, { threshold: 0.15 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // THEME TOGGLE
+  const toggleBtn = document.getElementById("themeToggle");
+  const toggleMobile = document.getElementById("themeToggleMobile");
+
+  const icon = document.getElementById("themeIcon");
+  const iconMobile = document.getElementById("themeIconMobile");
+
+  function updateIcons() {
+    if(document.documentElement.classList.contains("dark")) {
+      icon.textContent = "☀️";
+      iconMobile.textContent = "☀️";
+    } else {
+      icon.textContent = "🌙";
+      iconMobile.textContent = "🌙";
     }
-  });
-}, { threshold: 0.15 });
+  }
 
-reveals.forEach(el => observer.observe(el));
+  updateIcons();
+
+  function toggleTheme() {
+    document.documentElement.classList.toggle("dark");
+
+    if(document.documentElement.classList.contains("dark")) {
+      localStorage.theme = "dark";
+    } else {
+      localStorage.theme = "light";
+    }
+
+    updateIcons();
+  }
+
+  toggleBtn.onclick = toggleTheme;
+  toggleMobile.onclick = toggleTheme;
 </script>
 
 <!-- STYLES -->
 <style>
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
+/* COURSE CARD */
 .course-card {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(16px);
   padding: 2rem;
   border-radius: 1.5rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
@@ -197,39 +479,74 @@ html { scroll-behavior: smooth; }
   flex-direction: column;
   transition: all 0.4s ease;
   position: relative;
+  overflow: hidden;
+}
+
+.dark .course-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 .course-card:hover {
-  transform: translateY(-12px) scale(1.04);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.18);
 }
 
-.course-card h3 { font-size: 1.3rem; font-weight: 800; }
-.course-card p { color: #64748B; margin-top: 4px; }
-.course-card span { font-size: 1.3rem; font-weight: 800; color: #22C55E; margin-top: 10px; }
+.course-card h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.dark .course-card h3 {
+  color: white;
+}
+
+.course-card p {
+  color: #64748B;
+  margin-top: 4px;
+}
+
+.dark .course-card p {
+  color: #CBD5E1;
+}
+
+.course-card span {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #22C55E;
+  margin-top: 12px;
+}
 
 .course-card a {
   margin-top: auto;
-  padding: 0.8rem;
+  padding: 0.9rem;
   background: linear-gradient(135deg, #22C55E, #16A34A);
   color: white;
   border-radius: 1rem;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  transition: all 0.3s ease;
 }
 
-.featured { border: 2px solid #22C55E; }
-* {
-  transition: background-color 0.4s ease,
-              color 0.4s ease,
-              border-color 0.4s ease,
-              box-shadow 0.4s ease;
+.course-card a:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 25px rgba(34,197,94,0.45);
 }
+
+.featured {
+  border: 2px solid #22C55E;
+}
+
+/* REVEAL */
 .reveal {
   opacity: 0;
   transform: translateY(50px);
   transition: all 0.9s ease;
 }
+
 .reveal-active {
   opacity: 1;
   transform: translateY(0);
