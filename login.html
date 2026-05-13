@@ -37,6 +37,7 @@
       }
     }
   </script>
+
 </head>
 
 <body class="min-h-screen bg-[#F8FAFC] dark:bg-[#07162B] font-inter overflow-x-hidden transition-colors duration-500">
@@ -211,4 +212,318 @@
 
   const forgotBtn = document.getElementById("forgotPasswordBtn");
 
+  const biometricBtn = document.getElementById("biometricLoginBtn");
+
   // ================= NORMAL LOGIN =================
+
+  form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    errorMsg.classList.add("hidden");
+
+    loginBtn.disabled = true;
+
+    btnText.textContent = "Logging in...";
+
+    spinner.classList.remove("hidden");
+
+    const email = document.getElementById("email").value.trim();
+
+    const password = document.getElementById("password").value;
+
+    try {
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const user = userCredential.user;
+
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+
+      if (!userDoc.exists()) {
+
+        throw new Error(
+          "User profile not found. Please contact admin."
+        );
+
+      }
+
+      const userData = userDoc.data();
+
+      // SAVE BIOMETRIC SESSION
+      localStorage.setItem("biometricUserEmail", email);
+      localStorage.setItem("biometricEnabled", "true");
+
+      if (userData.role === "admin") {
+
+        window.location.href = "admin.html";
+
+      } else {
+
+        window.location.href = "dashboard.html";
+
+      }
+
+    } catch (err) {
+
+      loginBtn.disabled = false;
+
+      btnText.textContent = "Login";
+
+      spinner.classList.add("hidden");
+
+      errorMsg.textContent =
+        err.code === "auth/wrong-password"
+          ? "Incorrect password. Please try again."
+          : err.code === "auth/user-not-found"
+          ? "No account found with this email."
+          : err.message;
+
+      errorMsg.classList.remove("hidden");
+
+    }
+
+  });
+
+  // ================= FORGOT PASSWORD =================
+
+  forgotBtn.addEventListener("click", async () => {
+
+    const email = document.getElementById("email").value.trim();
+
+    if (!email) {
+
+      errorMsg.textContent =
+        "Please enter your registered email first.";
+
+      errorMsg.classList.remove("hidden");
+
+      return;
+
+    }
+
+    try {
+
+      await sendPasswordResetEmail(auth, email);
+
+      errorMsg.className =
+        "mt-5 text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-center";
+
+      errorMsg.textContent =
+        "Password reset link sent. Please check your email.";
+
+      errorMsg.classList.remove("hidden");
+
+    } catch (err) {
+
+      errorMsg.textContent = err.message;
+
+      errorMsg.classList.remove("hidden");
+
+    }
+
+  });
+
+  // ================= BIOMETRIC LOGIN =================
+
+  if (!window.PublicKeyCredential) {
+
+    biometricBtn.style.display = "none";
+
+  }
+
+  biometricBtn.addEventListener("click", async () => {
+
+    try {
+
+      const available =
+        await PublicKeyCredential
+          .isUserVerifyingPlatformAuthenticatorAvailable();
+
+      if (!available) {
+
+        alert(
+          "Biometric login is not available on this device."
+        );
+
+        return;
+
+      }
+
+      const savedEmail =
+        localStorage.getItem("biometricUserEmail");
+
+      if (!savedEmail) {
+
+        alert(
+          "Please login normally once before using biometrics."
+        );
+
+        return;
+
+      }
+
+      // BIOMETRIC PROMPT
+      await navigator.credentials.get({
+        publicKey: {
+          challenge: new Uint8Array(32),
+          timeout: 60000,
+          userVerification: "required",
+          allowCredentials: []
+        }
+      });
+
+      alert("✅ Biometrics verified successfully!");
+
+      // AUTO REDIRECT
+      const userSnapshot = await getDoc(
+        doc(db, "users", auth.currentUser.uid)
+      );
+
+      const userData = userSnapshot.data();
+
+      if (userData.role === "admin") {
+
+        window.location.href = "admin.html";
+
+      } else {
+
+        window.location.href = "dashboard.html";
+
+      }
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        "Biometric authentication failed or cancelled."
+      );
+
+    }
+
+  });
+
+</script>
+
+<!-- ================= STYLES ================= -->
+<style>
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid #E5E7EB;
+  background: rgba(255,255,255,0.7);
+  color: #111827;
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
+}
+
+.dark .input {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+}
+
+.input::placeholder {
+  color: #9CA3AF;
+}
+
+.dark .input::placeholder {
+  color: #94A3B8;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 25px rgba(34,197,94,0.35);
+}
+
+@keyframes fadeIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.7s ease;
+}
+
+@keyframes scaleIn {
+
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease;
+}
+
+</style>
+
+<!-- FOOTER -->
+<footer class="mt-16 bg-gray-100 dark:bg-[#081221] border-t dark:border-white/10 transition-colors duration-500">
+
+  <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
+
+    © 2026 <strong>Mentora Edge</strong>. All rights reserved ·
+
+    <a href="/terms.html"
+       class="text-accent hover:underline">
+
+      Terms & Conditions
+
+    </a>
+
+    ·
+
+    <a href="privacy.html"
+       class="text-accent hover:underline">
+
+      Privacy Policy
+
+    </a>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
