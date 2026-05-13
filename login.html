@@ -38,6 +38,19 @@
     }
   </script>
 
+  <!-- AUTO THEME -->
+  <script>
+    const savedTheme = localStorage.getItem("theme");
+
+    if (
+      savedTheme === "dark" ||
+      (!savedTheme &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+  </script>
+
 </head>
 
 <body class="min-h-screen bg-[#F8FAFC] dark:bg-[#07162B] font-inter overflow-x-hidden transition-colors duration-500">
@@ -53,7 +66,7 @@
   <div class="bg-white/70 dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl shadow-2xl w-full max-w-md
               border border-white/30 dark:border-white/10 animate-fadeIn transition-all duration-500">
 
-    <!-- ================= HEADER ================= -->
+    <!-- HEADER -->
     <div class="mb-8 text-center">
 
       <img
@@ -72,7 +85,7 @@
 
     </div>
 
-    <!-- ================= FORM ================= -->
+    <!-- FORM -->
     <form id="loginForm" class="space-y-4">
 
       <input
@@ -204,10 +217,13 @@
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const form = document.getElementById("loginForm");
+
   const errorMsg = document.getElementById("error");
 
   const loginBtn = document.getElementById("loginBtn");
+
   const btnText = document.getElementById("btnText");
+
   const spinner = document.getElementById("spinner");
 
   const forgotBtn = document.getElementById("forgotPasswordBtn");
@@ -228,21 +244,25 @@
 
     spinner.classList.remove("hidden");
 
-    const email = document.getElementById("email").value.trim();
+    const email =
+      document.getElementById("email").value.trim();
 
-    const password = document.getElementById("password").value;
+    const password =
+      document.getElementById("password").value;
 
     try {
 
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
       const user = userCredential.user;
 
-      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userDoc =
+        await getDoc(doc(db, "users", user.uid));
 
       if (!userDoc.exists()) {
 
@@ -254,9 +274,21 @@
 
       const userData = userDoc.data();
 
-      // SAVE BIOMETRIC SESSION
-      localStorage.setItem("biometricUserEmail", email);
-      localStorage.setItem("biometricEnabled", "true");
+      // SAVE LOGIN FOR BIOMETRIC QUICK ACCESS
+      localStorage.setItem(
+        "mentora_saved_email",
+        email
+      );
+
+      localStorage.setItem(
+        "mentora_saved_password",
+        password
+      );
+
+      localStorage.setItem(
+        "mentora_biometric_enabled",
+        "true"
+      );
 
       if (userData.role === "admin") {
 
@@ -293,7 +325,8 @@
 
   forgotBtn.addEventListener("click", async () => {
 
-    const email = document.getElementById("email").value.trim();
+    const email =
+      document.getElementById("email").value.trim();
 
     if (!email) {
 
@@ -330,34 +363,32 @@
 
   // ================= BIOMETRIC LOGIN =================
 
-  if (!window.PublicKeyCredential) {
-
-    biometricBtn.style.display = "none";
-
-  }
-
   biometricBtn.addEventListener("click", async () => {
 
     try {
 
-      const available =
-        await PublicKeyCredential
-          .isUserVerifyingPlatformAuthenticatorAvailable();
-
-      if (!available) {
+      // CHECK SUPPORT
+      if (
+        !window.PublicKeyCredential ||
+        !navigator.credentials
+      ) {
 
         alert(
-          "Biometric login is not available on this device."
+          "Biometric login is not supported on this device."
         );
 
         return;
 
       }
 
+      // CHECK SAVED LOGIN
       const savedEmail =
-        localStorage.getItem("biometricUserEmail");
+        localStorage.getItem("mentora_saved_email");
 
-      if (!savedEmail) {
+      const savedPassword =
+        localStorage.getItem("mentora_saved_password");
+
+      if (!savedEmail || !savedPassword) {
 
         alert(
           "Please login normally once before using biometrics."
@@ -367,42 +398,94 @@
 
       }
 
-      // BIOMETRIC PROMPT
-      await navigator.credentials.get({
-        publicKey: {
-          challenge: new Uint8Array(32),
-          timeout: 60000,
-          userVerification: "required",
-          allowCredentials: []
-        }
-      });
+      // DEVICE AUTH
+      const available =
+        await PublicKeyCredential
+          .isUserVerifyingPlatformAuthenticatorAvailable();
 
-      alert("✅ Biometrics verified successfully!");
+      if (!available) {
 
-      // AUTO REDIRECT
-      const userSnapshot = await getDoc(
-        doc(db, "users", auth.currentUser.uid)
-      );
+        alert(
+          "No fingerprint or biometric authentication available on this device."
+        );
 
-      const userData = userSnapshot.data();
-
-      if (userData.role === "admin") {
-
-        window.location.href = "admin.html";
-
-      } else {
-
-        window.location.href = "dashboard.html";
+        return;
 
       }
+
+      // SIMPLE BIOMETRIC PROMPT
+      const challenge = new Uint8Array(32);
+
+      crypto.getRandomValues(challenge);
+
+      try {
+
+        await navigator.credentials.get({
+          publicKey: {
+            challenge,
+            timeout: 60000,
+            userVerification: "required",
+            allowCredentials: []
+          }
+        });
+
+      } catch {
+
+        // FALLBACK FOR DEVICES WITHOUT PASSKEYS
+        const useFallback = confirm(
+          "Passkeys are not configured on this device.\n\nUse device confirmation login instead?"
+        );
+
+        if (!useFallback) return;
+
+      }
+
+      // AUTO LOGIN
+      biometricBtn.innerHTML =
+        "🔓 Verifying Biometrics...";
+
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          savedEmail,
+          savedPassword
+        );
+
+      const user = userCredential.user;
+
+      const userDoc =
+        await getDoc(doc(db, "users", user.uid));
+
+      const userData = userDoc.data();
+
+      biometricBtn.innerHTML =
+        "✅ Access Granted";
+
+      setTimeout(() => {
+
+        if (userData.role === "admin") {
+
+          window.location.href = "admin.html";
+
+        } else {
+
+          window.location.href = "dashboard.html";
+
+        }
+
+      }, 1000);
 
     } catch (err) {
 
       console.log(err);
 
-      alert(
-        "Biometric authentication failed or cancelled."
-      );
+      biometricBtn.innerHTML =
+        "🔐 Login with Biometrics";
+
+      errorMsg.textContent =
+        "Biometric login failed. Please try normal login.";
+
+      errorMsg.classList.remove("hidden");
 
     }
 
