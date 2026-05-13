@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -60,7 +61,7 @@
 
 <div class="absolute w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px] pointer-events-none"></div>
 
-<!-- ================= CONTAINER ================= -->
+<!-- CONTAINER -->
 <div class="min-h-screen flex items-center justify-center px-4 relative z-10">
 
   <div class="bg-white/70 dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl shadow-2xl w-full max-w-md
@@ -159,7 +160,7 @@
 
       </button>
 
-      <!-- BIOMETRIC LOGIN -->
+      <!-- BIOMETRIC BUTTON -->
       <button
         type="button"
         id="biometricLoginBtn"
@@ -201,7 +202,7 @@
   </div>
 </div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- SCRIPT -->
 <script type="module">
 
   import { auth, db } from "./js/firebase.js";
@@ -229,6 +230,77 @@
   const forgotBtn = document.getElementById("forgotPasswordBtn");
 
   const biometricBtn = document.getElementById("biometricLoginBtn");
+
+  // ================= CREATE PASSKEY =================
+
+  async function createPasskey(email) {
+
+    try {
+
+      if (
+        !window.PublicKeyCredential ||
+        !navigator.credentials
+      ) {
+        return;
+      }
+
+      const challenge = new Uint8Array(32);
+
+      crypto.getRandomValues(challenge);
+
+      const userId = new Uint8Array(16);
+
+      crypto.getRandomValues(userId);
+
+      await navigator.credentials.create({
+        publicKey: {
+
+          challenge,
+
+          rp: {
+            name: "Mentora Edge"
+          },
+
+          user: {
+            id: userId,
+            name: email,
+            displayName: email
+          },
+
+          pubKeyCredParams: [
+            {
+              type: "public-key",
+              alg: -7
+            }
+          ],
+
+          authenticatorSelection: {
+            authenticatorAttachment: "platform",
+            residentKey: "preferred",
+            userVerification: "required"
+          },
+
+          timeout: 60000,
+
+          attestation: "none"
+
+        }
+      });
+
+      localStorage.setItem(
+        "mentora_passkey_created",
+        "true"
+      );
+
+      console.log("✅ Passkey created");
+
+    } catch (err) {
+
+      console.log("Passkey skipped:", err);
+
+    }
+
+  }
 
   // ================= NORMAL LOGIN =================
 
@@ -274,7 +346,7 @@
 
       const userData = userDoc.data();
 
-      // SAVE LOGIN FOR BIOMETRIC QUICK ACCESS
+      // SAVE LOGIN
       localStorage.setItem(
         "mentora_saved_email",
         email
@@ -289,6 +361,9 @@
         "mentora_biometric_enabled",
         "true"
       );
+
+      // CREATE PASSKEY
+      await createPasskey(email);
 
       if (userData.role === "admin") {
 
@@ -367,7 +442,6 @@
 
     try {
 
-      // CHECK SUPPORT
       if (
         !window.PublicKeyCredential ||
         !navigator.credentials
@@ -381,7 +455,6 @@
 
       }
 
-      // CHECK SAVED LOGIN
       const savedEmail =
         localStorage.getItem("mentora_saved_email");
 
@@ -398,52 +471,27 @@
 
       }
 
-      // DEVICE AUTH
-      const available =
-        await PublicKeyCredential
-          .isUserVerifyingPlatformAuthenticatorAvailable();
+      biometricBtn.innerHTML =
+        "🔓 Verifying...";
 
-      if (!available) {
-
-        alert(
-          "No fingerprint or biometric authentication available on this device."
-        );
-
-        return;
-
-      }
-
-      // SIMPLE BIOMETRIC PROMPT
       const challenge = new Uint8Array(32);
 
       crypto.getRandomValues(challenge);
 
-      try {
+      // REAL BIOMETRIC PROMPT
+      await navigator.credentials.get({
+        publicKey: {
 
-        await navigator.credentials.get({
-          publicKey: {
-            challenge,
-            timeout: 60000,
-            userVerification: "required",
-            allowCredentials: []
-          }
-        });
+          challenge,
 
-      } catch {
+          timeout: 60000,
 
-        // FALLBACK FOR DEVICES WITHOUT PASSKEYS
-        const useFallback = confirm(
-          "Passkeys are not configured on this device.\n\nUse device confirmation login instead?"
-        );
+          userVerification: "required"
 
-        if (!useFallback) return;
+        }
+      });
 
-      }
-
-      // AUTO LOGIN
-      biometricBtn.innerHTML =
-        "🔓 Verifying Biometrics...";
-
+      // LOGIN AFTER BIOMETRICS
       const userCredential =
         await signInWithEmailAndPassword(
           auth,
@@ -483,7 +531,7 @@
         "🔐 Login with Biometrics";
 
       errorMsg.textContent =
-        "Biometric login failed. Please try normal login.";
+        "Biometric authentication cancelled or failed.";
 
       errorMsg.classList.remove("hidden");
 
@@ -493,7 +541,7 @@
 
 </script>
 
-<!-- ================= STYLES ================= -->
+<!-- STYLES -->
 <style>
 
 html {
