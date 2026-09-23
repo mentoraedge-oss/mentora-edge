@@ -436,335 +436,6 @@ body {
 
 
 /* ======================================================
-   NAVBAR
-   ====================================================== */
-
-.site-header {
-
-  background:
-    rgba(255,255,255,.76);
-
-  backdrop-filter:
-    blur(20px);
-
-  -webkit-backdrop-filter:
-    blur(20px);
-
-  border-bottom:
-    1px solid rgba(15,42,68,.08);
-
-  box-shadow:
-    0 10px 35px rgba(15,42,68,.05);
-
-  transition:
-    background .4s ease,
-    box-shadow .4s ease,
-    border-color .4s ease;
-
-}
-
-
-.site-header.scrolled {
-
-  background:
-    rgba(255,255,255,.92);
-
-  box-shadow:
-    0 15px 45px rgba(15,42,68,.10);
-
-  border-bottom-color:
-    rgba(15,42,68,.12);
-
-}
-
-
-/* ======================================================
-   BRAND
-   ====================================================== */
-
-.brand {
-
-  display:
-    inline-flex;
-
-  align-items:
-    center;
-
-  gap:
-    9px;
-
-}
-
-
-.brand::before {
-
-  content:
-    "";
-
-  width:
-    9px;
-
-  height:
-    9px;
-
-  border-radius:
-    50%;
-
-  background:
-    var(--green);
-
-  box-shadow:
-
-    0 0 0 5px
-    rgba(34,197,94,.10),
-
-    0 0 20px
-    rgba(34,197,94,.42);
-
-  animation:
-    brandPulse 3s ease-in-out infinite;
-
-}
-
-
-@keyframes brandPulse {
-
-  0%,
-  100% {
-
-    transform:
-      scale(1);
-
-  }
-
-  50% {
-
-    transform:
-      scale(1.12);
-
-  }
-
-}
-
-
-/* ======================================================
-   NAV LINKS
-   ====================================================== */
-
-.nav-link {
-
-  position:
-    relative;
-
-  padding:
-    7px 2px;
-
-  color:
-    #334155;
-
-  transition:
-    color .3s ease,
-    transform .3s var(--ease);
-
-}
-
-
-.nav-link::after {
-
-  content:
-    "";
-
-  position:
-    absolute;
-
-  left:
-    0;
-
-  bottom:
-    0;
-
-  width:
-    0;
-
-  height:
-    2px;
-
-  border-radius:
-    99px;
-
-  background:
-    var(--green);
-
-  transition:
-    width .35s var(--ease);
-
-}
-
-
-.nav-link:hover {
-
-  color:
-    var(--green);
-
-  transform:
-    translateY(-2px);
-
-}
-
-
-.nav-link:hover::after,
-.nav-link.active::after {
-
-  width:
-    100%;
-
-}
-
-
-.nav-link.active {
-
-  color:
-    var(--green);
-
-  font-weight:
-    700;
-
-}
-
-
-/* ======================================================
-   LOGIN
-   ====================================================== */
-
-.login-btn {
-
-  position:
-    relative;
-
-  overflow:
-    hidden;
-
-  transition:
-    transform .35s var(--ease),
-    box-shadow .35s ease;
-
-}
-
-
-.login-btn::before {
-
-  content:
-    "";
-
-  position:
-    absolute;
-
-  inset:
-    0;
-
-  transform:
-    translateX(-110%);
-
-  background:
-
-    linear-gradient(
-      100deg,
-      transparent,
-      rgba(255,255,255,.35),
-      transparent
-    );
-
-  transition:
-    transform .65s ease;
-
-}
-
-
-.login-btn:hover::before {
-
-  transform:
-    translateX(110%);
-
-}
-
-
-.login-btn:hover {
-
-  transform:
-    translateY(-3px);
-
-  box-shadow:
-    0 12px 28px rgba(15,42,68,.15);
-
-}
-
-
-/* ======================================================
-   MOBILE MENU
-   ====================================================== */
-
-.mobile-menu {
-
-  transform-origin:
-    top;
-
-  animation:
-    mobileMenuIn .35s var(--ease) both;
-
-}
-
-
-@keyframes mobileMenuIn {
-
-  from {
-
-    opacity:
-      0;
-
-    transform:
-      translateY(-12px)
-      scaleY(.96);
-
-  }
-
-  to {
-
-    opacity:
-      1;
-
-    transform:
-      translateY(0)
-      scaleY(1);
-
-  }
-
-}
-
-
-.mobile-nav-link {
-
-  padding:
-    10px 0;
-
-  transition:
-    color .3s ease,
-    transform .3s var(--ease);
-
-}
-
-
-.mobile-nav-link:hover {
-
-  color:
-    var(--green);
-
-  transform:
-    translateX(5px);
-
-}
-
-
-/* ======================================================
    HERO
    ====================================================== */
 
@@ -3212,78 +2883,6 @@ body {
 
 
 /* ======================================================
-   FOOTER
-   ====================================================== */
-
-.site-footer {
-
-  position:
-    relative;
-
-  overflow:
-    hidden;
-
-  background:
-    #091D30;
-
-  color:
-    rgba(255,255,255,.55);
-
-}
-
-
-.site-footer::before {
-
-  content:
-    "";
-
-  position:
-    absolute;
-
-  width:
-    380px;
-
-  height:
-    380px;
-
-  right:
-    -180px;
-
-  top:
-    -230px;
-
-  border-radius:
-    50%;
-
-  background:
-
-    radial-gradient(
-      circle,
-      rgba(34,197,94,.10),
-      transparent 70%
-    );
-
-}
-
-
-.footer-link {
-
-  transition:
-    color .3s ease,
-    transform .3s var(--ease);
-
-}
-
-
-.footer-link:hover {
-
-  color:
-    var(--green-soft);
-
-}
-
-
-/* ======================================================
    REVEALS
    ====================================================== */
 
@@ -3721,33 +3320,283 @@ body {
 }
 
 
-/* Master Mentora Edge navbar alignment */
-.site-header {
-  transition: background .4s ease, box-shadow .4s ease, border-color .4s ease, transform .4s var(--ease);
-}
 
-.site-header.scrolled {
-  background: rgba(255,255,255,.92);
-  box-shadow: 0 15px 45px rgba(15,42,68,.10);
-  border-bottom-color: rgba(15,42,68,.12);
-}
 
-.mobile-nav-link {
-  border-radius: 12px;
-  transition: color .3s ease, transform .3s var(--ease), background .3s ease;
-}
+    .container{
+      width:min(100% - 40px,1180px);
+      margin:0 auto;
+    }
 
-.mobile-nav-link:hover {
-  color: var(--green);
-  transform: translateX(5px);
-}
+    .navbar{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:1000;
+      padding:15px 0;
+      transition:background .4s ease,box-shadow .4s ease,padding .4s ease,backdrop-filter .4s ease;
+    }
 
-@media (prefers-reduced-motion: reduce) {
-  .site-header,
-  .mobile-nav-link {
-    transition: none !important;
-  }
-}
+    .navbar.scrolled{
+      padding:9px 0;
+      background:rgba(248,250,252,.78);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      box-shadow:0 10px 35px rgba(15,42,68,.09);
+      border-bottom:1px solid rgba(15,42,68,.07);
+    }
+
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-width:max-content;
+      color:var(--navy);
+      text-decoration:none;
+    }
+
+    .brand-logo{
+      width:43px;
+      height:43px;
+      object-fit:contain;
+      border-radius:13px;
+      box-shadow:0 10px 25px rgba(15,42,68,.15);
+      transition:transform .45s var(--ease),box-shadow .45s ease;
+    }
+
+    .brand:hover .brand-logo{
+      transform:translateY(-3px) rotate(-2deg);
+      box-shadow:0 15px 32px rgba(15,42,68,.20);
+    }
+
+    .brand-copy{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .brand-name{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:-.035em;
+      line-height:1;
+    }
+
+    .brand-tagline{
+      font-size:8px;
+      font-weight:750;
+      letter-spacing:.08em;
+      color:#6b7d8e;
+      text-transform:uppercase;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+
+    .nav-link{
+      position:relative;
+      padding:10px 11px;
+      color:#31485e;
+      font-size:13px;
+      font-weight:700;
+      transition:color .3s ease,transform .3s ease;
+      white-space:nowrap;
+      text-decoration:none;
+    }
+
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:11px;
+      right:11px;
+      bottom:4px;
+      height:2px;
+      border-radius:99px;
+      background:var(--green);
+      transform:scaleX(0);
+      transform-origin:center;
+      transition:transform .35s var(--ease);
+    }
+
+    .nav-link:hover{
+      color:var(--navy);
+      transform:translateY(-2px);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after{
+      transform:scaleX(1);
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .nav-login,
+    .nav-cta{
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:800;
+      transition:transform .3s var(--ease),box-shadow .3s ease,background .3s ease;
+      text-decoration:none;
+    }
+
+    .nav-login{
+      color:var(--navy);
+      background:rgba(255,255,255,.54);
+      border:1px solid rgba(15,42,68,.08);
+    }
+
+    .nav-cta{
+      color:#fff;
+      background:var(--navy);
+      box-shadow:0 9px 22px rgba(15,42,68,.16);
+    }
+
+    .nav-login:hover,
+    .nav-cta:hover{
+      transform:translateY(-3px);
+    }
+
+    .nav-cta:hover{
+      box-shadow:0 14px 30px rgba(15,42,68,.23);
+    }
+
+    .menu-btn{
+      display:none;
+      border:0;
+      background:transparent;
+      color:var(--navy);
+      font-size:27px;
+      line-height:1;
+      cursor:pointer;
+    }
+
+    .mobile-menu{
+      display:none;
+      margin-top:12px;
+      padding:12px;
+      border-radius:20px;
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(255,255,255,.9);
+      box-shadow:0 18px 45px rgba(15,42,68,.12);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+
+    .mobile-menu.open{
+      display:block;
+      animation:menuIn .35s var(--ease) both;
+    }
+
+    .mobile-menu a{
+      display:block;
+      padding:12px 11px;
+      border-radius:12px;
+      color:#31485e;
+      font-size:13px;
+      font-weight:700;
+      transition:background .25s ease,color .25s ease,transform .25s ease;
+      text-decoration:none;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a.active{
+      background:rgba(34,197,94,.09);
+      color:var(--navy);
+      transform:translateX(4px);
+    }
+
+    @keyframes menuIn{
+      from{opacity:0;transform:translateY(-8px) scale(.98)}
+      to{opacity:1;transform:none}
+    }
+
+    /* MASTER FOOTER */
+    footer{
+      padding:35px 0 25px;
+      border-top:1px solid rgba(15,42,68,.08);
+      background:rgba(255,255,255,.34);
+    }
+
+    .footer-top{
+      display:grid;
+      grid-template-columns:1.4fr 1fr 1fr;
+      gap:45px;
+      padding-bottom:30px;
+    }
+
+    .footer-brand p{
+      font-size:12px;
+      line-height:1.7;
+      color:var(--muted);
+      max-width:370px;
+      margin-top:12px;
+    }
+
+    .footer-col h4{
+      font-size:11px;
+      color:var(--navy);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+
+    .footer-col a{
+      display:block;
+      font-size:11px;
+      color:#65788b;
+      margin-top:10px;
+      transition:transform .25s ease,color .25s ease;
+      text-decoration:none;
+    }
+
+    .footer-col a:hover{
+      transform:translateX(4px);
+      color:var(--green);
+    }
+
+    .footer-bottom{
+      padding-top:20px;
+      border-top:1px solid rgba(15,42,68,.08);
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      color:#8290a0;
+      font-size:9px;
+    }
+
+    @media(max-width:1180px){
+      .nav-links{gap:0}
+      .nav-link{padding-left:8px;padding-right:8px;font-size:12px}
+      .nav-link::after{left:8px;right:8px}
+      .brand-tagline{display:none}
+    }
+
+    @media(max-width:1050px){
+      .nav-links,.nav-actions{display:none}
+      .menu-btn{display:block}
+      .footer-top{grid-template-columns:1fr 1fr}
+    }
+
+    @media(max-width:760px){
+      .container{width:min(100% - 28px,1180px)}
+      .footer-top{grid-template-columns:1fr}
+      .footer-bottom{flex-direction:column}
+    }
+
 
 </style>
 
@@ -3779,58 +3628,62 @@ body {
      NAVBAR
      ===================================================== -->
 
-<header id="siteHeader" class="site-header fixed top-0 left-0 right-0 z-50">
-  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-    <div class="h-[76px] flex items-center justify-between">
+<header class="navbar" id="siteHeader">
+    <div class="container">
+      <div class="nav-inner">
 
-      <a href="index.html" class="flex items-center gap-3 group" aria-label="Mentora Edge Home">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primarySoft flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-          <img src="Assets/Images/mentora-edge-logo.png" alt="Mentora Edge Logo" class="w-8 h-8 object-contain" />
+        <a href="index.html" class="brand" aria-label="Mentora Edge Home">
+          <img
+            src="Assets/Images/mentora-edge-logo.png"
+            alt="Mentora Edge"
+            class="brand-logo"
+          >
+          <span class="brand-copy">
+            <span class="brand-name">Mentora Edge</span>
+            <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+          </span>
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="programs.html">Programs</a>
+          <a class="nav-link" href="offline.html">Offline Coaching</a>
+          <a class="nav-link active" href="online-tution.html" aria-current="page">Online Tuition</a>
+          <a class="nav-link" href="educators.html">Educators</a>
+          <a class="nav-link" href="learning-platform.html">Learning Platform</a>
+          <a class="nav-link" href="resources.html">Resources</a>
+          <a class="nav-link" href="about.html">About</a>
+        </nav>
+
+        <div class="nav-actions">
+          <a class="nav-login" href="login.html">Login</a>
+          <a class="nav-cta" href="enquiry.html">Book an Enquiry</a>
         </div>
-        <div>
-          <div class="text-lg sm:text-xl font-extrabold tracking-tight text-primary">Mentora Edge</div>
-          <div class="hidden sm:block text-[10px] uppercase tracking-[0.18em] text-gray-500">Shaping Minds · Sharpening Futures</div>
-        </div>
-      </a>
 
-      <nav class="hidden xl:flex items-center gap-6 text-sm font-semibold" aria-label="Primary Navigation">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="programs.html" class="nav-link">Programs</a>
-        <a href="offline.html" class="nav-link">Offline Coaching</a>
-        <a href="online-tution.html" class="nav-link active" aria-current="page">Online Tuition</a>
-        <a href="educators.html" class="nav-link">Educators</a>
-        <a href="learning-platform.html" class="nav-link">Learning Platform</a>
-        <a href="resources.html" class="nav-link">Resources</a>
-        <a href="about.html" class="nav-link">About</a>
-        <a href="login.html" class="px-4 py-2 rounded-xl border border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">Login</a>
-        <a href="enquiry.html" class="px-5 py-2.5 rounded-xl bg-accent text-white shadow-lg shadow-green-500/20 hover:bg-green-600 hover:-translate-y-0.5 transition-all duration-300">Book an Enquiry</a>
-      </nav>
+        <button
+          id="menuBtn"
+          class="menu-btn"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          type="button"
+        >☰</button>
 
-      <button id="menuBtn" type="button"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-        aria-controls="mobileMenu"
-        class="xl:hidden w-11 h-11 rounded-xl bg-primary/5 text-primary border border-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300">
-        <span id="menuIcon" class="text-xl">☰</span>
-      </button>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="programs.html">Programs</a>
+        <a href="offline.html">Offline Coaching</a>
+        <a href="online-tution.html" class="active" aria-current="page">Online Tuition</a>
+        <a href="educators.html">Educators</a>
+        <a href="learning-platform.html">Learning Platform</a>
+        <a href="resources.html">Resources</a>
+        <a href="about.html">About</a>
+        <a href="login.html">Login</a>
+        <a href="enquiry.html">Book an Enquiry</a>
+      </div>
     </div>
-  </div>
-
-  <div id="mobileMenu" class="hidden xl:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl">
-    <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-2" aria-label="Mobile Navigation">
-      <a href="index.html" class="mobile-nav-link">Home</a>
-      <a href="programs.html" class="mobile-nav-link">Programs</a>
-      <a href="offline.html" class="mobile-nav-link">Offline Coaching</a>
-      <a href="online-tution.html" class="mobile-nav-link text-primary font-bold bg-green-50/70" aria-current="page">Online Personal Tuition</a>
-      <a href="educators.html" class="mobile-nav-link">Educators</a>
-      <a href="learning-platform.html" class="mobile-nav-link">Learning Platform</a>
-      <a href="resources.html" class="mobile-nav-link">Resources</a>
-      <a href="about.html" class="mobile-nav-link">About</a>
-      <a href="login.html" class="mobile-nav-link text-primary font-bold">Login</a>
-      <a href="enquiry.html" class="mt-3 bg-accent text-white text-center px-5 py-3 rounded-xl font-semibold shadow-lg">Book an Enquiry</a>
-    </nav>
-  </div>
-</header>
+  </header>
 
 
 <!-- =====================================================
@@ -5637,92 +5490,61 @@ body {
      FOOTER
      ===================================================== -->
 
-<footer
-  class="site-footer
-         py-12">
+<footer>
+    <div class="container">
 
+      <div class="footer-top">
 
-  <div
-    class="max-w-7xl
-           mx-auto
-           px-6">
+        <div class="footer-brand">
 
+          <a href="index.html" class="brand">
+            <img
+              src="Assets/Images/mentora-edge-logo.png"
+              alt="Mentora Edge"
+              class="brand-logo"
+            >
 
-    <div
-      class="flex
-             flex-col
-             md:flex-row
-             justify-between
-             items-center
-             gap-5">
+            <span class="brand-copy">
+              <span class="brand-name">Mentora Edge</span>
+              <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+            </span>
+          </a>
 
+          <p>
+            Shaping Minds, Sharpening Futures. Structured CBSE learning
+            for Classes VI–XII through offline coaching, online personal
+            tuition and digital learning support.
+          </p>
 
-      <div>
+        </div>
 
-        <a
-          href="index.html"
-          class="text-xl
-                 font-extrabold
-                 text-white">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="programs.html">Programs</a>
+          <a href="offline.html">Offline Coaching</a>
+          <a href="online-tution.html">Online Tuition</a>
+          <a href="educators.html">Educators</a>
+          <a href="learning-platform.html">Learning Platform</a>
+        </div>
 
-          Mentora Edge
-
-        </a>
-
-        <p
-          class="text-sm
-                 mt-2">
-
-          Shaping Minds, Sharpening Futures
-
-        </p>
-
-      </div>
-
-
-      <div
-        class="flex
-               items-center
-               gap-5
-               text-sm">
-
-        <a
-          href="terms.html"
-          class="footer-link">
-
-          Terms
-
-        </a>
-
-        <a
-          href="privacy.html"
-          class="footer-link">
-
-          Privacy
-
-        </a>
+        <div class="footer-col">
+          <h4>Mentora Edge</h4>
+          <a href="resources.html">Resources</a>
+          <a href="about.html">About</a>
+          <a href="enquiry.html">Book an Enquiry</a>
+          <a href="register.html">Register</a>
+          <a href="login.html">Login</a>
+        </div>
 
       </div>
 
-    </div>
-
-
-    <div
-      class="mt-9
-             pt-6
-             border-t
-             border-white/10
-             text-center
-             text-sm">
-
-      © 2025 Mentora Edge.
-      All Rights Reserved.
+      <div class="footer-bottom">
+        <span>© 2026 Mentora Edge. All rights reserved.</span>
+        <span>Suhird Nagar, Opposite Circuit House, Begusarai, Bihar, India</span>
+      </div>
 
     </div>
-
-  </div>
-
-</footer>
+  </footer>
 
 
 <!-- =====================================================
@@ -5761,63 +5583,22 @@ const scrollProgress =
    MOBILE MENU
    ====================================================== */
 
-if (
-  menuBtn &&
-  mobileMenu
-) {
+if (menuBtn && mobileMenu) {
+  menuBtn.addEventListener("click", () => {
+    const open = mobileMenu.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    menuBtn.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+    menuBtn.textContent = open ? "×" : "☰";
+  });
 
-  menuBtn.addEventListener(
-    "click",
-    () => {
-
-      const hidden =
-        mobileMenu.classList.contains(
-          "hidden"
-        );
-
-      mobileMenu.classList.toggle(
-        "hidden"
-      );
-
-      menuBtn.setAttribute(
-        "aria-expanded",
-        String(hidden)
-      );
-
-      menuBtn.textContent =
-        hidden
-          ? "✕"
-          : "☰";
-
-    }
-  );
-
-
-  mobileMenu
-    .querySelectorAll("a")
-    .forEach(link => {
-
-      link.addEventListener(
-        "click",
-        () => {
-
-          mobileMenu.classList.add(
-            "hidden"
-          );
-
-          menuBtn.setAttribute(
-            "aria-expanded",
-            "false"
-          );
-
-          menuBtn.textContent =
-            "☰";
-
-        }
-      );
-
+  mobileMenu.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded", "false");
+      menuBtn.setAttribute("aria-label", "Open navigation menu");
+      menuBtn.textContent = "☰";
     });
-
+  });
 }
 
 

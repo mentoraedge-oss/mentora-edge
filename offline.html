@@ -592,6 +592,293 @@
         transform: none;
       }
     }
+  
+
+    /* =========================================================
+       MASTER HEADER / FOOTER STYLES
+    ========================================================== */
+
+:root{
+      --navy:#0F2A44;
+      --green:#22C55E;
+      --muted:#6b7d8e;
+      --ease:cubic-bezier(.22,1,.36,1);
+    }
+
+    .container{
+      width:min(100% - 40px,1180px);
+      margin:0 auto;
+    }
+
+    .navbar{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:1000;
+      padding:15px 0;
+      transition:background .4s ease,box-shadow .4s ease,padding .4s ease,backdrop-filter .4s ease;
+    }
+
+    .navbar.scrolled{
+      padding:9px 0;
+      background:rgba(248,250,252,.78);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      box-shadow:0 10px 35px rgba(15,42,68,.09);
+      border-bottom:1px solid rgba(15,42,68,.07);
+    }
+
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-width:max-content;
+      color:var(--navy);
+      text-decoration:none;
+    }
+
+    .brand-logo{
+      width:43px;
+      height:43px;
+      object-fit:contain;
+      border-radius:13px;
+      box-shadow:0 10px 25px rgba(15,42,68,.15);
+      transition:transform .45s var(--ease),box-shadow .45s ease;
+    }
+
+    .brand:hover .brand-logo{
+      transform:translateY(-3px) rotate(-2deg);
+      box-shadow:0 15px 32px rgba(15,42,68,.20);
+    }
+
+    .brand-copy{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .brand-name{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:-.035em;
+      line-height:1;
+    }
+
+    .brand-tagline{
+      font-size:8px;
+      font-weight:750;
+      letter-spacing:.08em;
+      color:#6b7d8e;
+      text-transform:uppercase;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+
+    .nav-link{
+      position:relative;
+      padding:10px 11px;
+      color:#31485e;
+      font-size:13px;
+      font-weight:700;
+      transition:color .3s ease,transform .3s ease;
+      white-space:nowrap;
+      text-decoration:none;
+    }
+
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:11px;
+      right:11px;
+      bottom:4px;
+      height:2px;
+      border-radius:99px;
+      background:var(--green);
+      transform:scaleX(0);
+      transform-origin:center;
+      transition:transform .35s var(--ease);
+    }
+
+    .nav-link:hover{
+      color:var(--navy);
+      transform:translateY(-2px);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after{
+      transform:scaleX(1);
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .nav-login,
+    .nav-cta{
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:800;
+      transition:transform .3s var(--ease),box-shadow .3s ease,background .3s ease;
+      text-decoration:none;
+    }
+
+    .nav-login{
+      color:var(--navy);
+      background:rgba(255,255,255,.54);
+      border:1px solid rgba(15,42,68,.08);
+    }
+
+    .nav-cta{
+      color:#fff;
+      background:var(--navy);
+      box-shadow:0 9px 22px rgba(15,42,68,.16);
+    }
+
+    .nav-login:hover,
+    .nav-cta:hover{
+      transform:translateY(-3px);
+    }
+
+    .nav-cta:hover{
+      box-shadow:0 14px 30px rgba(15,42,68,.23);
+    }
+
+    .menu-btn{
+      display:none;
+      border:0;
+      background:transparent;
+      color:var(--navy);
+      font-size:27px;
+      line-height:1;
+      cursor:pointer;
+    }
+
+    .mobile-menu{
+      display:none;
+      margin-top:12px;
+      padding:12px;
+      border-radius:20px;
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(255,255,255,.9);
+      box-shadow:0 18px 45px rgba(15,42,68,.12);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+
+    .mobile-menu.open{
+      display:block;
+      animation:menuIn .35s var(--ease) both;
+    }
+
+    .mobile-menu a{
+      display:block;
+      padding:12px 11px;
+      border-radius:12px;
+      color:#31485e;
+      font-size:13px;
+      font-weight:700;
+      transition:background .25s ease,color .25s ease,transform .25s ease;
+      text-decoration:none;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a.active{
+      background:rgba(34,197,94,.09);
+      color:var(--navy);
+      transform:translateX(4px);
+    }
+
+    @keyframes menuIn{
+      from{opacity:0;transform:translateY(-8px) scale(.98)}
+      to{opacity:1;transform:none}
+    }
+
+    /* MASTER FOOTER */
+    footer{
+      padding:35px 0 25px;
+      border-top:1px solid rgba(15,42,68,.08);
+      background:rgba(255,255,255,.34);
+    }
+
+    .footer-top{
+      display:grid;
+      grid-template-columns:1.4fr 1fr 1fr;
+      gap:45px;
+      padding-bottom:30px;
+    }
+
+    .footer-brand p{
+      font-size:12px;
+      line-height:1.7;
+      color:var(--muted);
+      max-width:370px;
+      margin-top:12px;
+    }
+
+    .footer-col h4{
+      font-size:11px;
+      color:var(--navy);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+
+    .footer-col a{
+      display:block;
+      font-size:11px;
+      color:#65788b;
+      margin-top:10px;
+      transition:transform .25s ease,color .25s ease;
+      text-decoration:none;
+    }
+
+    .footer-col a:hover{
+      transform:translateX(4px);
+      color:var(--green);
+    }
+
+    .footer-bottom{
+      padding-top:20px;
+      border-top:1px solid rgba(15,42,68,.08);
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      color:#8290a0;
+      font-size:9px;
+    }
+
+    @media(max-width:1180px){
+      .nav-links{gap:0}
+      .nav-link{padding-left:8px;padding-right:8px;font-size:12px}
+      .nav-link::after{left:8px;right:8px}
+      .brand-tagline{display:none}
+    }
+
+    @media(max-width:1050px){
+      .nav-links,.nav-actions{display:none}
+      .menu-btn{display:block}
+      .footer-top{grid-template-columns:1fr 1fr}
+    }
+
+    @media(max-width:760px){
+      .container{width:min(100% - 28px,1180px)}
+      .footer-top{grid-template-columns:1fr}
+      .footer-bottom{flex-direction:column}
+    }
   </style>
 </head>
 
@@ -601,48 +888,60 @@
        NAVBAR
   ========================================== -->
 
-  <header id="siteHeader" class="site-header fixed top-0 left-0 right-0 z-50">
-    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-      <div class="h-[76px] flex items-center justify-between">
-        <a href="index.html" class="flex items-center gap-3 group" aria-label="Mentora Edge Home">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primarySoft flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-            <img src="Assets/Images/mentora-edge-logo.png" alt="Mentora Edge Logo" class="w-8 h-8 object-contain" />
-          </div>
-          <div>
-            <div class="text-lg sm:text-xl font-extrabold tracking-tight text-primary">Mentora Edge</div>
-            <div class="hidden sm:block text-[10px] uppercase tracking-[0.18em] text-gray-500">Shaping Minds · Sharpening Futures</div>
-          </div>
+  <header class="navbar" id="siteHeader">
+    <div class="container">
+      <div class="nav-inner">
+
+        <a href="index.html" class="brand" aria-label="Mentora Edge Home">
+          <img
+            src="Assets/Images/mentora-edge-logo.png"
+            alt="Mentora Edge"
+            class="brand-logo"
+          >
+          <span class="brand-copy">
+            <span class="brand-name">Mentora Edge</span>
+            <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+          </span>
         </a>
-        <nav class="hidden xl:flex items-center gap-6 text-sm font-semibold" aria-label="Primary Navigation">
-          <a href="index.html" class="nav-link">Home</a>
-          <a href="programs.html" class="nav-link">Programs</a>
-          <a href="offline.html" class="nav-link active" aria-current="page">Offline Coaching</a>
-          <a href="online-tution.html" class="nav-link">Online Tuition</a>
-          <a href="educators.html" class="nav-link">Educators</a>
-          <a href="learning-platform.html" class="nav-link">Learning Platform</a>
-          <a href="resources.html" class="nav-link">Resources</a>
-          <a href="about.html" class="nav-link">About</a>
-          <a href="login.html" class="px-4 py-2 rounded-xl border border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">Login</a>
-          <a href="enquiry.html" class="px-5 py-2.5 rounded-xl bg-accent text-white shadow-lg shadow-green-500/20 hover:bg-green-600 hover:-translate-y-0.5 transition-all duration-300">Book an Enquiry</a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="programs.html">Programs</a>
+          <a class="nav-link active" href="offline.html" aria-current="page">Offline Coaching</a>
+          <a class="nav-link" href="online-tution.html">Online Tuition</a>
+          <a class="nav-link" href="educators.html">Educators</a>
+          <a class="nav-link" href="learning-platform.html">Learning Platform</a>
+          <a class="nav-link" href="resources.html">Resources</a>
+          <a class="nav-link" href="about.html">About</a>
         </nav>
-        <button id="menuBtn" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileMenu" class="xl:hidden w-11 h-11 rounded-xl bg-primary/5 text-primary border border-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300">
-          <span id="menuIcon" class="text-xl">☰</span>
-        </button>
+
+        <div class="nav-actions">
+          <a class="nav-login" href="login.html">Login</a>
+          <a class="nav-cta" href="enquiry.html">Book an Enquiry</a>
+        </div>
+
+        <button
+          id="menuBtn"
+          class="menu-btn"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          type="button"
+        >☰</button>
+
       </div>
-    </div>
-    <div id="mobileMenu" class="hidden xl:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl">
-      <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-2" aria-label="Mobile Navigation">
-        <a href="index.html" class="mobile-nav-link">Home</a>
-        <a href="programs.html" class="mobile-nav-link">Programs</a>
-        <a href="offline.html" class="mobile-nav-link text-primary font-bold bg-green-50/70" aria-current="page">Offline Coaching</a>
-        <a href="online-tution.html" class="mobile-nav-link">Online Personal Tuition</a>
-        <a href="educators.html" class="mobile-nav-link">Educators</a>
-        <a href="learning-platform.html" class="mobile-nav-link">Learning Platform</a>
-        <a href="resources.html" class="mobile-nav-link">Resources</a>
-        <a href="about.html" class="mobile-nav-link">About</a>
-        <a href="login.html" class="mobile-nav-link text-primary font-bold">Login</a>
-        <a href="enquiry.html" class="mt-3 bg-accent text-white text-center px-5 py-3 rounded-xl font-semibold shadow-lg">Book an Enquiry</a>
-      </nav>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="active" aria-current="page">Home</a>
+        <a href="programs.html">Programs</a>
+        <a href="offline.html">Offline Coaching</a>
+        <a href="online-tution.html">Online Tuition</a>
+        <a href="educators.html">Educators</a>
+        <a href="learning-platform.html">Learning Platform</a>
+        <a href="resources.html">Resources</a>
+        <a href="about.html">About</a>
+        <a href="login.html">Login</a>
+        <a href="enquiry.html">Book an Enquiry</a>
+      </div>
     </div>
   </header>
 
@@ -2006,200 +2305,60 @@
        FOOTER
   ========================================== -->
 
-  <footer class="bg-primary text-white">
+  <footer>
+    <div class="container">
 
-    <div
-      class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12"
-    >
+      <div class="footer-top">
 
-      <div
-        class="grid md:grid-cols-2 lg:grid-cols-4 gap-10"
-      >
+        <div class="footer-brand">
 
-        <!-- Brand -->
-
-        <div>
-
-          <div class="flex items-center gap-3">
-
-            <div
-              class="w-10 h-10 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center"
+          <a href="index.html" class="brand">
+            <img
+              src="Assets/Images/mentora-edge-logo.png"
+              alt="Mentora Edge"
+              class="brand-logo"
             >
-              <span class="font-extrabold">M</span>
-            </div>
 
-            <div>
-              <div class="font-extrabold text-lg">
-                Mentora Edge
-              </div>
-
-              <div class="text-xs text-white/50">
-                Shaping Minds. Sharpening Futures.
-              </div>
-            </div>
-
-          </div>
-
-          <p
-            class="mt-5 text-sm text-white/65 leading-6 max-w-sm"
-          >
-            Premium CBSE education through personalised offline coaching
-            in Begusarai and online personal tuition.
-          </p>
-
-        </div>
-
-
-        <!-- Navigation -->
-
-        <div>
-
-          <h3 class="font-bold text-white">
-            Explore
-          </h3>
-
-          <div
-            class="mt-4 space-y-3 text-sm text-white/65"
-          >
-
-            <a
-              href="index.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Home
-            </a>
-
-            <a
-              href="programs.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Programs
-            </a>
-
-            <a
-              href="about.html"
-              class="block hover:text-accentSoft transition"
-            >
-              About
-            </a>
-
-            <a
-              href="educators.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Educators
-            </a>
-
-          </div>
-
-        </div>
-
-
-        <!-- Learning -->
-
-        <div>
-
-          <h3 class="font-bold text-white">
-            Learning
-          </h3>
-
-          <div
-            class="mt-4 space-y-3 text-sm text-white/65"
-          >
-
-            <a
-              href="offline.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Offline Coaching
-            </a>
-
-            <a
-              href="login.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Learning Portal
-            </a>
-
-            <a
-              href="register.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Registration
-            </a>
-
-            <a
-              href="enquiry.html"
-              class="block hover:text-accentSoft transition"
-            >
-              Book an Enquiry
-            </a>
-
-          </div>
-
-        </div>
-
-
-        <!-- Contact -->
-
-        <div>
-
-          <h3 class="font-bold text-white">
-            Visit Mentora Edge
-          </h3>
-
-          <p
-            class="mt-4 text-sm text-white/65 leading-6"
-          >
-            Suhird Nagar,<br />
-            Opposite Circuit House,<br />
-            Begusarai, Bihar, India
-          </p>
-
-          <a
-            href="enquiry.html"
-            class="inline-flex mt-5 text-sm font-bold text-accentSoft hover:text-white transition"
-          >
-            Contact Us →
+            <span class="brand-copy">
+              <span class="brand-name">Mentora Edge</span>
+              <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+            </span>
           </a>
 
+          <p>
+            Shaping Minds, Sharpening Futures. Structured CBSE learning
+            for Classes VI–XII through offline coaching, online personal
+            tuition and digital learning support.
+          </p>
+
+        </div>
+
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="programs.html">Programs</a>
+          <a href="offline.html">Offline Coaching</a>
+          <a href="online-tution.html">Online Tuition</a>
+          <a href="educators.html">Educators</a>
+          <a href="learning-platform.html">Learning Platform</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Mentora Edge</h4>
+          <a href="resources.html">Resources</a>
+          <a href="about.html">About</a>
+          <a href="enquiry.html">Book an Enquiry</a>
+          <a href="register.html">Register</a>
+          <a href="login.html">Login</a>
         </div>
 
       </div>
 
-
-      <!-- Bottom -->
-
-      <div
-        class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between gap-4 text-sm text-white/45"
-      >
-
-        <p>
-          © 2026 Mentora Edge. All rights reserved.
-        </p>
-
-        <div class="flex gap-5">
-
-          <a
-            href="terms.html"
-            class="hover:text-white transition"
-          >
-            Terms & Conditions
-          </a>
-
-          <a
-            href="privacy.html"
-            class="hover:text-white transition"
-          >
-            Privacy Policy
-          </a>
-
-        </div>
-
+      <div class="footer-bottom">
+        <span>© 2026 Mentora Edge. All rights reserved.</span>
+        <span>Suhird Nagar, Opposite Circuit House, Begusarai, Bihar, India</span>
       </div>
 
     </div>
-
   </footer>
 
 
@@ -2216,44 +2375,33 @@
 
       const menuBtn = document.getElementById("menuBtn");
       const mobileMenu = document.getElementById("mobileMenu");
-      const menuIcon = document.getElementById("menuIcon");
       const siteHeader = document.getElementById("siteHeader");
 
       if (menuBtn && mobileMenu) {
 
         menuBtn.addEventListener("click", () => {
-
-          const isHidden = mobileMenu.classList.contains("hidden");
-
-          mobileMenu.classList.toggle("hidden");
+          const open = mobileMenu.classList.toggle("open");
 
           menuBtn.setAttribute(
             "aria-expanded",
-            String(isHidden)
+            open ? "true" : "false"
           );
 
-          if (menuIcon) menuIcon.textContent = isHidden ? "✕" : "☰";
+          menuBtn.setAttribute(
+            "aria-label",
+            open ? "Close navigation menu" : "Open navigation menu"
+          );
 
+          menuBtn.textContent = open ? "×" : "☰";
         });
 
-
-        /* Close menu when link clicked */
-
-        mobileMenu.querySelectorAll("a").forEach((link) => {
-
+        mobileMenu.querySelectorAll("a").forEach(link => {
           link.addEventListener("click", () => {
-
-            mobileMenu.classList.add("hidden");
-
-            menuBtn.setAttribute(
-              "aria-expanded",
-              "false"
-            );
-
-            if (menuIcon) menuIcon.textContent = "☰";
-
+            mobileMenu.classList.remove("open");
+            menuBtn.setAttribute("aria-expanded", "false");
+            menuBtn.setAttribute("aria-label", "Open navigation menu");
+            menuBtn.textContent = "☰";
           });
-
         });
 
       }

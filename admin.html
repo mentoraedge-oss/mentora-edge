@@ -826,7 +826,6 @@ async function loadMaterials(){
       tbody.appendChild(tr);
     });
     if(!count)tbody.innerHTML='<tr><td colspan="4" class="empty">No study materials uploaded yet.</td></tr>';
-    $("metricMaterials")?.textContent=count;
   }catch(error){
     console.error(error);
     tbody.innerHTML='<tr><td colspan="4" class="empty">Materials could not be loaded.</td></tr>';
