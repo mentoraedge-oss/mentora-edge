@@ -2401,32 +2401,33 @@
 
     /* Navbar scroll state */
     const onScroll = () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 25);
+      if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 25);
     };
 
     window.addEventListener('scroll', onScroll, { passive:true });
     onScroll();
 
     /* Mobile menu */
-    menuBtn.addEventListener('click', () => {
-      const open = mobileMenu.classList.toggle('open');
-
-      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      menuBtn.setAttribute(
-        'aria-label',
-        open ? 'Close navigation menu' : 'Open navigation menu'
-      );
-      menuBtn.textContent = open ? '×' : '☰';
-    });
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        menuBtn.setAttribute('aria-expanded','false');
-        menuBtn.setAttribute('aria-label','Open navigation menu');
-        menuBtn.textContent = '☰';
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener('click', () => {
+        const open = mobileMenu.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        menuBtn.setAttribute(
+          'aria-label',
+          open ? 'Close navigation menu' : 'Open navigation menu'
+        );
+        menuBtn.textContent = open ? '×' : '☰';
       });
-    });
+
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+          menuBtn.setAttribute('aria-expanded','false');
+          menuBtn.setAttribute('aria-label','Open navigation menu');
+          menuBtn.textContent = '☰';
+        });
+      });
+    }
 
     /* Reveal animations */
     const reduceMotion = window.matchMedia(
@@ -2434,7 +2435,6 @@
     ).matches;
 
     if (!reduceMotion) {
-
       const observer = new IntersectionObserver(
         entries => {
           entries.forEach(entry => {
@@ -2444,22 +2444,17 @@
             }
           });
         },
-        {
-          threshold:.12,
-          rootMargin:'0px 0px -45px 0px'
-        }
+        { threshold:.12, rootMargin:'0px 0px -45px 0px' }
       );
 
       document
         .querySelectorAll('.reveal,.reveal-left,.reveal-right,.stagger')
         .forEach(el => observer.observe(el));
 
-      /* Ambient parallax */
       window.addEventListener(
         'scroll',
         () => {
           const y = window.scrollY;
-
           document.querySelectorAll('.orb').forEach((orb,i) => {
             const speed = [0.025,0.018,0.035][i] || 0.02;
             orb.style.translate = `0 ${y * speed}px`;
@@ -2467,89 +2462,236 @@
         },
         { passive:true }
       );
-
     } else {
-
       document
         .querySelectorAll('.reveal,.reveal-left,.reveal-right,.stagger')
         .forEach(el => el.classList.add('active'));
-
     }
 
-    /* Resource filtering + search */
+    /* =========================================================
+       RESOURCE FILTERING + SEARCH
+       ========================================================= */
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const resourceCards = Array.from(
-      document.querySelectorAll('.resource-card')
-    );
+    const resourceGrid = document.getElementById('resourceGrid');
     const resourceSearch = document.getElementById('resourceSearch');
     const emptyState = document.getElementById('emptyState');
 
     let activeFilter = 'all';
 
+    function getResourceCards() {
+      return Array.from(document.querySelectorAll('.resource-card'));
+    }
+
     function updateResources(){
-
-      const query = resourceSearch.value
-        .trim()
-        .toLowerCase();
-
+      const query = (resourceSearch?.value || '').trim().toLowerCase();
+      const cards = getResourceCards();
       let visibleCount = 0;
 
-      resourceCards.forEach(card => {
-
-        const type = card.dataset.type || '';
-        const classGroup = card.dataset.class || '';
-        const searchable = (
-          card.dataset.search || ''
-        ).toLowerCase();
+      cards.forEach(card => {
+        const type = (card.dataset.type || '').toLowerCase();
+        const classGroup = (card.dataset.class || '').toLowerCase();
+        const searchable = (card.dataset.search || '').toLowerCase();
 
         const matchesFilter =
           activeFilter === 'all' ||
           type === activeFilter ||
           classGroup === activeFilter;
 
-        const matchesSearch =
-          !query ||
-          searchable.includes(query);
-
-        const show =
-          matchesFilter &&
-          matchesSearch;
+        const matchesSearch = !query || searchable.includes(query);
+        const show = matchesFilter && matchesSearch;
 
         card.classList.toggle('hidden', !show);
-
-        if(show) visibleCount++;
+        if (show) visibleCount++;
       });
 
-      emptyState.classList.toggle(
-        'show',
-        visibleCount === 0
-      );
+      if (emptyState) {
+        emptyState.classList.toggle('show', visibleCount === 0);
+      }
     }
 
     filterButtons.forEach(button => {
-
       button.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        activeFilter = button.dataset.filter || 'all';
+        updateResources();
+      });
+    });
 
-        filterButtons.forEach(btn =>
-          btn.classList.remove('active')
+    if (resourceSearch) {
+      resourceSearch.addEventListener('input', updateResources);
+    }
+
+    /* =========================================================
+       FIRESTORE RESOURCE CMS
+
+       Published resources from Admin CMS are added to the same
+       resource grid. The existing demonstration cards remain as
+       fallback content, so the page still works if Firebase fails.
+       ========================================================= */
+    (async function loadPublishedResources() {
+      try {
+        const { db } = await import('./js/firebase.js');
+        const { collection, getDocs } = await import(
+          'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
         );
 
-        button.classList.add('active');
+        const snapshot = await getDocs(collection(db, 'resources'));
 
-        activeFilter =
-          button.dataset.filter || 'all';
+        const published = [];
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          if (String(data.status || '').toLowerCase() === 'published') {
+            published.push({ id: docSnap.id, ...data });
+          }
+        });
+
+        published.sort((a,b) => {
+          const aTime = a.updatedAt?.toMillis?.() || a.createdAt?.toMillis?.() || 0;
+          const bTime = b.updatedAt?.toMillis?.() || b.createdAt?.toMillis?.() || 0;
+          return bTime - aTime;
+        });
+
+        if (!resourceGrid || published.length === 0) {
+          updateResources();
+          return;
+        }
+
+        const existingCmsIds = new Set(
+          getResourceCards()
+            .map(card => card.dataset.resourceId)
+            .filter(Boolean)
+        );
+
+        published.forEach(resource => {
+          if (existingCmsIds.has(resource.id)) return;
+
+          const card = createCmsResourceCard(resource);
+          resourceGrid.appendChild(card);
+        });
+
+        /* Re-run reveal observer for newly created cards. */
+        if (!reduceMotion && window.IntersectionObserver) {
+          const observer = new IntersectionObserver(
+            entries => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('active');
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold:.12, rootMargin:'0px 0px -45px 0px' }
+          );
+
+          resourceGrid
+            .querySelectorAll('.resource-card.reveal')
+            .forEach(el => observer.observe(el));
+        }
 
         updateResources();
 
-      });
+      } catch (error) {
+        console.error('Mentora Edge Resource CMS could not load:', error);
+        /* Keep the existing static resource cards visible. */
+        updateResources();
+      }
+    })();
 
-    });
+    function createCmsResourceCard(resource) {
+      const card = document.createElement('article');
+      card.className = 'resource-card glass glass-card reveal';
+      card.dataset.resourceId = resource.id;
+      card.dataset.type = normalizeResourceType(resource.type);
+      card.dataset.class = normalizeResourceClass(resource.class);
 
-    resourceSearch.addEventListener(
-      'input',
-      updateResources
-    );
+      const title = resource.title || 'Untitled Resource';
+      const subject = resource.subject || 'Academic Resource';
+      const chapter = resource.chapter || '';
+      const description = resource.description ||
+        'Academic learning material published by Mentora Edge.';
+      const classLabel = resource.class || 'All Classes';
+      const typeLabel = resource.type || 'Resource';
+      const thumbnail = resource.thumbnail || '';
 
+      card.dataset.search = [
+        title,
+        subject,
+        chapter,
+        description,
+        classLabel,
+        typeLabel
+      ].join(' ').toLowerCase();
+
+      const thumbnailHtml = thumbnail
+        ? `<img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:18px;">`
+        : iconForResource(typeLabel);
+
+      card.innerHTML = `
+        <div class="resource-card-top">
+          <span class="resource-type">${escapeHtml(typeLabel)}</span>
+          <span class="resource-class">${escapeHtml(classLabel)}</span>
+        </div>
+
+        <div class="resource-icon-large">${thumbnailHtml}</div>
+
+        <h3>${escapeHtml(title)}</h3>
+        <div class="subject">${escapeHtml(subject)}</div>
+
+        <p>${escapeHtml(description)}</p>
+
+        <div class="resource-tags">
+          <span class="resource-tag">${escapeHtml(classLabel)}</span>
+          <span class="resource-tag">${escapeHtml(subject)}</span>
+          ${chapter ? `<span class="resource-tag">${escapeHtml(chapter)}</span>` : ''}
+        </div>
+
+        <a class="resource-link" href="resource.html?id=${encodeURIComponent(resource.id)}">
+          Open Resource <span>→</span>
+        </a>
+      `;
+
+      return card;
+    }
+
+    function normalizeResourceType(type) {
+      const value = String(type || '').trim().toLowerCase();
+      if (value.includes('worksheet')) return 'worksheets';
+      if (value.includes('revision')) return 'revision';
+      if (value.includes('practice')) return 'practice';
+      if (value.includes('note')) return 'notes';
+      return value.replace(/\s+/g, '-');
+    }
+
+    function normalizeResourceClass(value) {
+      const v = String(value || '').trim().toUpperCase();
+      if (['VI','VII','VIII'].includes(v)) return 'vi-viii';
+      if (['IX','X'].includes(v)) return 'ix-x';
+      if (['XI','XII'].includes(v)) return 'xi-xii';
+      if (v.includes('VI') && v.includes('VIII')) return 'vi-viii';
+      if ((v.includes('IX') || v.includes('X')) && !v.includes('XI')) return 'ix-x';
+      if (v.includes('XI') || v.includes('XII')) return 'xi-xii';
+      return v.toLowerCase().replace(/[–—\s]+/g, '-');
+    }
+
+    function iconForResource(type) {
+      const value = String(type || '').toLowerCase();
+      if (value.includes('worksheet')) return '📝';
+      if (value.includes('revision')) return '🧠';
+      if (value.includes('practice')) return '🎯';
+      if (value.includes('video')) return '▶️';
+      if (value.includes('assessment')) return '📊';
+      return '📘';
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
   </script>
 
 </body>
