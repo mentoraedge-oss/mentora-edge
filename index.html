@@ -1,272 +1,3940 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- =========================================================
+       BASIC META
+  ========================================================== -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0F2A44">
-  <link rel="apple-touch-icon" href="/icons/ios/180.png">
-<link rel="stylesheet" href="css/theme.css">
-  <title>Mentora Edge | Shaping Minds, Sharpening Futures</title>
+  <meta
+    name="description"
+    content="Mentora Edge is a premium CBSE coaching institute for Classes VI–XII, offering personalised offline coaching in Begusarai and online personal tuition with structured courses, periodic assessments and digital learning support."
+  />
 
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta
+    name="keywords"
+    content="CBSE coaching institute, CBSE coaching in Begusarai, CBSE tuition Begusarai, CBSE Classes VI XII, online CBSE tuition, online personal tuition, CBSE coaching Bihar, Mentora Edge"
+  />
 
+  <meta name="author" content="Mentora Edge" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="canonical" href="https://mentoraedge.online/" />
+
+  <!-- =========================================================
+       OPEN GRAPH / SOCIAL SHARING
+  ========================================================== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Mentora Edge | Premium CBSE Education for Classes VI–XII" />
+  <meta
+    property="og:description"
+    content="Personalised CBSE education through offline coaching in Begusarai and online personal tuition, supported by structured courses, assessments and digital learning."
+  />
+  <meta property="og:url" content="https://mentoraedge.online/" />
+  <meta property="og:site_name" content="Mentora Edge" />
+  <meta property="og:image" content="https://mentoraedge.online/Assets/Images/mentora-edge-logo.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mentora Edge | Premium CBSE Education" />
+  <meta
+    name="twitter:description"
+    content="Structured CBSE learning for Classes VI–XII through personalised offline and online education."
+  />
+  <meta name="twitter:image" content="https://mentoraedge.online/Assets/Images/mentora-edge-logo.png" />
+
+  <!-- =========================================================
+       PWA
+  ========================================================== -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0F2A44" />
+  <link rel="apple-touch-icon" href="/icons/ios/180.png" />
+
+  <!-- =========================================================
+       FAVICON + THEME
+  ========================================================== -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="css/theme.css" />
+
+  <!-- =========================================================
+       TITLE
+  ========================================================== -->
+  <title>Mentora Edge | Premium CBSE Coaching for Classes VI–XII</title>
+
+  <!-- =========================================================
+       TAILWIND
+  ========================================================== -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- =========================================================
+       FONT
+  ========================================================== -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
 
+  <!-- =========================================================
+       TAILWIND CONFIG
+  ========================================================== -->
   <script>
-tailwind.config = {
-  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
+    tailwind.config = {
+      darkMode: 'class',
 
-  theme: {
-    extend: {
-      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'sans-serif']
+          },
 
-      colors: {
-        primary: '#0F2A44',
-        accent: '#22C55E',
-        accentSoft: '#4ADE80'
+          colors: {
+            primary: '#0F2A44',
+            primaryLight: '#12365A',
+            primarySoft: '#1E4E79',
+            accent: '#22C55E',
+            accentSoft: '#4ADE80',
+            page: '#F8FAFC',
+            darkText: '#0F172A'
+          },
+
+          boxShadow: {
+            glass: '0 20px 60px rgba(15, 42, 68, 0.08)',
+            glassHover: '0 25px 80px rgba(15, 42, 68, 0.14)',
+            glow: '0 0 45px rgba(34, 197, 94, 0.18)'
+          }
+        }
       }
+    };
+  </script>
+
+  <!-- =========================================================
+       STRUCTURED DATA
+  ========================================================== -->
+
+  <!-- Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "@id": "https://mentoraedge.online/#organization",
+    "name": "Mentora Edge",
+    "url": "https://mentoraedge.online/",
+    "logo": "https://mentoraedge.online/Assets/Images/mentora-edge-logo.png",
+    "description": "Premium CBSE coaching for Classes VI–XII through personalised offline coaching and online personal tuition.",
+    "slogan": "Shaping Minds, Sharpening Futures"
+  }
+  </script>
+
+  <!-- Local Business -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://mentoraedge.online/#localbusiness",
+    "name": "Mentora Edge",
+    "url": "https://mentoraedge.online/",
+    "logo": "https://mentoraedge.online/Assets/Images/mentora-edge-logo.png",
+    "description": "CBSE coaching institute offering offline coaching in Begusarai and online personal tuition.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Suhird Nagar, Opposite Circuit House",
+      "addressLocality": "Begusarai",
+      "addressRegion": "Bihar",
+      "addressCountry": "IN"
     }
   }
-}
-</script>
+  </script>
+
+  <!-- Breadcrumb -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://mentoraedge.online/"
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body class="bg-[#F8FAFC] text-darkText font-inter overflow-x-hidden">
 
-<!-- ================= NAVBAR ================= -->
-<header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-200">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <!-- =========================================================
+       PAGE BACKGROUND EFFECTS
+  ========================================================== -->
 
-    <h1 class="text-2xl font-extrabold text-primary tracking-tight">
-      Mentora Edge
-    </h1>
+  <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
 
-    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-accent transition">Home</a>
-      <a href="about.html" class="hover:text-accent transition">About Us</a>
-      <a href="courses.html" class="hover:text-accent transition">Courses</a>
-      <a href="educators.html" class="hover:text-accent transition">Educators</a>
-      <a href="contact.html" class="hover:text-accent transition">Contact</a>
-
-      <a href="login.html"
-         class="px-4 py-2 rounded-lg border border-primary text-primary
-                hover:bg-primary hover:text-white transition">
-        Login
-      </a>
-
-      <a href="courses.html"
-         class="px-5 py-2 rounded-lg bg-accent text-white
-                hover:bg-green-600 transition shadow-md hover:scale-105">
-        Register Now
-      </a>
-    </nav>
-
-    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
-  </div>
-
-  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
-    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="courses.html">Courses</a>
-      <a href="educators.html">Educators</a>
-      <a href="contact.html">Contact</a>
-      <a href="login.html" class="text-primary font-semibold">Login</a>
-      <a href="courses.html" class="bg-accent text-white text-center py-2 rounded-lg">
-        Register Now
-      </a>
-    </nav>
-  </div>
-</header>
-
-<!-- ================= HERO ================= -->
-<section class="relative py-28 text-center overflow-hidden bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79] text-white">
-
-  <!-- Glow -->
-  <div class="absolute w-96 h-96 bg-green-400 opacity-20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-  <div class="absolute w-96 h-96 bg-blue-500 opacity-20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
-
-  <div class="relative z-10 max-w-5xl mx-auto px-6 reveal hero-scale">
-
-    <!-- Parallax Logo -->
-    <img src="Assets/Images/mentora-edge-logo.png"
-         class="w-28 mx-auto mb-6 drop-shadow-xl parallax"
-         data-speed="0.2">
-
-    <h2 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-      Unlock Your Potential with
-      <span class="text-accent">Mentora Edge</span>
-    </h2>
-
-    <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto">
-      Structured learning. Concept clarity. Real academic growth.
-    </p>
-
-    <a href="courses.html"
-       class="px-10 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20
-              shadow-lg hover:scale-105 hover:bg-white/20 transition duration-300">
-      🚀 Start Learning Now
-    </a>
-
-  </div>
-</section>
-
-<!-- Gradient Transition -->
-<div class="h-24 bg-gradient-to-b from-transparent to-[#F8FAFC]"></div>
-
-<!-- ================= WHY CHOOSE ================= -->
-<section class="py-24">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-
-    <h3 class="text-3xl font-bold mb-16 text-primary reveal">
-      Why Choose Mentora Edge?
-    </h3>
-
-    <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-
-      <div class="reveal bg-white/60 backdrop-blur-md p-8 rounded-2xl shadow-lg 
-                  hover:scale-105 hover:shadow-2xl transition duration-300">
-        <h4 class="text-xl font-semibold mb-3">🎓 Expert Guidance</h4>
-        <p class="text-gray-600">Concept clarity with structured teaching.</p>
-      </div>
-
-      <div class="reveal bg-white/60 backdrop-blur-md p-8 rounded-2xl shadow-lg 
-                  hover:scale-105 hover:shadow-2xl transition duration-300">
-        <h4 class="text-xl font-semibold mb-3">📚 Smart Curriculum</h4>
-        <p class="text-gray-600">Aligned with CBSE pattern & exams.</p>
-      </div>
-
-      <div class="reveal bg-white/60 backdrop-blur-md p-8 rounded-2xl shadow-lg 
-                  hover:scale-105 hover:shadow-2xl transition duration-300">
-        <h4 class="text-xl font-semibold mb-3">👨‍🏫 Personal Attention</h4>
-        <p class="text-gray-600">Focused doubt solving & tracking.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ================= ABOUT ================= -->
-<section class="py-24 bg-white">
-  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-
-    <div class="reveal">
-      <h3 class="text-3xl font-bold mb-4 text-primary">About Mentora Edge</h3>
-      <p class="text-gray-600 mb-6">
-        A structured learning platform for Classes VI–XII built by experienced educators.
-      </p>
-      <a href="about.html"
-         class="bg-accent text-white px-6 py-3 rounded-lg shadow hover:scale-105 transition">
-        Read More
-      </a>
+    <div
+      class="absolute w-[420px] h-[420px] rounded-full bg-green-300/10 blur-3xl
+             -top-40 -left-40 animate-float-slow">
     </div>
 
-    <div class="reveal bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-12 text-center shadow-inner">
-      <p class="text-2xl font-semibold text-primary">Shaping Minds</p>
-      <p class="text-gray-600">Sharpening Futures</p>
+    <div
+      class="absolute w-[500px] h-[500px] rounded-full bg-blue-400/10 blur-3xl
+             top-[35%] -right-64 animate-float-reverse">
+    </div>
+
+    <div
+      class="absolute w-[360px] h-[360px] rounded-full bg-green-200/10 blur-3xl
+             bottom-[-120px] left-[20%] animate-float-slow">
     </div>
 
   </div>
-</section>
 
-<!-- ================= CTA ================= -->
-<section class="bg-primary text-white py-24 text-center">
-  <div class="reveal">
-    <h3 class="text-3xl font-bold mb-4">Start Your Learning Journey Today</h3>
-    <p class="text-gray-300 mb-10">Join Mentora Edge today.</p>
-    <a href="courses.html"
-       class="bg-accent px-12 py-4 rounded-xl font-semibold shadow hover:scale-105 transition">
-      Register Now
-    </a>
-  </div>
-</section>
 
-<!-- ================= FOOTER ================= -->
-<footer class="bg-gray-900 text-gray-400 py-10 text-center">
-  © 2025 Mentora Edge. All Rights Reserved.
-  <br>
-  <a href="terms.html" class="text-green-400 hover:underline">Terms & Conditions</a> |
-  <a href="privacy.html" class="text-green-400 hover:underline">Privacy Policy</a>
-</footer>
+  <!-- =========================================================
+       NAVBAR
+  ========================================================== -->
 
-<!-- ================= SCRIPTS ================= -->
-<script>
-menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
+  <header
+    id="navbar"
+    class="fixed top-0 left-0 right-0 z-50
+           bg-white/75 backdrop-blur-xl
+           border-b border-white/50
+           shadow-[0_8px_30px_rgba(15,42,68,0.05)]
+           transition-all duration-500"
+  >
 
-/* Reveal Animation (Staggered) */
-const reveals = document.querySelectorAll(".reveal");
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const children = entry.target.querySelectorAll("*");
-      children.forEach((el, i) => {
-        el.style.transitionDelay = `${i * 60}ms`;
+      <div class="h-[76px] flex items-center justify-between">
+
+        <!-- Brand -->
+        <a
+          href="index.html"
+          class="flex items-center gap-3 group"
+          aria-label="Mentora Edge Home"
+        >
+
+          <div
+            class="w-10 h-10 rounded-xl
+                   bg-gradient-to-br from-primary to-primarySoft
+                   flex items-center justify-center
+                   shadow-lg group-hover:shadow-xl
+                   group-hover:scale-105 transition-all duration-300"
+          >
+            <img
+              src="Assets/Images/mentora-edge-logo.png"
+              alt="Mentora Edge Logo"
+              class="w-8 h-8 object-contain"
+            />
+          </div>
+
+          <div>
+            <div class="text-lg sm:text-xl font-extrabold tracking-tight text-primary">
+              Mentora Edge
+            </div>
+
+            <div class="hidden sm:block text-[10px] uppercase tracking-[0.18em] text-gray-500">
+              Shaping Minds · Sharpening Futures
+            </div>
+          </div>
+
+        </a>
+
+
+        <!-- Desktop Navigation -->
+        <nav
+          class="hidden xl:flex items-center gap-6 text-sm font-semibold"
+          aria-label="Primary Navigation"
+        >
+
+          <a
+            href="index.html"
+            class="nav-link text-primary"
+          >
+            Home
+          </a>
+
+          <a
+            href="courses.html"
+            class="nav-link"
+          >
+            Programs
+          </a>
+
+          <a
+            href="offline-coaching.html"
+            class="nav-link"
+          >
+            Offline Coaching
+          </a>
+
+          <a
+            href="online-tuition.html"
+            class="nav-link"
+          >
+            Online Tuition
+          </a>
+
+          <a
+            href="educators.html"
+            class="nav-link"
+          >
+            Educators
+          </a>
+
+          <a
+            href="resources.html"
+            class="nav-link"
+          >
+            Resources
+          </a>
+
+          <a
+            href="about.html"
+            class="nav-link"
+          >
+            About
+          </a>
+
+          <a
+            href="login.html"
+            class="px-4 py-2 rounded-xl
+                   border border-primary/20
+                   text-primary
+                   hover:bg-primary
+                   hover:text-white
+                   hover:border-primary
+                   transition-all duration-300"
+          >
+            Login
+          </a>
+
+          <a
+            href="enquiry.html"
+            class="px-5 py-2.5 rounded-xl
+                   bg-accent text-white
+                   shadow-lg shadow-green-500/20
+                   hover:bg-green-600
+                   hover:-translate-y-0.5
+                   transition-all duration-300"
+          >
+            Book an Enquiry
+          </a>
+
+        </nav>
+
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="menuBtn"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          class="xl:hidden w-11 h-11 rounded-xl
+                 bg-primary/5 text-primary
+                 border border-primary/10
+                 flex items-center justify-center
+                 hover:bg-primary hover:text-white
+                 transition-all duration-300"
+        >
+          <span id="menuIcon" class="text-xl">☰</span>
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobileMenu"
+      class="hidden xl:hidden
+             bg-white/95 backdrop-blur-xl
+             border-t border-gray-100
+             shadow-xl"
+    >
+
+      <nav
+        class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-2"
+        aria-label="Mobile Navigation"
+      >
+
+        <a href="index.html" class="mobile-nav-link">Home</a>
+
+        <a href="courses.html" class="mobile-nav-link">
+          Programs
+        </a>
+
+        <a href="offline-coaching.html" class="mobile-nav-link">
+          Offline Coaching
+        </a>
+
+        <a href="online-tuition.html" class="mobile-nav-link">
+          Online Personal Tuition
+        </a>
+
+        <a href="educators.html" class="mobile-nav-link">
+          Educators
+        </a>
+
+        <a href="resources.html" class="mobile-nav-link">
+          Resources
+        </a>
+
+        <a href="learning-platform.html" class="mobile-nav-link">
+          Learning Platform
+        </a>
+
+        <a href="about.html" class="mobile-nav-link">
+          About
+        </a>
+
+        <a href="login.html" class="mobile-nav-link text-primary font-bold">
+          Login
+        </a>
+
+        <a
+          href="enquiry.html"
+          class="mt-3 bg-accent text-white
+                 text-center px-5 py-3 rounded-xl
+                 font-semibold shadow-lg"
+        >
+          Book an Enquiry
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================================
+       HERO
+  ========================================================== -->
+
+  <main>
+
+    <section
+      class="relative min-h-[760px] lg:min-h-[820px]
+             flex items-center overflow-hidden
+             bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79]
+             text-white pt-28"
+    >
+
+      <!-- Animated grid -->
+      <div class="hero-grid absolute inset-0 opacity-[0.08]"></div>
+
+      <!-- Glow effects -->
+      <div
+        class="absolute w-[500px] h-[500px]
+               bg-green-400/20 blur-[110px]
+               rounded-full
+               -top-48 -left-48
+               animate-pulse-slow"
+      ></div>
+
+      <div
+        class="absolute w-[600px] h-[600px]
+               bg-blue-400/20 blur-[130px]
+               rounded-full
+               -bottom-64 -right-64
+               animate-pulse-slow"
+      ></div>
+
+      <!-- Decorative rings -->
+      <div
+        class="absolute hidden lg:block
+               w-[460px] h-[460px]
+               border border-white/10
+               rounded-full
+               -right-32 top-20
+               animate-spin-slow"
+      ></div>
+
+      <div
+        class="absolute hidden lg:block
+               w-[340px] h-[340px]
+               border border-green-300/10
+               rounded-full
+               -right-2 top-32"
+      ></div>
+
+      <div
+        class="absolute hidden lg:block
+               w-3 h-3 rounded-full bg-accent
+               right-[18%] top-[25%]
+               shadow-[0_0_30px_rgba(74,222,128,0.8)]
+               animate-float"
+      ></div>
+
+      <div
+        class="absolute hidden lg:block
+               w-2 h-2 rounded-full bg-white
+               right-[12%] top-[65%]
+               opacity-60
+               animate-float-reverse"
+      ></div>
+
+
+      <div
+        class="relative z-10
+               max-w-7xl mx-auto
+               px-6 lg:px-8
+               w-full"
+      >
+
+        <div
+          class="grid lg:grid-cols-[1.15fr_0.85fr]
+                 gap-16 items-center"
+        >
+
+          <!-- Hero Copy -->
+          <div
+            class="reveal hero-copy
+                   text-center lg:text-left"
+          >
+
+            <!-- Eyebrow -->
+            <div
+              class="inline-flex items-center gap-2
+                     px-4 py-2
+                     rounded-full
+                     border border-white/15
+                     bg-white/10
+                     backdrop-blur-xl
+                     text-sm text-gray-200
+                     mb-7"
+            >
+              <span
+                class="w-2 h-2 rounded-full
+                       bg-accent
+                       shadow-[0_0_15px_rgba(74,222,128,0.9)]"
+              ></span>
+
+              Premium CBSE Education · Classes VI–XII
+            </div>
+
+
+            <!-- Main Heading -->
+            <h1
+              class="text-4xl sm:text-5xl lg:text-[4.4rem]
+                     font-black leading-[1.05]
+                     tracking-tight mb-7"
+            >
+              Premium CBSE Education,
+              <span
+                class="block mt-2
+                       bg-gradient-to-r
+                       from-green-300
+                       via-green-400
+                       to-emerald-300
+                       bg-clip-text text-transparent"
+              >
+                Built Around Every Student.
+              </span>
+            </h1>
+
+
+            <!-- Description -->
+            <p
+              class="text-lg sm:text-xl
+                     leading-relaxed
+                     text-gray-200
+                     max-w-2xl
+                     mx-auto lg:mx-0
+                     mb-9"
+            >
+              Structured courses, personalised attention, experienced educators,
+              periodic assessments and digital learning support for students
+              from Classes VI–XII.
+            </p>
+
+
+            <!-- Learning Modes -->
+            <div
+              class="flex flex-wrap
+                     justify-center lg:justify-start
+                     gap-3 mb-10"
+            >
+
+              <div class="hero-pill">
+                <span>🏫</span>
+                Offline Coaching
+              </div>
+
+              <div class="hero-pill">
+                <span>💻</span>
+                Online Personal Tuition
+              </div>
+
+              <div class="hero-pill">
+                <span>📚</span>
+                Digital Learning Platform
+              </div>
+
+            </div>
+
+
+            <!-- CTAs -->
+            <div
+              class="flex flex-col sm:flex-row
+                     justify-center lg:justify-start
+                     gap-4"
+            >
+
+              <a
+                href="courses.html"
+                class="group
+                       inline-flex items-center justify-center gap-2
+                       px-7 py-4
+                       rounded-xl
+                       bg-accent
+                       text-white
+                       font-bold
+                       shadow-[0_15px_40px_rgba(34,197,94,0.25)]
+                       hover:bg-green-600
+                       hover:-translate-y-1
+                       transition-all duration-300"
+              >
+                Explore Programs
+
+                <span
+                  class="group-hover:translate-x-1 transition-transform"
+                >
+                  →
+                </span>
+              </a>
+
+
+              <a
+                href="enquiry.html"
+                class="inline-flex items-center justify-center
+                       px-7 py-4
+                       rounded-xl
+                       bg-white/10
+                       backdrop-blur-xl
+                       border border-white/20
+                       text-white
+                       font-semibold
+                       hover:bg-white/20
+                       hover:-translate-y-1
+                       transition-all duration-300"
+              >
+                Book an Enquiry
+              </a>
+
+            </div>
+
+
+            <!-- Location -->
+            <div
+              class="mt-8
+                     flex items-center
+                     justify-center lg:justify-start
+                     gap-2
+                     text-sm text-gray-300"
+            >
+              <span>📍</span>
+              <span>
+                Offline coaching currently available in
+                <strong class="text-white">
+                  Begusarai, Bihar
+                </strong>
+              </span>
+            </div>
+
+          </div>
+
+
+          <!-- Hero Visual -->
+          <div
+            class="relative hidden md:flex
+                   justify-center lg:justify-end
+                   reveal hero-visual"
+          >
+
+            <!-- Main Glass Card -->
+            <div
+              class="relative
+                     w-full max-w-[470px]
+                     aspect-square
+                     rounded-[2.5rem]
+                     bg-white/[0.08]
+                     backdrop-blur-2xl
+                     border border-white/15
+                     shadow-[0_30px_100px_rgba(0,0,0,0.25)]
+                     p-7"
+            >
+
+              <!-- Inner glow -->
+              <div
+                class="absolute inset-0
+                       rounded-[2.5rem]
+                       bg-gradient-to-br
+                       from-white/[0.10]
+                       via-transparent
+                       to-green-400/[0.08]"
+              ></div>
+
+
+              <!-- Logo -->
+              <div
+                class="relative
+                       h-full
+                       rounded-[2rem]
+                       border border-white/10
+                       bg-gradient-to-br
+                       from-primary/70
+                       to-[#0A2036]/80
+                       flex flex-col
+                       items-center
+                       justify-center
+                       overflow-hidden"
+              >
+
+                <!-- decorative circles -->
+                <div
+                  class="absolute
+                         w-72 h-72
+                         rounded-full
+                         border border-white/5"
+                ></div>
+
+                <div
+                  class="absolute
+                         w-52 h-52
+                         rounded-full
+                         border border-green-300/10"
+                ></div>
+
+
+                <div
+                  class="relative
+                         w-32 h-32
+                         rounded-3xl
+                         bg-white/10
+                         backdrop-blur-xl
+                         border border-white/15
+                         flex items-center justify-center
+                         shadow-2xl
+                         mb-7
+                         animate-float"
+                >
+                  <img
+                    src="Assets/Images/mentora-edge-logo.png"
+                    alt="Mentora Edge"
+                    class="w-24 h-24 object-contain drop-shadow-2xl"
+                  />
+                </div>
+
+
+                <p
+                  class="relative
+                         text-sm uppercase
+                         tracking-[0.3em]
+                         text-gray-300
+                         mb-3"
+                >
+                  Learn · Grow · Excel
+                </p>
+
+                <h2
+                  class="relative
+                         text-3xl
+                         font-extrabold
+                         text-center"
+                >
+                  Mentora Edge
+                </h2>
+
+                <p
+                  class="relative
+                         mt-3
+                         text-gray-300
+                         text-center
+                         max-w-xs"
+                >
+                  Structured learning.
+                  Personalised support.
+                  Academic progress.
+                </p>
+
+              </div>
+
+
+              <!-- Floating cards -->
+
+              <div
+                class="absolute
+                       -left-8 top-16
+                       glass-floating-card
+                       animate-float"
+              >
+                <span class="text-xl">🎯</span>
+
+                <div>
+                  <p class="text-[10px] text-gray-400">
+                    FOCUS
+                  </p>
+
+                  <p class="text-sm font-bold text-primary">
+                    Personalised
+                  </p>
+                </div>
+              </div>
+
+
+              <div
+                class="absolute
+                       -right-8 bottom-20
+                       glass-floating-card
+                       animate-float-reverse"
+              >
+                <span class="text-xl">📈</span>
+
+                <div>
+                  <p class="text-[10px] text-gray-400">
+                    APPROACH
+                  </p>
+
+                  <p class="text-sm font-bold text-primary">
+                    Assess & Improve
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Bottom wave -->
+      <div
+        class="absolute bottom-0 left-0 right-0 h-24
+               bg-gradient-to-t from-[#F8FAFC] to-transparent"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================================================
+         TRUST / POSITIONING STRIP
+    ========================================================== -->
+
+    <section
+      class="relative -mt-2 z-20"
+    >
+
+      <div
+        class="max-w-6xl mx-auto px-6"
+      >
+
+        <div
+          class="glass-section
+                 grid grid-cols-2 md:grid-cols-4
+                 divide-x divide-gray-200/70"
+        >
+
+          <div class="stat-item">
+            <span class="stat-icon">🎓</span>
+            <div>
+              <p class="font-bold text-primary">Classes VI–XII</p>
+              <p class="text-xs text-gray-500">CBSE Learning</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <span class="stat-icon">👨‍🏫</span>
+            <div>
+              <p class="font-bold text-primary">Experienced</p>
+              <p class="text-xs text-gray-500">Educators</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <span class="stat-icon">📝</span>
+            <div>
+              <p class="font-bold text-primary">Periodic</p>
+              <p class="text-xs text-gray-500">Assessments</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <span class="stat-icon">💻</span>
+            <div>
+              <p class="font-bold text-primary">Digital</p>
+              <p class="text-xs text-gray-500">Learning Platform</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         WHY MENTORA EDGE
+    ========================================================== -->
+
+    <section
+      class="py-28 relative"
+    >
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="max-w-3xl mx-auto text-center reveal">
+
+          <div class="section-eyebrow">
+            THE MENTORA EDGE
+          </div>
+
+          <h2 class="section-title">
+            What makes our learning experience
+            <span class="text-accent">different?</span>
+          </h2>
+
+          <p class="section-description">
+            Premium education at Mentora Edge is built around the academic
+            experience, not unnecessary complexity.
+          </p>
+
+        </div>
+
+
+        <div
+          class="grid md:grid-cols-2 lg:grid-cols-4
+                 gap-6 mt-16"
+        >
+
+          <!-- Card 1 -->
+          <article class="feature-card reveal">
+
+            <div class="feature-icon bg-blue-50 text-primary">
+              🎯
+            </div>
+
+            <h3 class="feature-title">
+              Personalised Attention
+            </h3>
+
+            <p class="feature-text">
+              Learning support designed around each student's academic needs,
+              questions and progress.
+            </p>
+
+          </article>
+
+
+          <!-- Card 2 -->
+          <article class="feature-card reveal">
+
+            <div class="feature-icon bg-green-50 text-green-600">
+              🧭
+            </div>
+
+            <h3 class="feature-title">
+              Structured Courses
+            </h3>
+
+            <p class="feature-text">
+              Clear course structures that help students move from concepts
+              to practice with purpose.
+            </p>
+
+          </article>
+
+
+          <!-- Card 3 -->
+          <article class="feature-card reveal">
+
+            <div class="feature-icon bg-purple-50 text-purple-600">
+              📝
+            </div>
+
+            <h3 class="feature-title">
+              Periodic Assessments
+            </h3>
+
+            <p class="feature-text">
+              Regular assessments help identify what students understand,
+              where they need support and what to improve.
+            </p>
+
+          </article>
+
+
+          <!-- Card 4 -->
+          <article class="feature-card reveal">
+
+            <div class="feature-icon bg-orange-50 text-orange-600">
+              💻
+            </div>
+
+            <h3 class="feature-title">
+              Digital Learning Platform
+            </h3>
+
+            <p class="feature-text">
+              Students receive access to the Mentora Edge digital platform
+              alongside their learning programme.
+            </p>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PROGRAMS
+    ========================================================== -->
+
+    <section
+      class="py-28
+             bg-white
+             relative overflow-hidden"
+    >
+
+      <div
+        class="absolute
+               w-[500px] h-[500px]
+               rounded-full
+               bg-green-100/40
+               blur-3xl
+               -left-72 top-20"
+      ></div>
+
+
+      <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div
+          class="flex flex-col lg:flex-row
+                 lg:items-end
+                 lg:justify-between
+                 gap-8
+                 reveal"
+        >
+
+          <div class="max-w-2xl">
+
+            <div class="section-eyebrow">
+              PROGRAMS
+            </div>
+
+            <h2 class="section-title">
+              Learning pathways for
+              <span class="text-accent">every stage.</span>
+            </h2>
+
+            <p class="section-description">
+              Explore our CBSE learning programmes for Middle School,
+              Secondary School and Senior Secondary students.
+            </p>
+
+          </div>
+
+
+          <a
+            href="courses.html"
+            class="inline-flex items-center
+                   gap-2
+                   text-primary
+                   font-bold
+                   hover:text-accent
+                   transition-colors"
+          >
+            Explore all programs
+            <span>→</span>
+          </a>
+
+        </div>
+
+
+        <div
+          class="grid md:grid-cols-3
+                 gap-7
+                 mt-16"
+        >
+
+          <!-- Middle School -->
+          <article class="program-card reveal">
+
+            <div class="program-number">
+              01
+            </div>
+
+            <div class="program-icon">
+              🌱
+            </div>
+
+            <p class="program-label">
+              CLASSES VI–VIII
+            </p>
+
+            <h3 class="program-title">
+              Middle School
+            </h3>
+
+            <p class="program-description">
+              Build strong academic foundations, develop conceptual clarity
+              and establish effective study habits.
+            </p>
+
+            <a
+              href="courses.html"
+              class="program-link"
+            >
+              Explore Middle School
+              <span>→</span>
+            </a>
+
+          </article>
+
+
+          <!-- Secondary -->
+          <article class="program-card program-card-featured reveal">
+
+            <div class="program-number">
+              02
+            </div>
+
+            <div class="program-icon">
+              🎯
+            </div>
+
+            <p class="program-label">
+              CLASSES IX–X
+            </p>
+
+            <h3 class="program-title">
+              Secondary School
+            </h3>
+
+            <p class="program-description">
+              Structured CBSE learning focused on conceptual understanding,
+              practice, revision and examination preparation.
+            </p>
+
+            <a
+              href="courses.html"
+              class="program-link"
+            >
+              Explore Secondary
+              <span>→</span>
+            </a>
+
+          </article>
+
+
+          <!-- Senior Secondary -->
+          <article class="program-card reveal">
+
+            <div class="program-number">
+              03
+            </div>
+
+            <div class="program-icon">
+              🚀
+            </div>
+
+            <p class="program-label">
+              CLASSES XI–XII
+            </p>
+
+            <h3 class="program-title">
+              Senior Secondary
+            </h3>
+
+            <p class="program-description">
+              Subject-focused academic support designed for senior school
+              learning, deeper concepts and examination readiness.
+            </p>
+
+            <a
+              href="courses.html"
+              class="program-link"
+            >
+              Explore Senior Secondary
+              <span>→</span>
+            </a>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         TWO WAYS TO LEARN
+    ========================================================== -->
+
+    <section class="py-28">
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div
+          class="max-w-3xl mx-auto text-center reveal"
+        >
+
+          <div class="section-eyebrow">
+            TWO WAYS TO LEARN
+          </div>
+
+          <h2 class="section-title">
+            Choose the learning environment
+            <span class="text-accent">that fits.</span>
+          </h2>
+
+          <p class="section-description">
+            Mentora Edge combines personalised teaching with structured
+            academic support, whether students learn in person or online.
+          </p>
+
+        </div>
+
+
+        <div
+          class="grid lg:grid-cols-2
+                 gap-8 mt-16"
+        >
+
+          <!-- Offline -->
+          <article
+            class="learning-mode-card
+                   bg-gradient-to-br
+                   from-primary
+                   via-[#12365A]
+                   to-[#1E4E79]
+                   text-white
+                   reveal"
+          >
+
+            <div class="flex items-start justify-between gap-5">
+
+              <div class="mode-icon bg-white/10">
+                🏫
+              </div>
+
+              <span class="mode-badge">
+                BEGUSARAI
+              </span>
+
+            </div>
+
+            <p class="mt-8 text-sm uppercase tracking-[0.2em] text-green-300">
+              Offline Coaching
+            </p>
+
+            <h3 class="text-3xl font-extrabold mt-3">
+              Personalised classroom learning.
+            </h3>
+
+            <p class="mt-5 text-gray-200 leading-relaxed">
+              Structured classroom learning supported by experienced educators,
+              periodic assessments and access to the Mentora Edge digital
+              learning platform.
+            </p>
+
+            <div
+              class="mt-8
+                     flex items-start gap-3
+                     text-sm text-gray-200"
+            >
+              <span>📍</span>
+
+              <span>
+                Suhird Nagar, Opposite Circuit House,
+                Begusarai, Bihar
+              </span>
+            </div>
+
+            <p class="mt-5 text-sm text-green-200">
+              Our offline coaching programme is currently available
+              exclusively in Begusarai.
+            </p>
+
+            <a
+              href="offline-coaching.html"
+              class="inline-flex items-center gap-2
+                     mt-8
+                     px-5 py-3
+                     rounded-xl
+                     bg-white
+                     text-primary
+                     font-bold
+                     hover:bg-green-50
+                     hover:-translate-y-1
+                     transition-all duration-300"
+            >
+              Explore Offline Coaching
+              <span>→</span>
+            </a>
+
+          </article>
+
+
+          <!-- Online -->
+          <article
+            class="learning-mode-card
+                   bg-white
+                   border border-gray-200
+                   shadow-glass
+                   reveal"
+          >
+
+            <div class="flex items-start justify-between gap-5">
+
+              <div class="mode-icon bg-green-50 text-green-600">
+                💻
+              </div>
+
+              <span
+                class="px-3 py-1.5
+                       rounded-full
+                       text-xs font-bold
+                       bg-green-50
+                       text-green-700"
+              >
+                ONLINE
+              </span>
+
+            </div>
+
+            <p class="mt-8 text-sm uppercase tracking-[0.2em] text-green-600">
+              Online Personal Tuition
+            </p>
+
+            <h3 class="text-3xl font-extrabold mt-3 text-primary">
+              Dedicated learning sessions.
+            </h3>
+
+            <p class="mt-5 text-gray-600 leading-relaxed">
+              Personalised online tuition conducted separately from offline
+              batch schedules, allowing students to learn with dedicated
+              academic support.
+            </p>
+
+
+            <div class="mt-8 grid sm:grid-cols-2 gap-4">
+
+              <div class="mini-feature">
+                <span>🎯</span>
+                <span>Personalised support</span>
+              </div>
+
+              <div class="mini-feature">
+                <span>🕒</span>
+                <span>Dedicated sessions</span>
+              </div>
+
+              <div class="mini-feature">
+                <span>📚</span>
+                <span>Structured learning</span>
+              </div>
+
+              <div class="mini-feature">
+                <span>💻</span>
+                <span>Digital platform access</span>
+              </div>
+
+            </div>
+
+            <a
+              href="online-tuition.html"
+              class="inline-flex items-center gap-2
+                     mt-8
+                     px-5 py-3
+                     rounded-xl
+                     bg-primary
+                     text-white
+                     font-bold
+                     hover:bg-primarySoft
+                     hover:-translate-y-1
+                     transition-all duration-300"
+            >
+              Explore Online Tuition
+              <span>→</span>
+            </a>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         LEARNING CYCLE
+    ========================================================== -->
+
+    <section
+      class="py-28
+             bg-gradient-to-b
+             from-white
+             to-green-50/40
+             overflow-hidden"
+    >
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div
+          class="grid lg:grid-cols-[0.8fr_1.2fr]
+                 gap-16
+                 items-center"
+        >
+
+          <div class="reveal">
+
+            <div class="section-eyebrow">
+              OUR LEARNING CYCLE
+            </div>
+
+            <h2 class="section-title">
+              Learning doesn't stop
+              at <span class="text-accent">teaching.</span>
+            </h2>
+
+            <p class="section-description">
+              Mentora Edge is designed around a continuous academic cycle
+              that connects learning, practice and assessment.
+            </p>
+
+            <a
+              href="learning-platform.html"
+              class="inline-flex items-center gap-2
+                     mt-8
+                     text-primary
+                     font-bold
+                     hover:text-accent
+                     transition-colors"
+            >
+              Discover the learning platform
+              <span>→</span>
+            </a>
+
+          </div>
+
+
+          <div
+            class="relative
+                   grid sm:grid-cols-2
+                   gap-5
+                   reveal"
+          >
+
+            <!-- Connecting line -->
+            <div
+              class="hidden sm:block
+                     absolute
+                     left-1/2
+                     top-1/2
+                     w-[70%]
+                     h-px
+                     bg-gradient-to-r
+                     from-primary/10
+                     via-accent/40
+                     to-primary/10
+                     -translate-x-1/2"
+            ></div>
+
+
+            <div class="cycle-card">
+              <span class="cycle-number">01</span>
+              <div class="cycle-icon">📖</div>
+              <h3>Learn</h3>
+              <p>Understand concepts clearly.</p>
+            </div>
+
+            <div class="cycle-card">
+              <span class="cycle-number">02</span>
+              <div class="cycle-icon">✍️</div>
+              <h3>Practice</h3>
+              <p>Apply knowledge through practice.</p>
+            </div>
+
+            <div class="cycle-card">
+              <span class="cycle-number">03</span>
+              <div class="cycle-icon">📝</div>
+              <h3>Assess</h3>
+              <p>Measure understanding through assessments.</p>
+            </div>
+
+            <div class="cycle-card">
+              <span class="cycle-number">04</span>
+              <div class="cycle-icon">🔍</div>
+              <h3>Analyse</h3>
+              <p>Identify strengths and areas for improvement.</p>
+            </div>
+
+            <div
+              class="cycle-card sm:col-span-2
+                     sm:max-w-[48%]
+                     sm:mx-auto"
+            >
+              <span class="cycle-number">05</span>
+              <div class="cycle-icon">🚀</div>
+              <h3>Improve</h3>
+              <p>Use feedback to move forward.</p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         DIGITAL LEARNING PLATFORM
+    ========================================================== -->
+
+    <section
+      class="py-28
+             bg-[#0B2137]
+             text-white
+             relative overflow-hidden"
+    >
+
+      <div
+        class="absolute
+               w-[600px] h-[600px]
+               rounded-full
+               bg-green-400/10
+               blur-[120px]
+               -right-80 -top-80"
+      ></div>
+
+      <div
+        class="absolute
+               w-[450px] h-[450px]
+               rounded-full
+               bg-blue-400/10
+               blur-[120px]
+               -left-80 bottom-[-250px]"
+      ></div>
+
+
+      <div
+        class="relative
+               max-w-7xl mx-auto
+               px-6 lg:px-8"
+      >
+
+        <div
+          class="grid lg:grid-cols-2
+                 gap-16
+                 items-center"
+        >
+
+          <!-- Copy -->
+          <div class="reveal">
+
+            <div
+              class="inline-flex
+                     px-4 py-2
+                     rounded-full
+                     bg-white/10
+                     border border-white/10
+                     text-green-300
+                     text-sm font-semibold"
+            >
+              MENTORA EDGE DIGITAL PLATFORM
+            </div>
+
+            <h2
+              class="mt-7
+                     text-4xl md:text-5xl
+                     font-black
+                     leading-tight"
+            >
+              Learning continues
+              <span class="text-green-400">
+                beyond the classroom.
+              </span>
+            </h2>
+
+            <p
+              class="mt-6
+                     text-gray-300
+                     text-lg
+                     leading-relaxed"
+            >
+              Every Mentora Edge student gets access to the digital learning
+              platform, bringing academic resources, announcements and
+              learning support into one place.
+            </p>
+
+            <div
+              class="mt-9
+                     grid sm:grid-cols-2
+                     gap-4"
+            >
+
+              <div class="platform-feature">
+                <span>📚</span>
+                Study Materials
+              </div>
+
+              <div class="platform-feature">
+                <span>📢</span>
+                Announcements
+              </div>
+
+              <div class="platform-feature">
+                <span>📝</span>
+                Assessments
+              </div>
+
+              <div class="platform-feature">
+                <span>📊</span>
+                Academic Progress
+              </div>
+
+            </div>
+
+            <a
+              href="learning-platform.html"
+              class="inline-flex items-center gap-2
+                     mt-9
+                     px-6 py-3.5
+                     rounded-xl
+                     bg-white
+                     text-primary
+                     font-bold
+                     hover:bg-green-50
+                     hover:-translate-y-1
+                     transition-all duration-300"
+            >
+              Explore the Platform
+              <span>→</span>
+            </a>
+
+          </div>
+
+
+          <!-- Dashboard Visual -->
+          <div
+            class="relative
+                   reveal"
+          >
+
+            <div
+              class="rounded-3xl
+                     border border-white/10
+                     bg-white/[0.06]
+                     backdrop-blur-2xl
+                     p-5
+                     shadow-2xl"
+            >
+
+              <!-- Fake browser bar -->
+              <div
+                class="flex items-center
+                       gap-2
+                       pb-5
+                       border-b border-white/10"
+              >
+                <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-yellow-400/70"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
+
+                <div
+                  class="ml-4
+                         flex-1
+                         h-7
+                         rounded-lg
+                         bg-white/5
+                         border border-white/5"
+                ></div>
+              </div>
+
+
+              <div class="grid grid-cols-3 gap-4 mt-5">
+
+                <div
+                  class="col-span-3
+                         rounded-2xl
+                         bg-white/5
+                         border border-white/5
+                         p-5"
+                >
+                  <p class="text-xs text-gray-400">
+                    STUDENT DASHBOARD
+                  </p>
+
+                  <p class="mt-2 text-xl font-bold">
+                    Welcome back 👋
+                  </p>
+
+                  <div class="mt-5 flex gap-3">
+
+                    <div class="h-2 rounded-full bg-green-400/70 w-[72%]"></div>
+                    <div class="h-2 rounded-full bg-white/10 flex-1"></div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="dashboard-mini-card">
+                  <span>📚</span>
+                  <p>Materials</p>
+                </div>
+
+                <div class="dashboard-mini-card">
+                  <span>📝</span>
+                  <p>Tests</p>
+                </div>
+
+                <div class="dashboard-mini-card">
+                  <span>📊</span>
+                  <p>Progress</p>
+                </div>
+
+
+                <div
+                  class="col-span-3
+                         rounded-2xl
+                         bg-white/5
+                         border border-white/5
+                         p-5"
+                >
+
+                  <div class="flex justify-between items-center">
+
+                    <p class="font-semibold">
+                      Academic Progress
+                    </p>
+
+                    <span class="text-xs text-green-300">
+                      Learning Cycle
+                    </span>
+
+                  </div>
+
+                  <div class="space-y-4 mt-5">
+
+                    <div>
+                      <div class="flex justify-between text-xs mb-2">
+                        <span class="text-gray-400">English</span>
+                        <span>84%</span>
+                      </div>
+
+                      <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div class="h-full w-[84%] bg-green-400 rounded-full"></div>
+                      </div>
+                    </div>
+
+
+                    <div>
+                      <div class="flex justify-between text-xs mb-2">
+                        <span class="text-gray-400">Social Science</span>
+                        <span>78%</span>
+                      </div>
+
+                      <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div class="h-full w-[78%] bg-green-400/70 rounded-full"></div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         EDUCATORS
+    ========================================================== -->
+
+    <section class="py-28 bg-white">
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div
+          class="grid lg:grid-cols-[0.7fr_1.3fr]
+                 gap-14
+                 items-center"
+        >
+
+          <div class="reveal">
+
+            <div class="section-eyebrow">
+              OUR EDUCATORS
+            </div>
+
+            <h2 class="section-title">
+              Experience that
+              <span class="text-accent">guides learning.</span>
+            </h2>
+
+            <p class="section-description">
+              Mentora Edge is built around experienced educators who bring
+              subject knowledge, structured teaching and personalised
+              academic support to students.
+            </p>
+
+            <a
+              href="educators.html"
+              class="inline-flex items-center gap-2
+                     mt-8
+                     px-6 py-3
+                     rounded-xl
+                     bg-primary
+                     text-white
+                     font-bold
+                     hover:bg-primarySoft
+                     hover:-translate-y-1
+                     transition-all duration-300"
+            >
+              Meet Our Educators
+              <span>→</span>
+            </a>
+
+          </div>
+
+
+          <div
+            class="grid sm:grid-cols-2
+                   gap-6
+                   reveal"
+          >
+
+            <!-- Educator 1 -->
+            <article class="educator-card">
+
+              <div class="educator-avatar">
+                RM
+              </div>
+
+              <div class="mt-5">
+
+                <h3 class="text-xl font-bold text-primary">
+                  Ranita Munshi
+                </h3>
+
+                <p class="mt-1 text-green-600 font-semibold">
+                  English
+                </p>
+
+                <p class="mt-4 text-sm text-gray-600">
+                  M.A. English · B.Ed.
+                </p>
+
+                <div
+                  class="mt-4
+                         inline-flex
+                         px-3 py-1.5
+                         rounded-full
+                         bg-primary/5
+                         text-primary
+                         text-xs font-semibold"
+                >
+                  24+ Years of Experience
+                </div>
+
+              </div>
+
+            </article>
+
+
+            <!-- Educator 2 -->
+            <article class="educator-card">
+
+              <div class="educator-avatar educator-avatar-alt">
+                SM
+              </div>
+
+              <div class="mt-5">
+
+                <h3 class="text-xl font-bold text-primary">
+                  Subir Munshi
+                </h3>
+
+                <p class="mt-1 text-green-600 font-semibold">
+                  Social Science
+                </p>
+
+                <p class="mt-4 text-sm text-gray-600">
+                  M.A. History · B.Ed.
+                </p>
+
+                <div
+                  class="mt-4
+                         inline-flex
+                         px-3 py-1.5
+                         rounded-full
+                         bg-primary/5
+                         text-primary
+                         text-xs font-semibold"
+                >
+                  24+ Years of Experience
+                </div>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PUBLIC RESOURCES / SEO ENGINE
+    ========================================================== -->
+
+    <section
+      class="py-28
+             bg-gradient-to-b
+             from-[#F8FAFC]
+             to-white"
+    >
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div
+          class="flex flex-col lg:flex-row
+                 lg:items-end
+                 lg:justify-between
+                 gap-8
+                 reveal"
+        >
+
+          <div class="max-w-2xl">
+
+            <div class="section-eyebrow">
+              LEARNING RESOURCES
+            </div>
+
+            <h2 class="section-title">
+              Useful resources for
+              <span class="text-accent">better preparation.</span>
+            </h2>
+
+            <p class="section-description">
+              Explore CBSE study materials, exam preparation guidance,
+              study tips and academic resources created to support students
+              beyond the classroom.
+            </p>
+
+          </div>
+
+
+          <a
+            href="resources.html"
+            class="inline-flex items-center gap-2
+                   text-primary
+                   font-bold
+                   hover:text-accent
+                   transition-colors"
+          >
+            Explore Resources
+            <span>→</span>
+          </a>
+
+        </div>
+
+
+        <div
+          class="grid md:grid-cols-3
+                 gap-7
+                 mt-16"
+        >
+
+          <article class="resource-card reveal">
+
+            <div class="resource-icon bg-blue-50 text-primary">
+              📚
+            </div>
+
+            <span class="resource-tag">
+              STUDY MATERIALS
+            </span>
+
+            <h3>
+              CBSE Study Materials
+            </h3>
+
+            <p>
+              Chapter-focused resources and learning material for CBSE
+              students.
+            </p>
+
+            <a href="resources.html">
+              Browse Study Materials →
+            </a>
+
+          </article>
+
+
+          <article class="resource-card reveal">
+
+            <div class="resource-icon bg-green-50 text-green-600">
+              🎯
+            </div>
+
+            <span class="resource-tag">
+              EXAM PREPARATION
+            </span>
+
+            <h3>
+              Exam Preparation
+            </h3>
+
+            <p>
+              Practical preparation guidance, revision strategies and
+              examination-focused resources.
+            </p>
+
+            <a href="resources.html">
+              Explore Exam Prep →
+            </a>
+
+          </article>
+
+
+          <article class="resource-card reveal">
+
+            <div class="resource-icon bg-purple-50 text-purple-600">
+              💡
+            </div>
+
+            <span class="resource-tag">
+              STUDY TIPS
+            </span>
+
+            <h3>
+              Study Tips
+            </h3>
+
+            <p>
+              Useful academic habits, study strategies and learning
+              techniques for students.
+            </p>
+
+            <a href="resources.html">
+              Read Study Tips →
+            </a>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         ABOUT SNAPSHOT
+    ========================================================== -->
+
+    <section class="py-28 bg-white">
+
+      <div
+        class="max-w-6xl mx-auto px-6 lg:px-8"
+      >
+
+        <div
+          class="rounded-[2rem]
+                 bg-gradient-to-br
+                 from-green-50
+                 via-white
+                 to-blue-50
+                 border border-gray-200
+                 shadow-glass
+                 p-8 md:p-12
+                 reveal"
+        >
+
+          <div
+            class="grid lg:grid-cols-[1.4fr_0.6fr]
+                   gap-12
+                   items-center"
+          >
+
+            <div>
+
+              <div class="section-eyebrow">
+                ABOUT MENTORA EDGE
+              </div>
+
+              <h2
+                class="text-3xl md:text-4xl
+                       font-black
+                       text-primary
+                       leading-tight"
+              >
+                Education designed around
+                <span class="text-accent">
+                  clarity, consistency and progress.
+                </span>
+              </h2>
+
+              <p
+                class="mt-6
+                       text-gray-600
+                       leading-relaxed
+                       text-lg"
+              >
+                Mentora Edge brings together experienced educators,
+                structured courses, personalised attention, assessments and
+                digital learning support to create a focused academic
+                environment for CBSE students.
+              </p>
+
+              <a
+                href="about.html"
+                class="inline-flex items-center gap-2
+                       mt-8
+                       text-primary
+                       font-bold
+                       hover:text-accent
+                       transition-colors"
+              >
+                Discover Mentora Edge
+                <span>→</span>
+              </a>
+
+            </div>
+
+
+            <div
+              class="relative
+                     flex justify-center"
+            >
+
+              <div
+                class="w-52 h-52
+                       rounded-[2rem]
+                       bg-white
+                       shadow-xl
+                       border border-gray-100
+                       flex flex-col
+                       items-center
+                       justify-center
+                       rotate-3
+                       hover:rotate-0
+                       transition-transform duration-500"
+              >
+
+                <img
+                  src="Assets/Images/mentora-edge-logo.png"
+                  alt="Mentora Edge Logo"
+                  class="w-24 h-24 object-contain"
+                />
+
+                <p
+                  class="mt-4
+                         text-xs
+                         uppercase
+                         tracking-[0.2em]
+                         text-primary
+                         font-bold"
+                >
+                  Shaping Minds
+                </p>
+
+                <p
+                  class="text-xs
+                         text-gray-500"
+                >
+                  Sharpening Futures
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         LOCATION / LOCAL SEO
+    ========================================================== -->
+
+    <section
+      class="py-24
+             bg-[#F8FAFC]"
+    >
+
+      <div
+        class="max-w-5xl mx-auto
+               px-6
+               text-center
+               reveal"
+      >
+
+        <div
+          class="inline-flex
+                 w-16 h-16
+                 rounded-2xl
+                 bg-green-50
+                 text-green-600
+                 items-center justify-center
+                 text-2xl
+                 shadow-sm"
+        >
+          📍
+        </div>
+
+        <p
+          class="mt-6
+                 text-sm uppercase
+                 tracking-[0.2em]
+                 text-green-600
+                 font-bold"
+        >
+          Offline Coaching in Begusarai
+        </p>
+
+        <h2
+          class="mt-3
+                 text-3xl md:text-4xl
+                 font-black
+                 text-primary"
+        >
+          Find Mentora Edge in Begusarai
+        </h2>
+
+        <p
+          class="mt-5
+                 text-gray-600
+                 max-w-2xl
+                 mx-auto
+                 leading-relaxed"
+        >
+          Our current offline coaching centre is located at
+          <strong>
+            Suhird Nagar, Opposite Circuit House, Begusarai, Bihar.
+          </strong>
+        </p>
+
+        <a
+          href="offline-coaching.html"
+          class="inline-flex items-center gap-2
+                 mt-8
+                 px-6 py-3
+                 rounded-xl
+                 bg-primary
+                 text-white
+                 font-bold
+                 hover:bg-primarySoft
+                 hover:-translate-y-1
+                 transition-all duration-300"
+        >
+          View Offline Coaching
+          <span>→</span>
+        </a>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         FINAL CTA
+    ========================================================== -->
+
+    <section
+      class="relative
+             overflow-hidden
+             py-28
+             bg-gradient-to-br
+             from-primary
+             via-[#12365A]
+             to-[#1E4E79]
+             text-white"
+    >
+
+      <!-- decorative glows -->
+      <div
+        class="absolute
+               w-[450px] h-[450px]
+               rounded-full
+               bg-green-400/15
+               blur-[110px]
+               -left-64 -top-64"
+      ></div>
+
+      <div
+        class="absolute
+               w-[450px] h-[450px]
+               rounded-full
+               bg-blue-400/15
+               blur-[110px]
+               -right-64 -bottom-64"
+      ></div>
+
+
+      <div
+        class="relative
+               max-w-4xl mx-auto
+               px-6
+               text-center
+               reveal"
+      >
+
+        <div
+          class="inline-flex
+                 items-center gap-2
+                 px-4 py-2
+                 rounded-full
+                 bg-white/10
+                 border border-white/10
+                 text-green-300
+                 text-sm font-semibold"
+        >
+          YOUR NEXT STEP
+        </div>
+
+        <h2
+          class="mt-7
+                 text-4xl md:text-5xl
+                 font-black
+                 leading-tight"
+        >
+          Ready to explore
+          <span class="text-green-400">
+            Mentora Edge?
+          </span>
+        </h2>
+
+        <p
+          class="mt-6
+                 text-gray-300
+                 text-lg
+                 max-w-2xl
+                 mx-auto
+                 leading-relaxed"
+        >
+          Explore our programmes or book an enquiry to discuss the right
+          learning pathway for your student.
+        </p>
+
+        <div
+          class="mt-10
+                 flex flex-col sm:flex-row
+                 justify-center
+                 gap-4"
+        >
+
+          <a
+            href="courses.html"
+            class="px-8 py-4
+                   rounded-xl
+                   bg-accent
+                   text-white
+                   font-bold
+                   shadow-xl
+                   hover:bg-green-600
+                   hover:-translate-y-1
+                   transition-all duration-300"
+          >
+            Explore Programs
+          </a>
+
+          <a
+            href="enquiry.html"
+            class="px-8 py-4
+                   rounded-xl
+                   bg-white/10
+                   border border-white/20
+                   backdrop-blur-xl
+                   font-bold
+                   hover:bg-white/20
+                   hover:-translate-y-1
+                   transition-all duration-300"
+          >
+            Book an Enquiry
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================== -->
+
+  <footer
+    class="bg-[#081827]
+           text-gray-400"
+  >
+
+    <div
+      class="max-w-7xl mx-auto
+             px-6 lg:px-8
+             py-16"
+    >
+
+      <div
+        class="grid
+               sm:grid-cols-2
+               lg:grid-cols-4
+               gap-12"
+      >
+
+        <!-- Brand -->
+        <div>
+
+          <div
+            class="flex items-center gap-3"
+          >
+
+            <div
+              class="w-11 h-11
+                     rounded-xl
+                     bg-white/10
+                     border border-white/10
+                     flex items-center justify-center"
+            >
+
+              <img
+                src="Assets/Images/mentora-edge-logo.png"
+                alt="Mentora Edge Logo"
+                class="w-8 h-8 object-contain"
+              />
+
+            </div>
+
+            <div>
+
+              <h2
+                class="text-white
+                       text-xl
+                       font-extrabold"
+              >
+                Mentora Edge
+              </h2>
+
+              <p class="text-xs text-gray-500">
+                Shaping Minds · Sharpening Futures
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <p
+            class="mt-6
+                   text-sm
+                   leading-relaxed
+                   max-w-xs"
+          >
+            Premium CBSE education for Classes VI–XII through personalised
+            offline coaching and online personal tuition.
+          </p>
+
+        </div>
+
+
+        <!-- Explore -->
+        <div>
+
+          <h3
+            class="text-white
+                   font-bold
+                   mb-5"
+          >
+            Explore
+          </h3>
+
+          <ul class="space-y-3 text-sm">
+
+            <li>
+              <a href="courses.html" class="footer-link">
+                Programs
+              </a>
+            </li>
+
+            <li>
+              <a href="offline-coaching.html" class="footer-link">
+                Offline Coaching
+              </a>
+            </li>
+
+            <li>
+              <a href="online-tuition.html" class="footer-link">
+                Online Personal Tuition
+              </a>
+            </li>
+
+            <li>
+              <a href="educators.html" class="footer-link">
+                Educators
+              </a>
+            </li>
+
+            <li>
+              <a href="resources.html" class="footer-link">
+                Resources
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <!-- Platform -->
+        <div>
+
+          <h3
+            class="text-white
+                   font-bold
+                   mb-5"
+          >
+            Platform
+          </h3>
+
+          <ul class="space-y-3 text-sm">
+
+            <li>
+              <a href="learning-platform.html" class="footer-link">
+                Learning Platform
+              </a>
+            </li>
+
+            <li>
+              <a href="login.html" class="footer-link">
+                Student & Admin Login
+              </a>
+            </li>
+
+            <li>
+              <a href="register.html" class="footer-link">
+                Register
+              </a>
+            </li>
+
+            <li>
+              <a href="enquiry.html" class="footer-link">
+                Book an Enquiry
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <!-- Location -->
+        <div>
+
+          <h3
+            class="text-white
+                   font-bold
+                   mb-5"
+          >
+            Visit Mentora Edge
+          </h3>
+
+          <p class="text-sm leading-relaxed">
+            Suhird Nagar,<br />
+            Opposite Circuit House,<br />
+            Begusarai, Bihar, India
+          </p>
+
+          <div
+            class="mt-5
+                   inline-flex
+                   px-3 py-1.5
+                   rounded-full
+                   bg-green-400/10
+                   border border-green-400/10
+                   text-green-300
+                   text-xs
+                   font-semibold"
+          >
+            Offline Coaching · Begusarai
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Footer Bottom -->
+      <div
+        class="mt-14
+               pt-7
+               border-t border-white/10
+               flex flex-col md:flex-row
+               justify-between
+               gap-5
+               text-xs"
+      >
+
+        <p>
+          © 2026 Mentora Edge. All Rights Reserved.
+        </p>
+
+        <div class="flex flex-wrap gap-x-5 gap-y-2">
+
+          <a href="terms.html" class="footer-link">
+            Terms & Conditions
+          </a>
+
+          <a href="privacy.html" class="footer-link">
+            Privacy Policy
+          </a>
+
+          <a href="login.html" class="footer-link">
+            Login
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
+
+  <script>
+    /* =========================================================
+       MOBILE MENU
+    ========================================================== */
+
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const menuIcon = document.getElementById("menuIcon");
+
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener("click", () => {
+
+        const isHidden = mobileMenu.classList.contains("hidden");
+
+        mobileMenu.classList.toggle("hidden");
+
+        menuBtn.setAttribute(
+          "aria-expanded",
+          String(isHidden)
+        );
+
+        if (menuIcon) {
+          menuIcon.textContent = isHidden ? "✕" : "☰";
+        }
+
       });
-      entry.target.classList.add("reveal-active");
     }
-  });
-}, { threshold: 0.15 });
 
-reveals.forEach(el => observer.observe(el));
 
-/* Parallax */
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY;
+    /* =========================================================
+       CLOSE MOBILE MENU AFTER CLICK
+    ========================================================== */
 
-  document.querySelectorAll(".parallax").forEach(el => {
-    const speed = el.dataset.speed || 0.2;
-    el.style.transform = `translateY(${scrollY * speed}px)`;
-  });
+    document.querySelectorAll("#mobileMenu a").forEach(link => {
 
-  /* Hero Zoom */
-  const hero = document.querySelector(".hero-scale");
-  if (hero) {
-    hero.style.transform = `scale(${1 + scrollY * 0.0003})`;
-  }
-});
-</script>
+      link.addEventListener("click", () => {
 
-<style>
-html {
-  scroll-behavior: smooth;
-}
+        mobileMenu.classList.add("hidden");
 
-.reveal {
-  opacity: 0;
-  transform: translateY(60px) scale(0.96);
-  transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
+        if (menuBtn) {
+          menuBtn.setAttribute("aria-expanded", "false");
+        }
 
-.reveal-active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-* {
-  transition: background-color 0.4s ease,
-              color 0.4s ease,
-              border-color 0.4s ease,
-              box-shadow 0.4s ease;
-}
-a, button {
-  transition: all 0.3s ease;
-}
-</style>
+        if (menuIcon) {
+          menuIcon.textContent = "☰";
+        }
 
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/firebase-messaging-sw.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch(err => console.log("SW registration failed", err));
-  });
-}
-</script>
+      });
+
+    });
+
+
+    /* =========================================================
+       NAVBAR SCROLL EFFECT
+    ========================================================== */
+
+    const navbar = document.getElementById("navbar");
+
+    window.addEventListener("scroll", () => {
+
+      if (!navbar) return;
+
+      if (window.scrollY > 30) {
+
+        navbar.classList.add(
+          "bg-white/95",
+          "shadow-lg"
+        );
+
+        navbar.classList.remove(
+          "bg-white/75"
+        );
+
+      } else {
+
+        navbar.classList.remove(
+          "bg-white/95",
+          "shadow-lg"
+        );
+
+        navbar.classList.add(
+          "bg-white/75"
+        );
+
+      }
+
+    });
+
+
+    /* =========================================================
+       REVEAL ANIMATIONS
+    ========================================================== */
+
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+
+        entries.forEach(entry => {
+
+          if (entry.isIntersecting) {
+
+            const children =
+              entry.target.querySelectorAll(
+                ":scope > *"
+              );
+
+            children.forEach((element, index) => {
+
+              element.style.transitionDelay =
+                `${index * 70}ms`;
+
+            });
+
+            entry.target.classList.add("reveal-active");
+
+            revealObserver.unobserve(entry.target);
+
+          }
+
+        });
+
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+
+    reveals.forEach(element => {
+      revealObserver.observe(element);
+    });
+
+
+    /* =========================================================
+       HERO PARALLAX
+    ========================================================== */
+
+    const heroVisual =
+      document.querySelector(".hero-visual");
+
+    let ticking = false;
+
+    window.addEventListener("scroll", () => {
+
+      if (!heroVisual) return;
+
+      if (!ticking) {
+
+        window.requestAnimationFrame(() => {
+
+          const scrollY = window.scrollY;
+
+          if (scrollY < 800) {
+
+            heroVisual.style.transform =
+              `translateY(${scrollY * 0.08}px)`;
+
+          }
+
+          ticking = false;
+
+        });
+
+        ticking = true;
+
+      }
+
+    });
+
+
+    /* =========================================================
+       SERVICE WORKER
+    ========================================================== */
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+          .register("/firebase-messaging-sw.js")
+          .then(() => {
+            console.log("Service Worker Registered");
+          })
+          .catch(err => {
+            console.log(
+              "SW registration failed",
+              err
+            );
+          });
+
+      });
+
+    }
+  </script>
+
+
+  <!-- =========================================================
+       PAGE STYLES
+  ========================================================== -->
+
+  <style>
+
+    /* ---------------------------------------------------------
+       GLOBAL
+    --------------------------------------------------------- */
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+      background: rgba(34, 197, 94, 0.22);
+      color: #0F2A44;
+    }
+
+
+    /* ---------------------------------------------------------
+       NAVIGATION
+    --------------------------------------------------------- */
+
+    .nav-link {
+      position: relative;
+      color: #334155;
+      transition:
+        color 0.3s ease,
+        transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #22C55E;
+      transform: translateY(-1px);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: #22C55E;
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+
+    .mobile-nav-link {
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: #334155;
+      transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+    }
+
+    .mobile-nav-link:hover {
+      background: rgba(34, 197, 94, 0.08);
+      color: #0F2A44;
+      transform: translateX(4px);
+    }
+
+
+    /* ---------------------------------------------------------
+       HERO
+    --------------------------------------------------------- */
+
+    .hero-grid {
+      background-image:
+        linear-gradient(
+          rgba(255,255,255,0.6) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.6) 1px,
+          transparent 1px
+        );
+
+      background-size: 55px 55px;
+
+      mask-image:
+        linear-gradient(
+          to bottom,
+          black,
+          transparent
+        );
+    }
+
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 9px 14px;
+
+      border-radius: 999px;
+
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+
+      backdrop-filter: blur(15px);
+
+      font-size: 13px;
+      color: #E2E8F0;
+
+      transition:
+        transform 0.3s ease,
+        background-color 0.3s ease;
+    }
+
+    .hero-pill:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.13);
+    }
+
+
+    .glass-floating-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      padding: 12px 15px;
+
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(255,255,255,0.7);
+
+      border-radius: 16px;
+
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.15);
+
+      color: #0F2A44;
+
+      backdrop-filter: blur(18px);
+    }
+
+
+    /* ---------------------------------------------------------
+       SECTIONS
+    --------------------------------------------------------- */
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+
+      font-size: 12px;
+      font-weight: 800;
+
+      letter-spacing: 0.18em;
+
+      color: #16A34A;
+
+      margin-bottom: 14px;
+    }
+
+    .section-eyebrow::before {
+      content: "";
+
+      width: 24px;
+      height: 2px;
+
+      margin-right: 9px;
+
+      border-radius: 999px;
+
+      background: #22C55E;
+    }
+
+
+    .section-title {
+      font-size: clamp(
+        2rem,
+        4vw,
+        3.2rem
+      );
+
+      line-height: 1.1;
+
+      font-weight: 900;
+
+      color: #0F2A44;
+
+      letter-spacing: -0.035em;
+    }
+
+
+    .section-description {
+      margin-top: 18px;
+
+      color: #64748B;
+
+      line-height: 1.8;
+
+      font-size: 1.05rem;
+    }
+
+
+    /* ---------------------------------------------------------
+       GLASS SECTION
+    --------------------------------------------------------- */
+
+    .glass-section {
+      background: rgba(255,255,255,0.88);
+
+      backdrop-filter: blur(20px);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.8);
+
+      border-radius: 24px;
+
+      box-shadow:
+        0 20px 60px
+        rgba(15,42,68,0.10);
+
+      overflow: hidden;
+    }
+
+
+    .stat-item {
+      min-height: 105px;
+
+      padding: 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background: #F0FDF4;
+
+      font-size: 18px;
+    }
+
+
+    /* ---------------------------------------------------------
+       FEATURE CARDS
+    --------------------------------------------------------- */
+
+    .feature-card {
+      padding: 30px;
+
+      border-radius: 24px;
+
+      background:
+        rgba(255,255,255,0.75);
+
+      border:
+        1px solid
+        rgba(226,232,240,0.9);
+
+      box-shadow:
+        0 15px 50px
+        rgba(15,42,68,0.06);
+
+      backdrop-filter: blur(18px);
+
+      transition:
+        transform 0.4s cubic-bezier(.22,1,.36,1),
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+    }
+
+    .feature-card:hover {
+      transform:
+        translateY(-9px);
+
+      box-shadow:
+        0 25px 70px
+        rgba(15,42,68,0.12);
+
+      border-color:
+        rgba(34,197,94,0.22);
+    }
+
+
+    .feature-icon {
+      width: 54px;
+      height: 54px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 16px;
+
+      font-size: 24px;
+
+      margin-bottom: 24px;
+    }
+
+
+    .feature-title {
+      color: #0F2A44;
+
+      font-size: 1.18rem;
+
+      font-weight: 800;
+
+      margin-bottom: 10px;
+    }
+
+
+    .feature-text {
+      color: #64748B;
+
+      line-height: 1.7;
+
+      font-size: 0.94rem;
+    }
+
+
+    /* ---------------------------------------------------------
+       PROGRAM CARDS
+    --------------------------------------------------------- */
+
+    .program-card {
+      position: relative;
+
+      padding: 34px;
+
+      border-radius: 28px;
+
+      background: white;
+
+      border: 1px solid #E2E8F0;
+
+      box-shadow:
+        0 15px 50px
+        rgba(15,42,68,0.06);
+
+      overflow: hidden;
+
+      transition:
+        transform 0.4s cubic-bezier(.22,1,.36,1),
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+    }
+
+    .program-card:hover {
+      transform: translateY(-10px);
+
+      box-shadow:
+        0 30px 80px
+        rgba(15,42,68,0.12);
+
+      border-color:
+        rgba(34,197,94,0.25);
+    }
+
+
+    .program-card::before {
+      content: "";
+
+      position: absolute;
+
+      width: 180px;
+      height: 180px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(34,197,94,0.10),
+          transparent 70%
+        );
+
+      right: -80px;
+      top: -80px;
+    }
+
+
+    .program-card-featured {
+      background:
+        linear-gradient(
+          145deg,
+          #F0FDF4,
+          #FFFFFF
+        );
+    }
+
+
+    .program-number {
+      position: absolute;
+
+      top: 24px;
+      right: 28px;
+
+      font-size: 12px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.15em;
+
+      color: #94A3B8;
+    }
+
+
+    .program-icon {
+      width: 62px;
+      height: 62px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 19px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #F0FDF4,
+          #EFF6FF
+        );
+
+      font-size: 28px;
+
+      margin-bottom: 24px;
+    }
+
+
+    .program-label {
+      color: #16A34A;
+
+      font-size: 11px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.16em;
+    }
+
+
+    .program-title {
+      color: #0F2A44;
+
+      font-size: 1.7rem;
+
+      font-weight: 900;
+
+      margin-top: 7px;
+    }
+
+
+    .program-description {
+      margin-top: 15px;
+
+      color: #64748B;
+
+      line-height: 1.7;
+
+      font-size: 0.95rem;
+    }
+
+
+    .program-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-top: 26px;
+
+      color: #0F2A44;
+
+      font-size: 0.9rem;
+
+      font-weight: 800;
+
+      transition:
+        color 0.3s ease,
+        gap 0.3s ease;
+    }
+
+    .program-link:hover {
+      color: #16A34A;
+      gap: 12px;
+    }
+
+
+    /* ---------------------------------------------------------
+       LEARNING MODE CARDS
+    --------------------------------------------------------- */
+
+    .learning-mode-card {
+      position: relative;
+
+      padding: 38px;
+
+      border-radius: 30px;
+
+      overflow: hidden;
+
+      transition:
+        transform 0.4s cubic-bezier(.22,1,.36,1),
+        box-shadow 0.4s ease;
+    }
+
+    .learning-mode-card:hover {
+      transform: translateY(-8px);
+
+      box-shadow:
+        0 30px 80px
+        rgba(15,42,68,0.14);
+    }
+
+
+    .mode-icon {
+      width: 60px;
+      height: 60px;
+
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 27px;
+    }
+
+
+    .mode-badge {
+      padding: 7px 11px;
+
+      border-radius: 999px;
+
+      background: rgba(255,255,255,0.10);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.12);
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.15em;
+    }
+
+
+    .mini-feature {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      padding: 11px 12px;
+
+      border-radius: 12px;
+
+      background: #F8FAFC;
+
+      border: 1px solid #E2E8F0;
+
+      color: #475569;
+
+      font-size: 13px;
+
+      font-weight: 600;
+    }
+
+
+    /* ---------------------------------------------------------
+       LEARNING CYCLE
+    --------------------------------------------------------- */
+
+    .cycle-card {
+      position: relative;
+
+      padding: 28px;
+
+      border-radius: 22px;
+
+      background: rgba(255,255,255,0.9);
+
+      border: 1px solid #E2E8F0;
+
+      box-shadow:
+        0 15px 40px
+        rgba(15,42,68,0.06);
+
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+    }
+
+    .cycle-card:hover {
+      transform: translateY(-7px);
+
+      box-shadow:
+        0 25px 60px
+        rgba(15,42,68,0.10);
+    }
+
+
+    .cycle-number {
+      position: absolute;
+
+      right: 20px;
+      top: 18px;
+
+      color: #CBD5E1;
+
+      font-size: 11px;
+
+      font-weight: 900;
+
+      letter-spacing: 0.15em;
+    }
+
+
+    .cycle-icon {
+      font-size: 27px;
+
+      margin-bottom: 18px;
+    }
+
+
+    .cycle-card h3 {
+      color: #0F2A44;
+
+      font-size: 1.15rem;
+
+      font-weight: 800;
+    }
+
+
+    .cycle-card p {
+      color: #64748B;
+
+      font-size: 0.88rem;
+
+      margin-top: 7px;
+
+      line-height: 1.6;
+    }
+
+
+    /* ---------------------------------------------------------
+       PLATFORM
+    --------------------------------------------------------- */
+
+    .platform-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      padding: 12px 14px;
+
+      border-radius: 14px;
+
+      background: rgba(255,255,255,0.05);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+      color: #E2E8F0;
+
+      font-size: 13px;
+
+      font-weight: 600;
+    }
+
+
+    .dashboard-mini-card {
+      padding: 18px;
+
+      border-radius: 16px;
+
+      background: rgba(255,255,255,0.05);
+
+      border:
+        1px solid
+        rgba(255,255,255,0.06);
+
+      text-align: center;
+    }
+
+    .dashboard-mini-card span {
+      display: block;
+
+      font-size: 20px;
+
+      margin-bottom: 8px;
+    }
+
+    .dashboard-mini-card p {
+      font-size: 11px;
+
+      color: #CBD5E1;
+
+      font-weight: 600;
+    }
+
+
+    /* ---------------------------------------------------------
+       EDUCATORS
+    --------------------------------------------------------- */
+
+    .educator-card {
+      padding: 30px;
+
+      border-radius: 25px;
+
+      background: white;
+
+      border: 1px solid #E2E8F0;
+
+      box-shadow:
+        0 15px 50px
+        rgba(15,42,68,0.06);
+
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+    }
+
+    .educator-card:hover {
+      transform: translateY(-8px);
+
+      box-shadow:
+        0 25px 70px
+        rgba(15,42,68,0.11);
+    }
+
+
+    .educator-avatar {
+      width: 70px;
+      height: 70px;
+
+      border-radius: 21px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #0F2A44,
+          #1E4E79
+        );
+
+      color: white;
+
+      font-weight: 900;
+
+      font-size: 20px;
+
+      box-shadow:
+        0 15px 30px
+        rgba(15,42,68,0.18);
+    }
+
+
+    .educator-avatar-alt {
+      background:
+        linear-gradient(
+          135deg,
+          #16A34A,
+          #22C55E
+        );
+
+      box-shadow:
+        0 15px 30px
+        rgba(34,197,94,0.18);
+    }
+
+
+    /* ---------------------------------------------------------
+       RESOURCES
+    --------------------------------------------------------- */
+
+    .resource-card {
+      padding: 30px;
+
+      border-radius: 25px;
+
+      background: white;
+
+      border: 1px solid #E2E8F0;
+
+      box-shadow:
+        0 15px 50px
+        rgba(15,42,68,0.05);
+
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-8px);
+
+      box-shadow:
+        0 25px 70px
+        rgba(15,42,68,0.10);
+    }
+
+
+    .resource-icon {
+      width: 58px;
+      height: 58px;
+
+      border-radius: 17px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 25px;
+
+      margin-bottom: 22px;
+    }
+
+
+    .resource-tag {
+      font-size: 10px;
+
+      letter-spacing: 0.15em;
+
+      font-weight: 900;
+
+      color: #16A34A;
+    }
+
+
+    .resource-card h3 {
+      margin-top: 8px;
+
+      color: #0F2A44;
+
+      font-size: 1.3rem;
+
+      font-weight: 900;
+    }
+
+
+    .resource-card p {
+      margin-top: 12px;
+
+      color: #64748B;
+
+      line-height: 1.7;
+
+      font-size: 0.92rem;
+    }
+
+
+    .resource-card a {
+      display: inline-flex;
+
+      margin-top: 22px;
+
+      color: #0F2A44;
+
+      font-size: 0.88rem;
+
+      font-weight: 800;
+
+      transition:
+        color 0.3s ease;
+    }
+
+    .resource-card a:hover {
+      color: #16A34A;
+    }
+
+
+    /* ---------------------------------------------------------
+       FOOTER
+    --------------------------------------------------------- */
+
+    .footer-link {
+      transition:
+        color 0.25s ease;
+    }
+
+    .footer-link:hover {
+      color: #4ADE80;
+    }
+
+
+    /* ---------------------------------------------------------
+       REVEAL ANIMATION
+    --------------------------------------------------------- */
+
+    .reveal {
+      opacity: 0;
+
+      transform:
+        translateY(45px)
+        scale(0.985);
+
+      transition:
+        opacity 0.85s cubic-bezier(.22,1,.36,1),
+        transform 0.85s cubic-bezier(.22,1,.36,1);
+    }
+
+
+    .reveal-active {
+      opacity: 1;
+
+      transform:
+        translateY(0)
+        scale(1);
+    }
+
+
+    /* ---------------------------------------------------------
+       FLOATING ANIMATIONS
+    --------------------------------------------------------- */
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+
+    }
+
+
+    @keyframes floatReverse {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(10px);
+      }
+
+    }
+
+
+    @keyframes pulseSlow {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.75;
+        transform: scale(1.08);
+      }
+
+    }
+
+
+    @keyframes spinSlow {
+
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+
+    }
+
+
+    .animate-float {
+      animation:
+        float 5s ease-in-out infinite;
+    }
+
+
+    .animate-float-reverse {
+      animation:
+        floatReverse 6s ease-in-out infinite;
+    }
+
+
+    .animate-float-slow {
+      animation:
+        float 8s ease-in-out infinite;
+    }
+
+
+    .animate-pulse-slow {
+      animation:
+        pulseSlow 7s ease-in-out infinite;
+    }
+
+
+    .animate-spin-slow {
+      animation:
+        spinSlow 35s linear infinite;
+    }
+
+
+    /* ---------------------------------------------------------
+       ACCESSIBILITY
+    --------------------------------------------------------- */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+    }
+
+
+    /* ---------------------------------------------------------
+       MOBILE
+    --------------------------------------------------------- */
+
+    @media (max-width: 640px) {
+
+      .stat-item {
+        min-height: 90px;
+        padding: 12px 8px;
+        gap: 7px;
+      }
+
+      .stat-item:nth-child(odd) {
+        border-left: none;
+      }
+
+      .stat-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
+      }
+
+      .stat-item p {
+        font-size: 11px;
+      }
+
+      .stat-item .text-xs {
+        font-size: 9px;
+      }
+
+      .feature-card,
+      .program-card,
+      .resource-card,
+      .educator-card {
+        padding: 25px;
+      }
+
+      .learning-mode-card {
+        padding: 28px;
+      }
+
+    }
+
+  </style>
 
 </body>
 </html>

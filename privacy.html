@@ -2,137 +2,801 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Privacy Policy | Mentora Edge</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Tailwind CDN -->
+  <title>Privacy Policy | Mentora Edge</title>
+  <meta
+    name="description"
+    content="Read the Privacy Policy of Mentora Edge, including how student, parent, account, academic, enrollment, and website data is collected, used, stored, and protected."
+  />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Mentora Edge" />
+  <link rel="canonical" href="https://mentoraedge.online/privacy.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Privacy Policy | Mentora Edge" />
+  <meta
+    property="og:description"
+    content="Learn how Mentora Edge handles student, parent, academic, account, and website information."
+  />
+  <meta property="og:url" content="https://mentoraedge.online/privacy.html" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="Assets/Images/mentora-edge-logo.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: "#0F2A44",
+            mentoraGreen: "#22C55E",
+            softGreen: "#4ADE80"
+          },
+          boxShadow: {
+            glass: "0 24px 70px rgba(15, 42, 68, 0.12)"
+          }
+        }
+      }
+    };
+  </script>
+
   <style>
-    .fade-in {
-      animation: fadeIn 0.6s ease-in-out;
+    :root {
+      --navy: #0F2A44;
+      --green: #22C55E;
+      --soft-green: #4ADE80;
+      --text: #172033;
+      --muted: #64748b;
+      --border: rgba(15, 42, 68, 0.10);
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(74, 222, 128, 0.13), transparent 30%),
+        radial-gradient(circle at 90% 5%, rgba(15, 42, 68, 0.12), transparent 30%),
+        linear-gradient(180deg, #f8fafc 0%, #eef5f1 48%, #f8fafc 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .nav-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 14px 28px;
+    }
+
+    .nav-link {
+      position: relative;
+      color: #475569;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--navy);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--green);
+      transition: width 0.25s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.70);
+      box-shadow: 0 24px 70px rgba(15, 42, 68, 0.10);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+
+    .orb-one {
+      width: 260px;
+      height: 260px;
+      top: 40px;
+      left: -100px;
+      background: rgba(34, 197, 94, 0.13);
+    }
+
+    .orb-two {
+      width: 320px;
+      height: 320px;
+      right: -130px;
+      top: 10px;
+      background: rgba(15, 42, 68, 0.11);
+      animation-delay: -3s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(0, 18px, 0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      animation: reveal 0.7s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.08s; }
+    .delay-2 { animation-delay: 0.16s; }
+    .delay-3 { animation-delay: 0.24s; }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-card {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 14px 40px rgba(15, 42, 68, 0.055);
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 48px rgba(15, 42, 68, 0.09);
+      border-color: rgba(34, 197, 94, 0.20);
+    }
+
+    .section-number {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), rgba(74, 222, 128, 0.06));
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .policy-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 13px;
+    }
+
+    .policy-list li {
+      position: relative;
+      padding: 15px 16px 15px 43px;
+      border-radius: 16px;
+      background: rgba(248, 250, 252, 0.82);
+      border: 1px solid rgba(15, 42, 68, 0.065);
+      color: #475569;
+      line-height: 1.75;
+      font-size: 0.93rem;
+    }
+
+    .policy-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 16px;
+      top: 15px;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .important {
+      border-color: rgba(34, 197, 94, 0.20) !important;
+      background: linear-gradient(
+        135deg,
+        rgba(34, 197, 94, 0.09),
+        rgba(255, 255, 255, 0.78)
+      ) !important;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-link {
+      display: block;
+      padding: 11px 0;
+      color: #475569;
+      font-size: 0.92rem;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(15, 42, 68, 0.06);
+    }
+
+    .footer-link {
+      color: #94a3b8;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: white;
+    }
+
+    @media (max-width: 1150px) {
+      .desktop-nav {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: inline-flex !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-wrap {
+        padding: 12px 17px;
+      }
+
+      .brand-logo {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 62px !important;
+        padding-bottom: 46px !important;
+      }
+
+      .section-card {
+        padding: 20px;
+        border-radius: 20px;
+      }
+
+      .policy-list li {
+        padding-left: 38px;
+        font-size: 0.88rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 
-<body class="bg-gray-100 font-inter text-gray-800">
+<body>
 
-  <!-- HEADER -->
-  <header class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-green-700">Mentora Edge</h1>
-      <a href="index.html" class="text-green-600 hover:underline text-sm">
-        Back to Home
-      </a>
+  <!-- HEADER / MASTER NAVIGATION -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="flex items-center justify-between gap-6">
+
+        <a href="index.html" class="flex items-center gap-3 shrink-0" aria-label="Mentora Edge Home">
+          <img
+            src="Assets/Images/mentora-edge-logo.png"
+            alt="Mentora Edge logo"
+            class="brand-logo"
+          />
+
+          <div class="hidden sm:block">
+            <div class="text-[15px] font-extrabold tracking-tight text-[#0F2A44]">
+              Mentora Edge
+            </div>
+            <div class="text-[9px] font-semibold tracking-[0.14em] uppercase text-slate-400">
+              Shaping Minds · Sharpening Futures
+            </div>
+          </div>
+        </a>
+
+        <nav class="desktop-nav flex items-center gap-5 xl:gap-6" aria-label="Primary navigation">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="programs.html" class="nav-link">Programs</a>
+          <a href="offline.html" class="nav-link">Offline Coaching</a>
+          <a href="online.html" class="nav-link">Online Tuition</a>
+          <a href="educators.html" class="nav-link">Educators</a>
+          <a href="learning-platform.html" class="nav-link">Learning Platform</a>
+          <a href="resources.html" class="nav-link">Resources</a>
+          <a href="about.html" class="nav-link">About</a>
+        </nav>
+
+        <div class="hidden xl:flex items-center gap-3 shrink-0">
+          <a
+            href="login.html"
+            class="rounded-xl px-4 py-2.5 text-xs font-bold text-[#0F2A44] border border-slate-200 bg-white/70 hover:bg-white transition"
+          >
+            Login
+          </a>
+
+          <a
+            href="enquiry.html"
+            class="rounded-xl px-4 py-2.5 text-xs font-bold text-white bg-[#0F2A44] shadow-lg shadow-slate-900/10 hover:-translate-y-0.5 transition"
+          >
+            Book an Enquiry
+          </a>
+        </div>
+
+        <button
+          type="button"
+          id="menuButton"
+          class="mobile-toggle hidden items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-white/70 text-[#0F2A44]"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="mobileMenu" class="mobile-menu mt-3">
+        <a href="index.html" class="mobile-link">Home</a>
+        <a href="programs.html" class="mobile-link">Programs</a>
+        <a href="offline.html" class="mobile-link">Offline Coaching</a>
+        <a href="online.html" class="mobile-link">Online Tuition</a>
+        <a href="educators.html" class="mobile-link">Educators</a>
+        <a href="learning-platform.html" class="mobile-link">Learning Platform</a>
+        <a href="resources.html" class="mobile-link">Resources</a>
+        <a href="about.html" class="mobile-link">About</a>
+        <a href="login.html" class="mobile-link">Login</a>
+        <a href="enquiry.html" class="mobile-link">Book an Enquiry</a>
+      </div>
     </div>
   </header>
 
-  <!-- CONTENT -->
-  <main class="max-w-4xl mx-auto px-6 py-16 fade-in">
-    <div class="bg-white rounded-2xl shadow-lg p-8">
+  <!-- HERO -->
+  <section class="hero relative overflow-hidden pt-24 pb-20">
+    <div class="hero-orb orb-one"></div>
+    <div class="hero-orb orb-two"></div>
 
-      <h2 class="text-3xl font-bold text-center text-green-600 mb-2">Privacy Policy</h2>
-      <p class="text-center text-sm text-gray-500 mb-8">
-        Last updated: January 2026
+    <div class="relative max-w-5xl mx-auto px-5 sm:px-6 text-center">
+      <div class="reveal inline-flex items-center gap-2 rounded-full border border-green-200/70 bg-white/70 px-4 py-2 text-xs font-bold text-[#0F2A44] shadow-sm backdrop-blur">
+        <span class="h-2 w-2 rounded-full bg-[#22C55E]"></span>
+        Legal · Privacy Policy
+      </div>
+
+      <h1 class="reveal delay-1 mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0F2A44]">
+        Privacy Policy
+      </h1>
+
+      <p class="reveal delay-2 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-7 text-slate-600">
+        How Mentora Edge handles student, parent, academic, account, and website information.
       </p>
 
-      <div class="space-y-6 text-gray-700 leading-relaxed">
+      <div class="reveal delay-3 mt-6 text-xs font-semibold text-slate-400">
+        Last updated: January 2026
+      </div>
+    </div>
+  </section>
 
-        <p>
+  <!-- CONTENT -->
+  <main class="max-w-5xl mx-auto px-5 sm:px-6 pb-20">
+
+    <div class="glass rounded-[30px] p-5 sm:p-8 lg:p-10">
+
+      <!-- INTRO -->
+      <div class="mb-8 rounded-2xl border border-green-100 bg-gradient-to-br from-green-50/80 to-white/70 p-5 sm:p-6">
+        <p class="text-sm sm:text-[15px] leading-7 text-slate-600">
           Mentora Edge (“we”, “our”, “us”) is committed to protecting the privacy
           and personal information of students, parents, and visitors. This Privacy
           Policy explains how we collect, use, store, and safeguard your data.
         </p>
+      </div>
 
-        <h3 class="text-xl font-semibold text-gray-900">1. Information We Collect</h3>
-        <ul class="list-disc pl-6 space-y-2">
-          <li>Student name, class, school, and contact details</li>
-          <li>Parent/guardian name and contact information</li>
-          <li>Email address and phone number</li>
-          <li>Fee payment and enrollment records</li>
-          <li>Academic records, test scores, and progress reports</li>
-          <li>Login credentials for dashboards (securely stored)</li>
-        </ul>
+      <div class="grid gap-5">
 
-        <h3 class="text-xl font-semibold text-gray-900">2. How We Use Your Information</h3>
-        <ul class="list-disc pl-6 space-y-2">
-          <li>To manage admissions, classes, and student records</li>
-          <li>To provide study materials, dashboards, and progress tracking</li>
-          <li>To communicate announcements and important updates</li>
-          <li>To share academic progress reports with parents/guardians</li>
-          <li>For internal administrative and academic purposes</li>
-        </ul>
+        <!-- 01 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">01</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Information We Collect
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Information provided or generated while using Mentora Edge services.
+              </p>
+            </div>
+          </div>
 
-        <h3 class="text-xl font-semibold text-gray-900">3. Academic & Progress Data</h3>
-        <p>
-          Weekly or periodic test progress reports are generated for academic
-          monitoring. These reports are intended to be reviewed by parents or
-          guardians to ensure transparency and improvement.
-        </p>
+          <ul class="policy-list">
+            <li>Student name, class, school, and contact details.</li>
+            <li>Parent/guardian name and contact information.</li>
+            <li>Email address and phone number.</li>
+            <li>Fee payment and enrollment records.</li>
+            <li>Academic records, test scores, and progress reports.</li>
+            <li>Login credentials for dashboards, securely stored.</li>
+          </ul>
+        </section>
 
-        <h3 class="text-xl font-semibold text-gray-900">4. Data Security</h3>
-        <p>
-          We implement appropriate technical and organizational measures to protect
-          personal data against unauthorized access, loss, misuse, or disclosure.
-          Access to sensitive information is restricted to authorized personnel only.
-        </p>
+        <!-- 02 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">02</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                How We Use Your Information
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                The purposes for which collected information may be used.
+              </p>
+            </div>
+          </div>
 
-        <h3 class="text-xl font-semibold text-gray-900">5. Sharing of Information</h3>
-        <p>
-          Mentora Edge does not sell or rent personal data. Information may only be
-          shared:
-        </p>
-        <ul class="list-disc pl-6 space-y-2">
-          <li>With parents or guardians for academic purposes</li>
-          <li>If required by law or legal authorities</li>
-          <li>For essential service operations (secure platforms only)</li>
-        </ul>
+          <ul class="policy-list">
+            <li>To manage admissions, classes, and student records.</li>
+            <li>To provide study materials, dashboards, and progress tracking.</li>
+            <li>To communicate announcements and important updates.</li>
+            <li>To share academic progress reports with parents/guardians.</li>
+            <li>For internal administrative and academic purposes.</li>
+          </ul>
+        </section>
 
-        <h3 class="text-xl font-semibold text-gray-900">6. Cookies & Website Data</h3>
-        <p>
-          Our website may use basic cookies or local storage to improve user
-          experience, login sessions, and website functionality. No unnecessary
-          tracking is performed.
-        </p>
+        <!-- 03 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">03</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Academic & Progress Data
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Information used to monitor academic progress.
+              </p>
+            </div>
+          </div>
 
-        <h3 class="text-xl font-semibold text-gray-900">7. Children’s Privacy</h3>
-        <p>
-          Since our services involve minors, all data collection is done with the
-          knowledge and consent of parents or guardians. We prioritize child data
-          protection and responsible handling.
-        </p>
+          <ul class="policy-list">
+            <li class="important">
+              Weekly or periodic test progress reports are generated for
+              academic monitoring. These reports are intended to be reviewed
+              by parents or guardians to ensure transparency and improvement.
+            </li>
+          </ul>
+        </section>
 
-        <h3 class="text-xl font-semibold text-gray-900">8. Policy Updates</h3>
-        <p>
-          Mentora Edge reserves the right to update this Privacy Policy at any time.
-          Changes will be communicated through official channels or the website.
-        </p>
+        <!-- 04 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">04</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Data Security
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Measures used to protect personal information.
+              </p>
+            </div>
+          </div>
 
-        <h3 class="text-xl font-semibold text-gray-900">9. Contact Us</h3>
-        <p>
-          For questions regarding this Privacy Policy or data handling practices,
-          please contact us via the official Mentora Edge communication channels.
-        </p>
+          <ul class="policy-list">
+            <li class="important">
+              We implement appropriate technical and organizational measures
+              to protect personal data against unauthorized access, loss,
+              misuse, or disclosure.
+            </li>
+
+            <li>
+              Access to sensitive information is restricted to authorized
+              personnel only.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 05 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">05</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Sharing of Information
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Circumstances in which information may be shared.
+              </p>
+            </div>
+          </div>
+
+          <p class="mt-5 text-sm leading-7 text-slate-600">
+            Mentora Edge does not sell or rent personal data. Information may
+            only be shared:
+          </p>
+
+          <ul class="policy-list">
+            <li>With parents or guardians for academic purposes.</li>
+            <li>If required by law or legal authorities.</li>
+            <li>For essential service operations through secure platforms.</li>
+          </ul>
+        </section>
+
+        <!-- 06 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">06</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Cookies & Website Data
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Basic technologies used to support website functionality.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              Our website may use basic cookies or local storage to improve
+              user experience, login sessions, and website functionality.
+              No unnecessary tracking is performed.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 07 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">07</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Children’s Privacy
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Responsible handling of information relating to minors.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li class="important">
+              Since our services involve minors, all data collection is done
+              with the knowledge and consent of parents or guardians.
+            </li>
+
+            <li>
+              We prioritize child data protection and responsible handling.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 08 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">08</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Policy Updates
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Changes to this Privacy Policy.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              Mentora Edge reserves the right to update this Privacy Policy
+              at any time.
+            </li>
+
+            <li>
+              Changes will be communicated through official channels or the website.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 09 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">09</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Contact Us
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Questions regarding this Privacy Policy or data handling.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              For questions regarding this Privacy Policy or data handling
+              practices, please contact us via the official Mentora Edge
+              communication channels.
+            </li>
+          </ul>
+
+          <div class="mt-5">
+            <a
+              href="enquiry.html"
+              class="inline-flex items-center justify-center rounded-xl bg-[#0F2A44] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-slate-900/10 hover:-translate-y-0.5 transition"
+            >
+              Contact Mentora Edge
+            </a>
+          </div>
+        </section>
 
       </div>
+
+      <!-- LEGAL NAVIGATION -->
+      <div class="mt-8 rounded-2xl border border-slate-200/80 bg-white/60 p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 class="font-extrabold text-[#0F2A44]">
+              Review our other legal policy
+            </h2>
+            <p class="mt-1 text-sm leading-6 text-slate-500">
+              See the Terms & Conditions governing Mentora Edge services and student responsibilities.
+            </p>
+          </div>
+
+          <a
+            href="terms.html"
+            class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-[#0F2A44] hover:bg-slate-50 transition"
+          >
+            Terms & Conditions
+          </a>
+        </div>
+      </div>
+
     </div>
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-gray-900 text-gray-400 py-8 text-center">
-    <p class="text-sm">
-      © 2025 Mentora Edge. All rights reserved.
-    </p>
-    <div class="mt-2 text-sm">
-      <a href="terms.html" class="hover:underline">Terms & Conditions</a>
-      ·
-      <a href="privacy.html" class="hover:underline">Privacy Policy</a>
+  <footer class="bg-[#0F2A44] text-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 py-12">
+
+      <div class="grid gap-10 md:grid-cols-4">
+
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-3">
+            <img
+              src="Assets/Images/mentora-edge-logo.png"
+              alt="Mentora Edge logo"
+              class="w-11 h-11 object-contain rounded-xl bg-white/95 p-1"
+            />
+            <div>
+              <div class="font-extrabold text-lg">Mentora Edge</div>
+              <div class="text-[10px] uppercase tracking-[0.14em] text-slate-300">
+                Shaping Minds · Sharpening Futures
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-5 max-w-md text-sm leading-7 text-slate-300">
+            Premium CBSE education built around every student, with offline
+            coaching in Begusarai and online personal tuition.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-extrabold">Explore</h3>
+          <div class="mt-4 grid gap-2 text-sm">
+            <a href="programs.html" class="footer-link">Programs</a>
+            <a href="offline.html" class="footer-link">Offline Coaching</a>
+            <a href="online.html" class="footer-link">Online Tuition</a>
+            <a href="educators.html" class="footer-link">Educators</a>
+            <a href="resources.html" class="footer-link">Resources</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-extrabold">Legal & Support</h3>
+          <div class="mt-4 grid gap-2 text-sm">
+            <a href="terms.html" class="footer-link">Terms & Conditions</a>
+            <a href="privacy.html" class="footer-link">Privacy Policy</a>
+            <a href="enquiry.html" class="footer-link">Book an Enquiry</a>
+            <a href="login.html" class="footer-link">Student Login</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-xs text-slate-400">
+        <p>© 2026 Mentora Edge. All rights reserved.</p>
+        <p>Suhird Nagar, Opposite Circuit House, Begusarai, Bihar, India</p>
+      </div>
+
     </div>
   </footer>
+
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener("click", () => {
+        const isOpen = mobileMenu.classList.toggle("open");
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      mobileMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("open");
+          menuButton.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
+  </script>
 
 </body>
 </html>

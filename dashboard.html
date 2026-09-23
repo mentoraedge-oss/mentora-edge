@@ -1,336 +1,1619 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0F2A44">
-<link rel="apple-touch-icon" href="/icons/ios/180.png">
-<link rel="stylesheet" href="css/theme.css">
-<title>Student Dashboard | Mentora Edge</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0F2A44">
+  <link rel="apple-touch-icon" href="/icons/ios/180.png">
+  <link rel="stylesheet" href="css/theme.css">
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Student Dashboard | Mentora Edge</title>
+  <meta name="description" content="Mentora Edge student dashboard for academic information, announcements, study materials and fee status.">
 
-<script>
-tailwind.config = {
-  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  theme: {
-    extend: {
-      fontFamily: { inter: ['Inter', 'sans-serif'] },
+  <style>
+    :root{
+      --navy:#0F2A44;
+      --navy2:#173A5C;
+      --navy3:#1E4E79;
+      --green:#22C55E;
+      --green2:#4ADE80;
+      --green3:#86EFAC;
+      --ink:#10243A;
+      --muted:#64748B;
+      --soft:#F8FAFC;
+      --line:rgba(15,42,68,.09);
+      --glass:rgba(255,255,255,.66);
+      --shadow:0 26px 75px rgba(15,42,68,.13);
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
 
-      colors: {
-        primary: '#0F2A44',
-        accent: '#22C55E',
-        accentSoft: '#4ADE80'
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html{
+      scroll-behavior:smooth;
+      scroll-padding-top:95px;
+    }
+
+    body{
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 7% 8%,rgba(34,197,94,.12),transparent 28%),
+        radial-gradient(circle at 94% 17%,rgba(15,42,68,.11),transparent 30%),
+        linear-gradient(180deg,#f8fbfd 0%,#eef5f5 54%,#f8fafc 100%);
+      overflow-x:hidden;
+      animation:pageIn .7s ease both;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-4;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(15,42,68,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(15,42,68,.025) 1px,transparent 1px);
+      background-size:45px 45px;
+      mask-image:linear-gradient(to bottom,black,transparent 90%);
+    }
+
+    a{text-decoration:none;color:inherit}
+    button{font:inherit;cursor:pointer}
+
+    .container{
+      width:min(1200px,calc(100% - 40px));
+      margin:auto;
+    }
+
+    /* Ambient graphics */
+    .ambient{
+      position:fixed;
+      inset:0;
+      z-index:-3;
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(2px);
+    }
+
+    .orb.one{
+      width:390px;
+      height:390px;
+      left:-145px;
+      top:11%;
+      background:radial-gradient(circle,rgba(34,197,94,.15),transparent 68%);
+      animation:orbFloat 12s ease-in-out infinite;
+    }
+
+    .orb.two{
+      width:470px;
+      height:470px;
+      right:-205px;
+      top:43%;
+      background:radial-gradient(circle,rgba(15,42,68,.11),transparent 68%);
+      animation:orbFloatReverse 15s ease-in-out infinite;
+    }
+
+    .orb.three{
+      width:280px;
+      height:280px;
+      left:46%;
+      bottom:-130px;
+      background:radial-gradient(circle,rgba(74,222,128,.11),transparent 68%);
+      animation:pulseGlow 8s ease-in-out infinite;
+    }
+
+    /* Navbar */
+    .navbar{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:1000;
+      padding:14px 0;
+      transition:background .4s ease,box-shadow .4s ease,padding .4s ease,backdrop-filter .4s ease;
+    }
+
+    .navbar.scrolled{
+      padding:9px 0;
+      background:rgba(248,250,252,.78);
+      border-bottom:1px solid rgba(15,42,68,.07);
+      box-shadow:0 10px 35px rgba(15,42,68,.09);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+    }
+
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-width:max-content;
+      color:var(--navy);
+    }
+
+    .brand-logo{
+      width:43px;
+      height:43px;
+      object-fit:contain;
+      border-radius:13px;
+      box-shadow:0 10px 25px rgba(15,42,68,.15);
+      transition:transform .45s var(--ease),box-shadow .45s ease;
+    }
+
+    .brand:hover .brand-logo{
+      transform:translateY(-3px) rotate(-2deg);
+      box-shadow:0 15px 32px rgba(15,42,68,.20);
+    }
+
+    .brand-copy{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .brand-name{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:-.035em;
+      line-height:1;
+    }
+
+    .brand-tagline{
+      font-size:8px;
+      font-weight:750;
+      letter-spacing:.08em;
+      color:#6b7d8e;
+      text-transform:uppercase;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+
+    .nav-link{
+      position:relative;
+      padding:10px 10px;
+      color:#31485e;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      transition:color .3s ease,transform .3s ease;
+    }
+
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:4px;
+      height:2px;
+      border-radius:99px;
+      background:var(--green);
+      transform:scaleX(0);
+      transition:transform .35s var(--ease);
+    }
+
+    .nav-link:hover,
+    .nav-link.active{
+      color:var(--navy);
+    }
+
+    .nav-link:hover{
+      transform:translateY(-2px);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after{
+      transform:scaleX(1);
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .nav-logout{
+      border:1px solid rgba(220,38,38,.12);
+      background:rgba(254,242,242,.76);
+      color:#dc2626;
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:11px;
+      font-weight:850;
+      transition:transform .3s var(--ease),box-shadow .3s ease,background .3s ease;
+    }
+
+    .nav-logout:hover{
+      transform:translateY(-3px);
+      background:rgba(254,226,226,.95);
+      box-shadow:0 12px 26px rgba(220,38,38,.10);
+    }
+
+    .menu-btn{
+      display:none;
+      border:0;
+      background:transparent;
+      color:var(--navy);
+      font-size:27px;
+      line-height:1;
+    }
+
+    .mobile-menu{
+      display:none;
+      margin-top:12px;
+      padding:12px;
+      border-radius:20px;
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(255,255,255,.9);
+      box-shadow:0 18px 45px rgba(15,42,68,.12);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+
+    .mobile-menu.open{
+      display:block;
+      animation:menuIn .35s var(--ease) both;
+    }
+
+    .mobile-menu a,
+    .mobile-logout{
+      display:block;
+      width:100%;
+      text-align:left;
+      padding:12px 11px;
+      border-radius:12px;
+      color:#31485e;
+      background:transparent;
+      border:0;
+      font-size:13px;
+      font-weight:700;
+      transition:background .25s ease,color .25s ease,transform .25s ease;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a.active{
+      background:rgba(34,197,94,.09);
+      color:var(--navy);
+      transform:translateX(4px);
+    }
+
+    .mobile-logout{
+      color:#dc2626;
+      margin-top:2px;
+    }
+
+    .mobile-logout:hover{
+      background:rgba(220,38,38,.07);
+      transform:translateX(4px);
+    }
+
+    /* Dashboard */
+    .dashboard{
+      padding:125px 0 70px;
+    }
+
+    .dashboard-hero{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:25px;
+      margin-bottom:28px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:#16883f;
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:24px;
+      height:2px;
+      border-radius:99px;
+      background:var(--green);
+    }
+
+    .dashboard-title{
+      margin-top:11px;
+      color:var(--navy);
+      font-size:clamp(34px,5vw,57px);
+      line-height:1;
+      letter-spacing:-.06em;
+    }
+
+    .dashboard-title span{
+      color:var(--green);
+    }
+
+    .dashboard-subtitle{
+      margin-top:11px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+
+    .hero-date{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 15px;
+      border-radius:15px;
+      color:#5e7184;
+      font-size:10px;
+      font-weight:800;
+      background:rgba(255,255,255,.60);
+      border:1px solid rgba(255,255,255,.82);
+      box-shadow:0 12px 28px rgba(15,42,68,.06);
+      backdrop-filter:blur(15px);
+      white-space:nowrap;
+    }
+
+    .dashboard-card{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,.82);
+      box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.68);
+      backdrop-filter:blur(22px);
+      -webkit-backdrop-filter:blur(22px);
+    }
+
+    .dashboard-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(115deg,transparent 16%,rgba(255,255,255,.34) 49%,transparent 75%);
+      transform:translateX(-125%);
+      transition:transform .95s var(--ease);
+      z-index:0;
+    }
+
+    .dashboard-card:hover::before{
+      transform:translateX(125%);
+    }
+
+    .dashboard-card > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .profile-panel{
+      padding:25px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:25px;
+      align-items:center;
+    }
+
+    .profile-main{
+      display:flex;
+      align-items:center;
+      gap:17px;
+    }
+
+    .student-avatar{
+      width:67px;
+      height:67px;
+      flex:0 0 67px;
+      display:grid;
+      place-items:center;
+      border-radius:21px;
+      color:#fff;
+      background:linear-gradient(145deg,var(--navy),var(--navy3));
+      box-shadow:0 15px 32px rgba(15,42,68,.20);
+      font-size:25px;
+      font-weight:900;
+      transition:transform .45s var(--ease),box-shadow .45s ease;
+    }
+
+    .profile-panel:hover .student-avatar{
+      transform:translateY(-4px) rotate(-3deg);
+      box-shadow:0 20px 40px rgba(15,42,68,.24);
+    }
+
+    .profile-main h2{
+      color:var(--navy);
+      font-size:20px;
+      letter-spacing:-.035em;
+    }
+
+    .profile-main p{
+      color:#738396;
+      font-size:10px;
+      margin-top:4px;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:9px 13px;
+      border-radius:99px;
+      font-size:10px;
+      font-weight:900;
+      background:#fef3c7;
+      color:#92400e;
+      white-space:nowrap;
+    }
+
+    .status-pill.active{
+      background:#dcfce7;
+      color:#166534;
+    }
+
+    .status-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:currentColor;
+      box-shadow:0 0 0 5px rgba(34,197,94,.08);
+    }
+
+    .profile-divider{
+      height:1px;
+      background:rgba(15,42,68,.07);
+      margin:0 25px;
+    }
+
+    .info-grid{
+      padding:25px;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:13px;
+    }
+
+    .info-card{
+      position:relative;
+      min-height:116px;
+      padding:17px;
+      border-radius:19px;
+      background:rgba(255,255,255,.67);
+      border:1px solid rgba(255,255,255,.80);
+      box-shadow:0 10px 25px rgba(15,42,68,.055);
+      transition:transform .4s var(--ease),box-shadow .4s ease,border-color .3s ease;
+      overflow:hidden;
+    }
+
+    .info-card::after{
+      content:"";
+      position:absolute;
+      width:85px;
+      height:85px;
+      right:-40px;
+      top:-40px;
+      border-radius:50%;
+      background:rgba(34,197,94,.07);
+      transition:transform .45s var(--ease);
+    }
+
+    .info-card:hover{
+      transform:translateY(-7px);
+      box-shadow:0 17px 34px rgba(15,42,68,.10);
+      border-color:rgba(34,197,94,.18);
+    }
+
+    .info-card:hover::after{
+      transform:scale(1.35);
+    }
+
+    .info-icon{
+      width:34px;
+      height:34px;
+      display:grid;
+      place-items:center;
+      border-radius:11px;
+      background:rgba(34,197,94,.11);
+      color:#16883f;
+      font-size:15px;
+    }
+
+    .info-card p{
+      color:#8492a1;
+      font-size:8px;
+      font-weight:850;
+      margin-top:12px;
+      text-transform:uppercase;
+      letter-spacing:.07em;
+    }
+
+    .info-card strong{
+      display:block;
+      color:var(--navy);
+      font-size:12px;
+      margin-top:4px;
+      line-height:1.35;
+      word-break:break-word;
+    }
+
+    .student-id{
+      color:#16883f!important;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    }
+
+    /* Section cards */
+    .portal-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .portal-section{
+      padding:23px;
+      min-height:190px;
+    }
+
+    .portal-section.full{
+      grid-column:1/-1;
+    }
+
+    .section-heading{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:17px;
+    }
+
+    .section-heading-main{
+      display:flex;
+      align-items:center;
+      gap:11px;
+    }
+
+    .section-heading-icon{
+      width:39px;
+      height:39px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      background:linear-gradient(145deg,rgba(34,197,94,.15),rgba(15,42,68,.08));
+      color:var(--navy);
+      font-size:17px;
+    }
+
+    .section-title{
+      color:var(--navy);
+      font-size:15px;
+      font-weight:900;
+      letter-spacing:-.025em;
+    }
+
+    .section-caption{
+      color:#8492a1;
+      font-size:9px;
+      margin-top:2px;
+    }
+
+    .announcement-list{
+      display:grid;
+      gap:9px;
+    }
+
+    .announcement-item{
+      padding:14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.66);
+      border:1px solid rgba(15,42,68,.06);
+      color:#586d80;
+      font-size:11px;
+      line-height:1.6;
+      transition:transform .35s var(--ease),box-shadow .35s ease;
+    }
+
+    .announcement-item:hover{
+      transform:translateX(4px);
+      box-shadow:0 10px 24px rgba(15,42,68,.07);
+    }
+
+    .materials-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .material-card{
+      padding:15px;
+      border-radius:15px;
+      background:rgba(255,255,255,.68);
+      border:1px solid rgba(15,42,68,.06);
+      transition:transform .35s var(--ease),box-shadow .35s ease,border-color .3s ease;
+    }
+
+    .material-card:hover{
+      transform:translateY(-5px);
+      border-color:rgba(34,197,94,.16);
+      box-shadow:0 13px 28px rgba(15,42,68,.09);
+    }
+
+    .material-icon{
+      width:31px;
+      height:31px;
+      display:grid;
+      place-items:center;
+      border-radius:10px;
+      background:rgba(15,42,68,.07);
+      color:var(--navy);
+      font-size:13px;
+    }
+
+    .material-card h4{
+      color:var(--navy);
+      font-size:11px;
+      margin-top:10px;
+      line-height:1.45;
+    }
+
+    .material-card a{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      color:#16883f;
+      font-size:9px;
+      font-weight:900;
+      margin-top:8px;
+      transition:transform .25s ease,color .25s ease;
+    }
+
+    .material-card a:hover{
+      color:var(--navy);
+      transform:translateX(3px);
+    }
+
+    .fees-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+    }
+
+    .fee-card{
+      padding:15px;
+      border-radius:15px;
+      background:rgba(255,255,255,.68);
+      border:1px solid rgba(15,42,68,.06);
+      transition:transform .35s var(--ease),box-shadow .35s ease;
+    }
+
+    .fee-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 13px 28px rgba(15,42,68,.09);
+    }
+
+    .fee-month{
+      color:var(--navy);
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .fee-paid{
+      color:#16a34a;
+      font-size:9px;
+      font-weight:900;
+      margin-top:6px;
+    }
+
+    .fee-unpaid{
+      color:#dc2626;
+      font-size:9px;
+      font-weight:900;
+      margin-top:6px;
+    }
+
+    .fee-date{
+      color:#8492a1;
+      font-size:8px;
+      margin-top:4px;
+      line-height:1.4;
+    }
+
+    .empty-message{
+      padding:25px;
+      border-radius:15px;
+      background:rgba(255,255,255,.54);
+      color:#7b8a9b;
+      font-size:10px;
+      text-align:center;
+    }
+
+    /* Loading state */
+    .loading-shell{
+      min-height:430px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+    }
+
+    .loading-spinner{
+      width:42px;
+      height:42px;
+      border:3px solid rgba(15,42,68,.10);
+      border-top-color:var(--green);
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+      margin:auto;
+    }
+
+    .loading-shell p{
+      color:#738396;
+      font-size:11px;
+      font-weight:700;
+      margin-top:14px;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      right:22px;
+      bottom:22px;
+      z-index:2000;
+      max-width:340px;
+      padding:13px 16px;
+      border-radius:15px;
+      color:#fff;
+      background:rgba(15,42,68,.93);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 20px 45px rgba(15,42,68,.22);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      font-size:10px;
+      line-height:1.5;
+      transform:translateY(25px);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .35s ease,transform .35s var(--ease);
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:none;
+    }
+
+    /* Footer */
+    footer{
+      padding:28px 0 25px;
+      border-top:1px solid rgba(15,42,68,.07);
+      background:rgba(255,255,255,.30);
+    }
+
+    .footer-inner{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+      color:#7b8a9b;
+      font-size:9px;
+    }
+
+    .footer-inner a{
+      color:#16883f;
+      font-weight:850;
+    }
+
+    /* Reveal */
+    .reveal{
+      opacity:0;
+      transform:translateY(34px) scale(.985);
+      filter:blur(4px);
+      transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s ease;
+    }
+
+    .reveal.active{
+      opacity:1;
+      transform:none;
+      filter:none;
+    }
+
+    .stagger > *{
+      opacity:0;
+      transform:translateY(25px);
+      transition:opacity .65s var(--ease),transform .65s var(--ease);
+    }
+
+    .stagger.active > *{
+      opacity:1;
+      transform:none;
+    }
+
+    .stagger.active > *:nth-child(2){transition-delay:.07s}
+    .stagger.active > *:nth-child(3){transition-delay:.14s}
+    .stagger.active > *:nth-child(4){transition-delay:.21s}
+    .stagger.active > *:nth-child(5){transition-delay:.28s}
+
+    /* Responsive */
+    @media(max-width:1180px){
+      .nav-links{gap:0}
+      .nav-link{padding-left:7px;padding-right:7px;font-size:11px}
+      .nav-link::after{left:7px;right:7px}
+      .brand-tagline{display:none}
+      .info-grid{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media(max-width:1050px){
+      .nav-links{display:none}
+      .nav-actions{display:none}
+      .menu-btn{display:block}
+      .portal-grid{grid-template-columns:1fr}
+      .portal-section.full{grid-column:auto}
+      .fees-grid{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media(max-width:760px){
+      .container{width:min(100% - 28px,1200px)}
+      .dashboard{padding-top:110px}
+      .dashboard-hero{display:block}
+      .hero-date{margin-top:18px;width:max-content}
+      .profile-panel{grid-template-columns:1fr;gap:17px}
+      .info-grid{grid-template-columns:1fr 1fr;padding:18px}
+      .profile-panel{padding:20px}
+      .profile-divider{margin:0 20px}
+      .portal-section{padding:19px}
+      .fees-grid{grid-template-columns:1fr 1fr}
+      .materials-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:500px){
+      .info-grid{grid-template-columns:1fr}
+      .fees-grid{grid-template-columns:1fr}
+      .profile-main{align-items:flex-start}
+      .student-avatar{width:58px;height:58px;flex-basis:58px;border-radius:18px}
+      .dashboard-title{font-size:40px}
+      .hero-date{font-size:9px}
+      .toast{left:14px;right:14px;bottom:14px;max-width:none}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        animation-duration:.001ms!important;
+        animation-iteration-count:1!important;
+        scroll-behavior:auto!important;
+        transition-duration:.001ms!important;
+      }
+      .reveal,.stagger > *{
+        opacity:1!important;
+        transform:none!important;
+        filter:none!important;
       }
     }
-  }
-}
-</script>
+  </style>
 </head>
 
-<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
+<body>
 
-<!-- BACKGROUND GLOW -->
-<div class="fixed w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-<div class="fixed w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
-
-<!-- ================= NAVBAR ================= -->
-<header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-40 border-b">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-    <h1 class="text-xl font-extrabold text-primary tracking-tight">
-      Mentora Edge
-    </h1>
-
-    <button id="logoutBtn"
-      class="px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold
-             hover:bg-red-100 transition">
-      Logout
-    </button>
-
+  <div class="ambient" aria-hidden="true">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
   </div>
-</header>
 
-<!-- ================= MAIN ================= -->
-<main class="max-w-6xl mx-auto px-6 py-10 relative z-10">
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar" id="siteHeader">
+    <div class="container">
 
-  <h1 class="text-3xl font-extrabold mb-10 text-primary reveal">
-    Student Dashboard
-  </h1>
+      <div class="nav-inner">
 
-  <div class="glass-card reveal">
-
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-6">
-
-      <div>
-        <h2 class="text-xl font-semibold">
-          Welcome, <span id="studentName">Student</span>
-        </h2>
-        <p class="text-sm text-gray-500">Mentora Edge • Student Portal</p>
-      </div>
-
-      <span id="studentStatus"
-        class="px-4 py-1.5 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
-        Pending
-      </span>
-
-    </div>
-
-    <hr class="my-6">
-
-    <!-- INFO -->
-    <div class="grid md:grid-cols-2 gap-6">
-
-      <div class="info-card reveal"><span>👤</span><div><p>Name</p><strong id="studentNameInfo"></strong></div></div>
-
-      <div class="info-card reveal"><span>🎓</span><div><p>Class</p><strong id="studentClass"></strong></div></div>
-
-      <div class="info-card reveal"><span>📘</span><div><p>Subject</p><strong id="studentSubject"></strong></div></div>
-
-      <div class="info-card reveal"><span>⏳</span><div><p>Status</p><strong id="studentStatusText"></strong></div></div>
-
-      <div class="info-card reveal">
-        <span>🆔</span>
-        <div>
-          <p>Student ID</p>
-          <strong id="studentIdText" class="font-mono text-accent"></strong>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ANNOUNCEMENTS -->
-    <div id="announcementSection"
-      class="hidden mt-10 glass-subcard reveal">
-
-      <h3 class="section-title">📢 Global Announcements</h3>
-      <div id="announcementList" class="space-y-3 mt-4"></div>
-
-    </div>
-
-    <!-- MATERIALS -->
-    <div id="materialsSection"
-      class="hidden mt-10 glass-subcard reveal">
-
-      <h3 class="section-title">📚 Study Materials</h3>
-      <div id="materialsList" class="grid md:grid-cols-2 gap-6 mt-6"></div>
-
-    </div>
-
-    <!-- FEES -->
-    <div id="feesSection"
-      class="hidden mt-10 glass-subcard reveal">
-
-      <h3 class="section-title">💰 Monthly Fees Status (2026)</h3>
-      <div id="feesContainer" class="grid md:grid-cols-3 gap-4 mt-6"></div>
-
-    </div>
-
-  </div>
-</main>
-
-<!-- ================= LOGIC (UNCHANGED) ================= -->
-<script type="module">
-import { auth, db } from "./js/firebase.js";
-import { onAuthStateChanged, signOut } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-  doc, getDoc,
-  collection, getDocs,
-  query, where, orderBy, limit
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-logoutBtn.onclick = async () => {
-  await signOut(auth);
-  location.href = "login.html";
-};
-
-function formatPaidOn(ts) {
-  const d = ts.toDate();
-  return d.toLocaleString("en-IN");
-}
-
-async function loadAnnouncements() {
-  const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(1));
-  const snap = await getDocs(q);
-  if (snap.empty) return;
-
-  announcementSection.classList.remove("hidden");
-  announcementList.innerHTML = "";
-
-  snap.forEach(d => {
-    announcementList.innerHTML += `
-      <div class="bg-white/70 backdrop-blur p-4 rounded-xl shadow-sm">
-        <p class="text-sm">${d.data().text}</p>
-      </div>`;
-  });
-}
-
-async function loadMaterials(studentClass) {
-  const q = query(collection(db, "materials"), where("class", "==", studentClass));
-  const snap = await getDocs(q);
-  materialsList.innerHTML = "";
-
-  snap.forEach(d => {
-    const m = d.data();
-    materialsList.innerHTML += `
-      <div class="material-card">
-        <h4 class="font-semibold mb-2">${m.title}</h4>
-        <a href="${m.fileURL}" target="_blank"
-          class="text-accent text-sm font-medium hover:underline">
-          Download →
+        <a href="index.html" class="brand" aria-label="Mentora Edge Home">
+          <img
+            src="Assets/Images/mentora-edge-logo.png"
+            alt="Mentora Edge"
+            class="brand-logo"
+          >
+          <span class="brand-copy">
+            <span class="brand-name">Mentora Edge</span>
+            <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+          </span>
         </a>
-      </div>`;
-  });
-}
 
-async function loadFees(uid) {
-  feesContainer.innerHTML = "";
-  const snap = await getDoc(doc(db, "users", uid));
-  const fees = snap.data().fees?.["2026"];
+        <nav class="nav-links" aria-label="Student navigation">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="learning-platform.html">Learning Platform</a>
+          <a class="nav-link" href="resources.html">Resources</a>
+          <a class="nav-link active" href="dashboard.html" aria-current="page">Dashboard</a>
+          <a class="nav-link" href="enquiry.html">Support</a>
+        </nav>
 
-  if (!fees) {
-    feesContainer.innerHTML = `<p class="text-gray-500">No fee records for 2026.</p>`;
-    return;
-  }
+        <div class="nav-actions">
+          <button id="logoutBtn" class="nav-logout" type="button">
+            Logout
+          </button>
+        </div>
 
-  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        <button
+          id="menuBtn"
+          class="menu-btn"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >☰</button>
 
-  months.forEach(month => {
-    const m = fees[month];
-    const paid = m?.paid === true;
+      </div>
 
-    feesContainer.innerHTML += `
-      <div class="fee-card">
-        <p class="font-semibold">${month}</p>
-        <p class="text-sm ${paid ? "text-green-600" : "text-red-600"}">
-          ${paid ? "Paid ✔" : "Not Paid ✖"}
-        </p>
-        ${paid && m.paidOn ? `<p class="text-xs text-gray-500">${formatPaidOn(m.paidOn)}</p>` : ""}
-      </div>`;
-  });
-}
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="learning-platform.html">Learning Platform</a>
+        <a href="resources.html">Resources</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="enquiry.html">Support</a>
+        <button id="mobileLogoutBtn" class="mobile-logout" type="button">Logout</button>
+      </div>
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return location.href = "login.html";
+    </div>
+  </header>
 
-  const snap = await getDoc(doc(db, "users", user.uid));
-  const data = snap.data();
+  <!-- ================= MAIN ================= -->
+  <main class="dashboard">
+    <div class="container">
 
-  studentName.innerText = data.name;
-  studentNameInfo.innerText = data.name;
-  studentClass.innerText = data.class;
-  studentSubject.innerText = data.subject;
-  studentStatusText.innerText = data.status;
-  studentIdText.innerText = data.studentId || "Not Assigned";
+      <div class="dashboard-hero reveal">
 
-  if (data.status === "active") {
-    studentStatus.innerText = "Active";
-    studentStatus.className =
-      "px-4 py-1.5 rounded-full text-sm font-semibold bg-green-100 text-green-800";
+        <div>
+          <span class="eyebrow">Student portal</span>
 
-    announcementSection.classList.remove("hidden");
-    materialsSection.classList.remove("hidden");
-    feesSection.classList.remove("hidden");
+          <h1 class="dashboard-title">
+            Welcome back, <span id="studentName">Student</span>.
+          </h1>
 
-    await loadAnnouncements();
-    await loadMaterials(data.class);
-    await loadFees(user.uid);
-  }
-});
-</script>
+          <p class="dashboard-subtitle">
+            Your Mentora Edge learning space for academic information,
+            announcements, study materials and fee records.
+          </p>
+        </div>
 
-<!-- ================= STYLES ================= -->
-<style>
-.glass-card {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(14px);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
+        <div class="hero-date" id="todayDate">
+          📅 Loading date...
+        </div>
 
-.glass-subcard {
-  background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(12px);
-  border-radius: 1.2rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(255,255,255,0.3);
-}
+      </div>
 
-.section-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #0F2A44;
-}
+      <!-- ================= PROFILE / MAIN CARD ================= -->
+      <section class="dashboard-card reveal" id="dashboardCard">
 
-.info-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  transition: 0.3s;
-}
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+        <div class="profile-panel">
 
-.material-card {
-  background: white;
-  padding: 1.2rem;
-  border-radius: 1rem;
-  transition: 0.3s;
-}
-.material-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-}
+          <div class="profile-main">
 
-.fee-card {
-  background: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  transition: 0.3s;
-}
-.fee-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+            <div class="student-avatar" id="studentAvatar">
+              ME
+            </div>
 
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s ease;
-}
-.reveal-active {
-  opacity: 1;
-  transform: translateY(0);
-}
-</style>
+            <div>
+              <h2 id="studentNameHeading">Student</h2>
+              <p>Mentora Edge · Student Portal</p>
+            </div>
 
-<script>
-const reveals = document.querySelectorAll(".reveal");
+          </div>
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("reveal-active");
+          <span id="studentStatus" class="status-pill">
+            <span class="status-dot"></span>
+            Pending
+          </span>
+
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <div class="info-grid stagger" id="infoGrid">
+
+          <div class="info-card">
+            <div class="info-icon">👤</div>
+            <p>Name</p>
+            <strong id="studentNameInfo">Loading...</strong>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🎓</div>
+            <p>Class</p>
+            <strong id="studentClass">Loading...</strong>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">📘</div>
+            <p>Subject</p>
+            <strong id="studentSubject">Loading...</strong>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">⏳</div>
+            <p>Status</p>
+            <strong id="studentStatusText">Loading...</strong>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">🆔</div>
+            <p>Student ID</p>
+            <strong id="studentIdText" class="student-id">Not Assigned</strong>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ================= PORTAL CONTENT ================= -->
+      <div class="portal-grid">
+
+        <!-- ANNOUNCEMENTS -->
+        <section id="announcementSection" class="dashboard-card portal-section reveal hidden">
+
+          <div class="section-heading">
+
+            <div class="section-heading-main">
+              <div class="section-heading-icon">📢</div>
+
+              <div>
+                <h2 class="section-title">Global Announcements</h2>
+                <p class="section-caption">Latest Mentora Edge updates</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="announcementList" class="announcement-list"></div>
+
+        </section>
+
+        <!-- MATERIALS -->
+        <section id="materialsSection" class="dashboard-card portal-section reveal hidden">
+
+          <div class="section-heading">
+
+            <div class="section-heading-main">
+              <div class="section-heading-icon">📚</div>
+
+              <div>
+                <h2 class="section-title">Study Materials</h2>
+                <p class="section-caption">Resources for your class</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="materialsList" class="materials-grid"></div>
+
+        </section>
+
+        <!-- FEES -->
+        <section id="feesSection" class="dashboard-card portal-section full reveal hidden">
+
+          <div class="section-heading">
+
+            <div class="section-heading-main">
+              <div class="section-heading-icon">💰</div>
+
+              <div>
+                <h2 class="section-title">Monthly Fees Status</h2>
+                <p class="section-caption">Fee records for 2026</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="feesContainer" class="fees-grid"></div>
+
+        </section>
+
+      </div>
+
+      <!-- Loading state shown until authentication resolves -->
+      <section id="loadingState" class="dashboard-card loading-shell reveal active" style="margin-top:18px;">
+        <div>
+          <div class="loading-spinner"></div>
+          <p>Loading your Mentora Edge dashboard...</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© 2026 <strong>Mentora Edge</strong>. All rights reserved</span>
+        <span>·</span>
+        <a href="terms.html">Terms & Conditions</a>
+        <span>·</span>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= UI SCRIPT ================= -->
+  <script>
+    const navbar = document.getElementById("siteHeader");
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
+
+    const updateNavbar = () => {
+      navbar.classList.toggle("scrolled", window.scrollY > 25);
+    };
+
+    window.addEventListener("scroll", updateNavbar, { passive:true });
+    updateNavbar();
+
+    menuBtn.addEventListener("click", () => {
+      const open = mobileMenu.classList.toggle("open");
+
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      menuBtn.setAttribute(
+        "aria-label",
+        open ? "Close navigation menu" : "Open navigation menu"
+      );
+      menuBtn.textContent = open ? "×" : "☰";
+    });
+
+    mobileMenu.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("open");
+        menuBtn.setAttribute("aria-expanded","false");
+        menuBtn.setAttribute("aria-label","Open navigation menu");
+        menuBtn.textContent = "☰";
+      });
+    });
+
+    function closeMobileMenu(){
+      mobileMenu.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded","false");
+      menuBtn.setAttribute("aria-label","Open navigation menu");
+      menuBtn.textContent = "☰";
     }
-  });
-});
 
-reveals.forEach(el => observer.observe(el));
-</script>
+    /* Today's date */
+    const todayDate = document.getElementById("todayDate");
+    todayDate.textContent =
+      "📅 " +
+      new Date().toLocaleDateString("en-IN", {
+        day:"numeric",
+        month:"long",
+        year:"numeric"
+      });
+
+    /* Reveal observer */
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (!reduceMotion) {
+
+      const revealObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold:.10,
+          rootMargin:"0px 0px -35px 0px"
+        }
+      );
+
+      document
+        .querySelectorAll(".reveal,.stagger")
+        .forEach(el => revealObserver.observe(el));
+
+    } else {
+
+      document
+        .querySelectorAll(".reveal,.stagger")
+        .forEach(el => el.classList.add("active"));
+
+    }
+
+    /* Small helper used by the Firebase module */
+    function showToast(message){
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(window.__toastTimer);
+
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3200);
+    }
+
+    window.showToast = showToast;
+
+    /* Subtle dashboard parallax */
+    if (!reduceMotion && window.matchMedia("(pointer:fine)").matches) {
+
+      const ambientOrbs = document.querySelectorAll(".orb");
+
+      window.addEventListener("scroll", () => {
+        const y = window.scrollY;
+
+        ambientOrbs.forEach((orb,index) => {
+          const speed = [0.018,0.012,0.025][index] || .015;
+          orb.style.translate = `0 ${y * speed}px`;
+        });
+
+      }, { passive:true });
+
+    }
+  </script>
+
+  <!-- ================= FIREBASE / FIRESTORE LOGIC ================= -->
+  <script type="module">
+    import { auth, db } from "./js/firebase.js";
+
+    import {
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    import {
+      doc,
+      getDoc,
+      collection,
+      getDocs,
+      query,
+      where,
+      orderBy,
+      limit
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
+
+    const loadingState = document.getElementById("loadingState");
+
+    const studentName = document.getElementById("studentName");
+    const studentNameHeading = document.getElementById("studentNameHeading");
+    const studentNameInfo = document.getElementById("studentNameInfo");
+
+    const studentClass = document.getElementById("studentClass");
+    const studentSubject = document.getElementById("studentSubject");
+    const studentStatusText = document.getElementById("studentStatusText");
+    const studentIdText = document.getElementById("studentIdText");
+
+    const studentAvatar = document.getElementById("studentAvatar");
+    const studentStatus = document.getElementById("studentStatus");
+
+    const announcementSection =
+      document.getElementById("announcementSection");
+
+    const announcementList =
+      document.getElementById("announcementList");
+
+    const materialsSection =
+      document.getElementById("materialsSection");
+
+    const materialsList =
+      document.getElementById("materialsList");
+
+    const feesSection =
+      document.getElementById("feesSection");
+
+    const feesContainer =
+      document.getElementById("feesContainer");
+
+    async function logout(){
+      try{
+        await signOut(auth);
+        location.href = "login.html";
+      }catch(err){
+        console.error(err);
+        window.showToast("Unable to log out. Please try again.");
+      }
+    }
+
+    logoutBtn.addEventListener("click", logout);
+    mobileLogoutBtn.addEventListener("click", logout);
+
+    function formatPaidOn(ts){
+      if (!ts) return "";
+
+      try{
+        const d = ts.toDate();
+        return d.toLocaleString("en-IN");
+      }catch(err){
+        return "";
+      }
+    }
+
+    async function loadAnnouncements(){
+
+      const q = query(
+        collection(db, "announcements"),
+        orderBy("createdAt", "desc"),
+        limit(1)
+      );
+
+      const snap = await getDocs(q);
+
+      if (snap.empty) return;
+
+      announcementSection.classList.remove("hidden");
+      announcementList.innerHTML = "";
+
+      snap.forEach(d => {
+
+        const data = d.data();
+
+        const item = document.createElement("div");
+        item.className = "announcement-item";
+        item.textContent = data.text || "";
+
+        announcementList.appendChild(item);
+
+      });
+    }
+
+    async function loadMaterials(studentClassValue){
+
+      const q = query(
+        collection(db, "materials"),
+        where("class", "==", studentClassValue)
+      );
+
+      const snap = await getDocs(q);
+
+      materialsList.innerHTML = "";
+
+      if (snap.empty){
+        materialsList.innerHTML = `
+          <div class="empty-message" style="grid-column:1/-1;">
+            No study materials have been published for your class yet.
+          </div>
+        `;
+        return;
+      }
+
+      snap.forEach(d => {
+
+        const m = d.data();
+
+        const card = document.createElement("div");
+        card.className = "material-card";
+
+        const icon = document.createElement("div");
+        icon.className = "material-icon";
+        icon.textContent = "📄";
+
+        const title = document.createElement("h4");
+        title.textContent = m.title || "Study Material";
+
+        const link = document.createElement("a");
+        link.href = m.fileURL || "#";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Download →";
+
+        card.appendChild(icon);
+        card.appendChild(title);
+        card.appendChild(link);
+
+        materialsList.appendChild(card);
+
+      });
+    }
+
+    async function loadFees(uid){
+
+      feesContainer.innerHTML = "";
+
+      const snap = await getDoc(
+        doc(db, "users", uid)
+      );
+
+      if (!snap.exists()){
+        feesContainer.innerHTML = `
+          <div class="empty-message" style="grid-column:1/-1;">
+            Student profile could not be found.
+          </div>
+        `;
+        return;
+      }
+
+      const fees = snap.data().fees?.["2026"];
+
+      if (!fees){
+
+        feesContainer.innerHTML = `
+          <div class="empty-message" style="grid-column:1/-1;">
+            No fee records for 2026.
+          </div>
+        `;
+
+        return;
+      }
+
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+
+      months.forEach(month => {
+
+        const m = fees[month];
+        const paid = m?.paid === true;
+
+        const card = document.createElement("div");
+        card.className = "fee-card";
+
+        const monthEl = document.createElement("p");
+        monthEl.className = "fee-month";
+        monthEl.textContent = month;
+
+        const statusEl = document.createElement("p");
+        statusEl.className = paid
+          ? "fee-paid"
+          : "fee-unpaid";
+
+        statusEl.textContent =
+          paid ? "Paid ✔" : "Not Paid ✖";
+
+        card.appendChild(monthEl);
+        card.appendChild(statusEl);
+
+        if (paid && m.paidOn){
+
+          const dateEl = document.createElement("p");
+          dateEl.className = "fee-date";
+          dateEl.textContent = formatPaidOn(m.paidOn);
+
+          card.appendChild(dateEl);
+
+        }
+
+        feesContainer.appendChild(card);
+
+      });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+
+      if (!user){
+        location.href = "login.html";
+        return;
+      }
+
+      try{
+
+        const snap = await getDoc(
+          doc(db, "users", user.uid)
+        );
+
+        if (!snap.exists()){
+          window.showToast(
+            "Student profile not found. Please contact Mentora Edge."
+          );
+          loadingState.innerHTML = `
+            <div>
+              <div class="loading-spinner"></div>
+              <p>Student profile not found.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const data = snap.data();
+
+        const name =
+          data.name || "Student";
+
+        studentName.textContent = name;
+        studentNameHeading.textContent = name;
+        studentNameInfo.textContent = name;
+
+        studentClass.textContent =
+          data.class || "Not Assigned";
+
+        studentSubject.textContent =
+          data.subject || "Not Assigned";
+
+        studentStatusText.textContent =
+          data.status || "Pending";
+
+        studentIdText.textContent =
+          data.studentId || "Not Assigned";
+
+        /* Student avatar initials */
+        const initials = name
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0,2)
+          .map(part => part[0])
+          .join("")
+          .toUpperCase();
+
+        studentAvatar.textContent =
+          initials || "ME";
+
+        /* Status */
+        if (data.status === "active"){
+
+          studentStatus.className =
+            "status-pill active";
+
+          studentStatus.innerHTML =
+            '<span class="status-dot"></span> Active';
+
+          announcementSection.classList.remove("hidden");
+          materialsSection.classList.remove("hidden");
+          feesSection.classList.remove("hidden");
+
+          await Promise.all([
+            loadAnnouncements(),
+            loadMaterials(data.class),
+            loadFees(user.uid)
+          ]);
+
+        }else{
+
+          studentStatus.className =
+            "status-pill";
+
+          studentStatus.innerHTML =
+            '<span class="status-dot"></span> Pending';
+
+        }
+
+        loadingState.style.display = "none";
+
+      }catch(err){
+
+        console.error(err);
+
+        loadingState.innerHTML = `
+          <div>
+            <div class="loading-spinner"></div>
+            <p>Unable to load your dashboard. Please refresh and try again.</p>
+          </div>
+        `;
+
+        window.showToast(
+          "There was a problem loading your dashboard."
+        );
+
+      }
+
+    });
+  </script>
 
 </body>
 </html>

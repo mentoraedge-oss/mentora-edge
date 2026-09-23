@@ -1,0 +1,6384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8" />
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
+
+<link rel="manifest" href="/manifest.json">
+
+<meta
+  name="theme-color"
+  content="#0F2A44"
+/>
+
+<link
+  rel="apple-touch-icon"
+  href="/icons/ios/180.png"
+/>
+
+<link
+  rel="stylesheet"
+  href="css/theme.css"
+/>
+
+<title>
+  Online CBSE Personal Tuition for Classes VI–XII | Mentora Edge
+</title>
+
+<meta
+  name="description"
+  content="Online personal tuition for CBSE Classes VI–XII with experienced educators, structured learning, periodic assessments and Mentora Edge digital platform access."
+>
+
+<meta
+  name="keywords"
+  content="online CBSE tuition, online personal tuition, CBSE classes VI XII, online coaching, Mentora Edge, online tuition Begusarai"
+>
+
+<link
+  rel="canonical"
+  href="online-tution.html"
+/>
+
+<link
+  rel="icon"
+  href="favicon.ico"
+/>
+
+
+<!-- =====================================================
+     TAILWIND
+     ===================================================== -->
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<!-- =====================================================
+     GOOGLE FONT
+     ===================================================== -->
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+
+
+<!-- =====================================================
+     TAILWIND CONFIG
+     ===================================================== -->
+
+<script>
+
+tailwind.config = {
+
+  darkMode: 'class',
+
+  theme: {
+
+    extend: {
+
+      fontFamily: {
+
+        inter: [
+          'Inter',
+          'sans-serif'
+        ]
+
+      },
+
+      colors: {
+
+        primary: '#0F2A44',
+
+        accent: '#22C55E',
+
+        accentSoft: '#4ADE80'
+
+      }
+
+    }
+
+  }
+
+};
+
+</script>
+
+
+<!-- =====================================================
+     PAGE STYLES
+     ===================================================== -->
+
+<style>
+
+/* ======================================================
+   ROOT DESIGN SYSTEM
+   ====================================================== */
+
+:root {
+
+  --navy:
+    #0F2A44;
+
+  --navy-light:
+    #12365A;
+
+  --navy-mid:
+    #1E4E79;
+
+  --green:
+    #22C55E;
+
+  --green-soft:
+    #4ADE80;
+
+  --surface:
+    #F8FAFC;
+
+  --muted:
+    #64748B;
+
+  --glass:
+    rgba(255,255,255,.62);
+
+  --glass-strong:
+    rgba(255,255,255,.78);
+
+  --glass-border:
+    rgba(255,255,255,.45);
+
+  --ease:
+    cubic-bezier(.2,.8,.2,1);
+
+}
+
+
+/* ======================================================
+   GLOBAL
+   ====================================================== */
+
+html {
+
+  scroll-behavior:
+    smooth;
+
+}
+
+body {
+  padding-top: 76px;
+
+  background:
+
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(34,197,94,.08),
+      transparent 27%
+    ),
+
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(30,78,121,.08),
+      transparent 30%
+    ),
+
+    #F8FAFC;
+
+  color:
+    #1F2937;
+
+  overflow-x:
+    hidden;
+
+  animation:
+    pageEnter .8s ease both;
+
+}
+
+
+@keyframes pageEnter {
+
+  from {
+
+    opacity:
+      0;
+
+  }
+
+  to {
+
+    opacity:
+      1;
+
+  }
+
+}
+
+
+/* ======================================================
+   AMBIENT BACKGROUND
+   ====================================================== */
+
+.ambient-glow {
+
+  position:
+    fixed;
+
+  pointer-events:
+    none;
+
+  z-index:
+    -5;
+
+  border-radius:
+    999px;
+
+  filter:
+    blur(90px);
+
+}
+
+
+.ambient-green {
+
+  width:
+    430px;
+
+  height:
+    430px;
+
+  left:
+    -160px;
+
+  top:
+    -130px;
+
+  background:
+    rgba(34,197,94,.17);
+
+  animation:
+    ambientGreen 12s ease-in-out infinite;
+
+}
+
+
+.ambient-blue {
+
+  width:
+    500px;
+
+  height:
+    500px;
+
+  right:
+    -190px;
+
+  bottom:
+    -170px;
+
+  background:
+    rgba(30,78,121,.15);
+
+  animation:
+    ambientBlue 15s ease-in-out infinite;
+
+}
+
+
+@keyframes ambientGreen {
+
+  0%,
+  100% {
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+
+  }
+
+  50% {
+
+    transform:
+      translate3d(40px,35px,0)
+      scale(1.08);
+
+  }
+
+}
+
+
+@keyframes ambientBlue {
+
+  0%,
+  100% {
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+
+  }
+
+  50% {
+
+    transform:
+      translate3d(-35px,-30px,0)
+      scale(1.06);
+
+  }
+
+}
+
+
+/* ======================================================
+   DECORATIVE ORBS
+   ====================================================== */
+
+.decor-orb {
+
+  position:
+    absolute;
+
+  border-radius:
+    50%;
+
+  pointer-events:
+    none;
+
+}
+
+
+.orb-green {
+
+  width:
+    130px;
+
+  height:
+    130px;
+
+  background:
+
+    radial-gradient(
+      circle,
+      rgba(74,222,128,.30),
+      transparent 70%
+    );
+
+  animation:
+    orbFloat 7s ease-in-out infinite;
+
+}
+
+
+.orb-blue {
+
+  width:
+    180px;
+
+  height:
+    180px;
+
+  background:
+
+    radial-gradient(
+      circle,
+      rgba(96,165,250,.20),
+      transparent 70%
+    );
+
+  animation:
+    orbFloatReverse 9s ease-in-out infinite;
+
+}
+
+
+@keyframes orbFloat {
+
+  0%,
+  100% {
+
+    transform:
+      translate(0,0);
+
+  }
+
+  50% {
+
+    transform:
+      translate(15px,-25px);
+
+  }
+
+}
+
+
+@keyframes orbFloatReverse {
+
+  0%,
+  100% {
+
+    transform:
+      translate(0,0);
+
+  }
+
+  50% {
+
+    transform:
+      translate(-18px,22px);
+
+  }
+
+}
+
+
+/* ======================================================
+   NAVBAR
+   ====================================================== */
+
+.site-header {
+
+  background:
+    rgba(255,255,255,.76);
+
+  backdrop-filter:
+    blur(20px);
+
+  -webkit-backdrop-filter:
+    blur(20px);
+
+  border-bottom:
+    1px solid rgba(15,42,68,.08);
+
+  box-shadow:
+    0 10px 35px rgba(15,42,68,.05);
+
+  transition:
+    background .4s ease,
+    box-shadow .4s ease,
+    border-color .4s ease;
+
+}
+
+
+.site-header.scrolled {
+
+  background:
+    rgba(255,255,255,.92);
+
+  box-shadow:
+    0 15px 45px rgba(15,42,68,.10);
+
+  border-bottom-color:
+    rgba(15,42,68,.12);
+
+}
+
+
+/* ======================================================
+   BRAND
+   ====================================================== */
+
+.brand {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    9px;
+
+}
+
+
+.brand::before {
+
+  content:
+    "";
+
+  width:
+    9px;
+
+  height:
+    9px;
+
+  border-radius:
+    50%;
+
+  background:
+    var(--green);
+
+  box-shadow:
+
+    0 0 0 5px
+    rgba(34,197,94,.10),
+
+    0 0 20px
+    rgba(34,197,94,.42);
+
+  animation:
+    brandPulse 3s ease-in-out infinite;
+
+}
+
+
+@keyframes brandPulse {
+
+  0%,
+  100% {
+
+    transform:
+      scale(1);
+
+  }
+
+  50% {
+
+    transform:
+      scale(1.12);
+
+  }
+
+}
+
+
+/* ======================================================
+   NAV LINKS
+   ====================================================== */
+
+.nav-link {
+
+  position:
+    relative;
+
+  padding:
+    7px 2px;
+
+  color:
+    #334155;
+
+  transition:
+    color .3s ease,
+    transform .3s var(--ease);
+
+}
+
+
+.nav-link::after {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  left:
+    0;
+
+  bottom:
+    0;
+
+  width:
+    0;
+
+  height:
+    2px;
+
+  border-radius:
+    99px;
+
+  background:
+    var(--green);
+
+  transition:
+    width .35s var(--ease);
+
+}
+
+
+.nav-link:hover {
+
+  color:
+    var(--green);
+
+  transform:
+    translateY(-2px);
+
+}
+
+
+.nav-link:hover::after,
+.nav-link.active::after {
+
+  width:
+    100%;
+
+}
+
+
+.nav-link.active {
+
+  color:
+    var(--green);
+
+  font-weight:
+    700;
+
+}
+
+
+/* ======================================================
+   LOGIN
+   ====================================================== */
+
+.login-btn {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  transition:
+    transform .35s var(--ease),
+    box-shadow .35s ease;
+
+}
+
+
+.login-btn::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  transform:
+    translateX(-110%);
+
+  background:
+
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255,255,255,.35),
+      transparent
+    );
+
+  transition:
+    transform .65s ease;
+
+}
+
+
+.login-btn:hover::before {
+
+  transform:
+    translateX(110%);
+
+}
+
+
+.login-btn:hover {
+
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 12px 28px rgba(15,42,68,.15);
+
+}
+
+
+/* ======================================================
+   MOBILE MENU
+   ====================================================== */
+
+.mobile-menu {
+
+  transform-origin:
+    top;
+
+  animation:
+    mobileMenuIn .35s var(--ease) both;
+
+}
+
+
+@keyframes mobileMenuIn {
+
+  from {
+
+    opacity:
+      0;
+
+    transform:
+      translateY(-12px)
+      scaleY(.96);
+
+  }
+
+  to {
+
+    opacity:
+      1;
+
+    transform:
+      translateY(0)
+      scaleY(1);
+
+  }
+
+}
+
+
+.mobile-nav-link {
+
+  padding:
+    10px 0;
+
+  transition:
+    color .3s ease,
+    transform .3s var(--ease);
+
+}
+
+
+.mobile-nav-link:hover {
+
+  color:
+    var(--green);
+
+  transform:
+    translateX(5px);
+
+}
+
+
+/* ======================================================
+   HERO
+   ====================================================== */
+
+.hero {
+
+  position:
+    relative;
+
+  min-height:
+    700px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  overflow:
+    hidden;
+
+  background:
+
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(74,222,128,.17),
+      transparent 27%
+    ),
+
+    radial-gradient(
+      circle at 84% 75%,
+      rgba(96,165,250,.15),
+      transparent 30%
+    ),
+
+    linear-gradient(
+      135deg,
+      #0F2A44 0%,
+      #12365A 48%,
+      #1E4E79 100%
+    );
+
+  color:
+    white;
+
+}
+
+
+/* ======================================================
+   HERO GRID
+   ====================================================== */
+
+.hero-grid {
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  opacity:
+    .14;
+
+  background-image:
+
+    linear-gradient(
+      rgba(255,255,255,.08) 1px,
+      transparent 1px
+    ),
+
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.08) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    55px 55px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 92%
+    );
+
+  animation:
+    gridMove 22s linear infinite;
+
+}
+
+
+@keyframes gridMove {
+
+  from {
+
+    transform:
+      translate(0,0);
+
+  }
+
+  to {
+
+    transform:
+      translate(55px,55px);
+
+  }
+
+}
+
+
+/* ======================================================
+   HERO GLOWS
+   ====================================================== */
+
+.hero-glow {
+
+  position:
+    absolute;
+
+  width:
+    500px;
+
+  height:
+    500px;
+
+  border-radius:
+    50%;
+
+  filter:
+    blur(100px);
+
+  pointer-events:
+    none;
+
+}
+
+
+.hero-glow-green {
+
+  left:
+    -180px;
+
+  top:
+    -190px;
+
+  background:
+    rgba(34,197,94,.18);
+
+  animation:
+    heroGlow 11s ease-in-out infinite;
+
+}
+
+
+.hero-glow-blue {
+
+  right:
+    -180px;
+
+  bottom:
+    -200px;
+
+  background:
+    rgba(59,130,246,.15);
+
+  animation:
+    heroGlowReverse 14s ease-in-out infinite;
+
+}
+
+
+@keyframes heroGlow {
+
+  0%,
+  100% {
+
+    transform:
+      translate(0,0)
+      scale(1);
+
+  }
+
+  50% {
+
+    transform:
+      translate(45px,35px)
+      scale(1.08);
+
+  }
+
+}
+
+
+@keyframes heroGlowReverse {
+
+  0%,
+  100% {
+
+    transform:
+      translate(0,0)
+      scale(1);
+
+  }
+
+  50% {
+
+    transform:
+      translate(-40px,-30px)
+      scale(1.07);
+
+  }
+
+}
+
+
+/* ======================================================
+   HERO CONTENT
+   ====================================================== */
+
+.hero-content {
+
+  position:
+    relative;
+
+  z-index:
+    5;
+
+}
+
+
+.hero-pill {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    9px;
+
+  padding:
+    9px 15px;
+
+  border:
+    1px solid rgba(255,255,255,.17);
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(255,255,255,.08);
+
+  backdrop-filter:
+    blur(14px);
+
+  -webkit-backdrop-filter:
+    blur(14px);
+
+  color:
+    rgba(255,255,255,.92);
+
+  font-size:
+    .80rem;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    .04em;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 12px 35px rgba(0,0,0,.10);
+
+  animation:
+    heroPillFloat 4s ease-in-out infinite;
+
+}
+
+
+.hero-pill-dot {
+
+  width:
+    8px;
+
+  height:
+    8px;
+
+  border-radius:
+    50%;
+
+  background:
+    var(--green-soft);
+
+  box-shadow:
+
+    0 0 0 5px
+    rgba(74,222,128,.10),
+
+    0 0 18px
+    rgba(74,222,128,.55);
+
+}
+
+
+@keyframes heroPillFloat {
+
+  0%,
+  100% {
+
+    transform:
+      translateY(0);
+
+  }
+
+  50% {
+
+    transform:
+      translateY(-6px);
+
+  }
+
+}
+
+
+.hero-title {
+
+  font-size:
+    clamp(2.8rem,7vw,5.5rem);
+
+  line-height:
+    .98;
+
+  letter-spacing:
+    -.055em;
+
+}
+
+
+.hero-title .highlight {
+
+  position:
+    relative;
+
+  display:
+    inline-block;
+
+  color:
+    var(--green-soft);
+
+}
+
+
+.hero-title .highlight::after {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  left:
+    2%;
+
+  right:
+    2%;
+
+  bottom:
+    -10px;
+
+  height:
+    4px;
+
+  border-radius:
+    99px;
+
+  background:
+
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--green-soft),
+      transparent
+    );
+
+  animation:
+    highlightPulse 3s ease-in-out infinite;
+
+}
+
+
+@keyframes highlightPulse {
+
+  0%,
+  100% {
+
+    opacity:
+      .45;
+
+    transform:
+      scaleX(.65);
+
+  }
+
+  50% {
+
+    opacity:
+      1;
+
+    transform:
+      scaleX(1);
+
+  }
+
+}
+
+
+.hero-description {
+
+  color:
+    rgba(255,255,255,.73);
+
+  line-height:
+    1.8;
+
+}
+
+
+/* ======================================================
+   HERO VISUAL DASHBOARD
+   ====================================================== */
+
+.hero-dashboard {
+
+  position:
+    relative;
+
+  width:
+    min(470px,100%);
+
+  margin:
+    45px auto 0;
+
+  padding:
+    16px;
+
+  border:
+    1px solid rgba(255,255,255,.17);
+
+  border-radius:
+    28px;
+
+  background:
+    rgba(255,255,255,.08);
+
+  backdrop-filter:
+    blur(20px);
+
+  -webkit-backdrop-filter:
+    blur(20px);
+
+  box-shadow:
+
+    0 35px 90px rgba(0,0,0,.23),
+
+    inset 0 1px 0
+    rgba(255,255,255,.12);
+
+  transform:
+    perspective(1000px)
+    rotateX(3deg);
+
+  animation:
+    dashboardFloat 6s ease-in-out infinite;
+
+}
+
+
+@keyframes dashboardFloat {
+
+  0%,
+  100% {
+
+    transform:
+      perspective(1000px)
+      rotateX(3deg)
+      translateY(0);
+
+  }
+
+  50% {
+
+    transform:
+      perspective(1000px)
+      rotateX(3deg)
+      translateY(-10px);
+
+  }
+
+}
+
+
+.dashboard-window {
+
+  overflow:
+    hidden;
+
+  border-radius:
+    20px;
+
+  background:
+    rgba(248,250,252,.97);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.15);
+
+}
+
+
+.dashboard-top {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  padding:
+    13px 16px;
+
+  background:
+    white;
+
+  border-bottom:
+    1px solid rgba(15,42,68,.07);
+
+}
+
+
+.dashboard-dots {
+
+  display:
+    flex;
+
+  gap:
+    5px;
+
+}
+
+
+.dashboard-dots span {
+
+  width:
+    7px;
+
+  height:
+    7px;
+
+  border-radius:
+    50%;
+
+  background:
+    #CBD5E1;
+
+}
+
+
+.dashboard-title {
+
+  font-size:
+    .68rem;
+
+  color:
+    #64748B;
+
+  font-weight:
+    700;
+
+}
+
+
+.dashboard-body {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:
+    10px;
+
+  padding:
+    15px;
+
+}
+
+
+.dashboard-card {
+
+  padding:
+    14px;
+
+  border-radius:
+    15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #F8FAFC,
+      #FFFFFF
+    );
+
+  border:
+    1px solid rgba(15,42,68,.06);
+
+  box-shadow:
+    0 8px 25px rgba(15,42,68,.05);
+
+  transition:
+    transform .4s var(--ease),
+    box-shadow .4s ease;
+
+}
+
+
+.dashboard-card:hover {
+
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 15px 30px rgba(15,42,68,.10);
+
+}
+
+
+.dashboard-icon {
+
+  width:
+    32px;
+
+  height:
+    32px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    10px;
+
+  background:
+    rgba(34,197,94,.10);
+
+  color:
+    var(--green);
+
+  margin-bottom:
+    8px;
+
+}
+
+
+.dashboard-card-title {
+
+  font-size:
+    .72rem;
+
+  color:
+    #0F2A44;
+
+  font-weight:
+    800;
+
+}
+
+
+.dashboard-card-text {
+
+  font-size:
+    .60rem;
+
+  color:
+    #94A3B8;
+
+  margin-top:
+    3px;
+
+}
+
+
+/* ======================================================
+   FLOATING HERO BADGE
+   ====================================================== */
+
+.hero-floating-badge {
+
+  position:
+    absolute;
+
+  z-index:
+    7;
+
+  right:
+    7%;
+
+  bottom:
+    17%;
+
+  width:
+    210px;
+
+  padding:
+    17px;
+
+  border:
+    1px solid rgba(255,255,255,.15);
+
+  border-radius:
+    21px;
+
+  background:
+    rgba(255,255,255,.08);
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+
+  box-shadow:
+    0 25px 65px rgba(0,0,0,.20);
+
+  animation:
+    floatingBadge 6s ease-in-out infinite;
+
+}
+
+
+@keyframes floatingBadge {
+
+  0%,
+  100% {
+
+    transform:
+      translateY(0)
+      rotate(0);
+
+  }
+
+  50% {
+
+    transform:
+      translateY(-15px)
+      rotate(1deg);
+
+  }
+
+}
+
+
+.floating-icon {
+
+  width:
+    43px;
+
+  height:
+    43px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(34,197,94,.14);
+
+  color:
+    var(--green-soft);
+
+  margin-bottom:
+    11px;
+
+}
+
+
+/* ======================================================
+   SECTION SYSTEM
+   ====================================================== */
+
+.section-eyebrow {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    8px;
+
+  color:
+    var(--green);
+
+  font-size:
+    .76rem;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    .12em;
+
+  text-transform:
+    uppercase;
+
+}
+
+
+.section-eyebrow::before {
+
+  content:
+    "";
+
+  width:
+    24px;
+
+  height:
+    2px;
+
+  border-radius:
+    99px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      var(--green-soft)
+    );
+
+}
+
+
+.section-title {
+
+  color:
+    var(--navy);
+
+  font-size:
+    clamp(2rem,4vw,3.3rem);
+
+  line-height:
+    1.08;
+
+  letter-spacing:
+    -.035em;
+
+}
+
+
+.section-description {
+
+  color:
+    var(--muted);
+
+  line-height:
+    1.8;
+
+}
+
+
+/* ======================================================
+   GLASS CARD
+   ====================================================== */
+
+.glass-card {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  background:
+
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.76),
+      rgba(255,255,255,.47)
+    );
+
+  backdrop-filter:
+    blur(20px);
+
+  -webkit-backdrop-filter:
+    blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,.65);
+
+  border-radius:
+    28px;
+
+  box-shadow:
+
+    0 20px 60px
+    rgba(15,42,68,.09),
+
+    inset 0 1px 0
+    rgba(255,255,255,.85);
+
+  transition:
+
+    transform .55s var(--ease),
+
+    box-shadow .55s ease,
+
+    border-color .4s ease;
+
+}
+
+
+.glass-card::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  top:
+    0;
+
+  left:
+    -120%;
+
+  width:
+    70%;
+
+  height:
+    100%;
+
+  pointer-events:
+    none;
+
+  background:
+
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255,255,255,.32),
+      transparent
+    );
+
+  transform:
+    skewX(-18deg);
+
+  transition:
+    left .9s var(--ease);
+
+}
+
+
+.glass-card:hover::before {
+
+  left:
+    150%;
+
+}
+
+
+.glass-card:hover {
+
+  transform:
+    translateY(-10px);
+
+  border-color:
+    rgba(34,197,94,.20);
+
+  box-shadow:
+
+    0 32px 80px
+    rgba(15,42,68,.15),
+
+    inset 0 1px 0
+    rgba(255,255,255,.90);
+
+}
+
+
+/* ======================================================
+   BENEFITS
+   ====================================================== */
+
+.benefit-card {
+
+  padding:
+    27px;
+
+  min-height:
+    240px;
+
+}
+
+
+.benefit-icon {
+
+  width:
+    58px;
+
+  height:
+    58px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    18px;
+
+  background:
+
+    linear-gradient(
+      135deg,
+      rgba(34,197,94,.14),
+      rgba(74,222,128,.04)
+    );
+
+  border:
+    1px solid rgba(34,197,94,.14);
+
+  color:
+    var(--green);
+
+  font-size:
+    1.35rem;
+
+  margin-bottom:
+    19px;
+
+  transition:
+    transform .5s var(--ease),
+    box-shadow .4s ease;
+
+}
+
+
+.benefit-card:hover .benefit-icon {
+
+  transform:
+    translateY(-6px)
+    rotate(-5deg)
+    scale(1.08);
+
+  box-shadow:
+    0 14px 30px rgba(34,197,94,.12);
+
+}
+
+
+.benefit-title {
+
+  color:
+    var(--navy);
+
+  font-size:
+    1.15rem;
+
+  font-weight:
+    800;
+
+  margin-bottom:
+    8px;
+
+}
+
+
+.benefit-text {
+
+  color:
+    var(--muted);
+
+  font-size:
+    .88rem;
+
+  line-height:
+    1.75;
+
+}
+
+
+/* ======================================================
+   LEARNING PROCESS
+   ====================================================== */
+
+.process-card {
+
+  position:
+    relative;
+
+  min-height:
+    220px;
+
+  padding:
+    26px;
+
+}
+
+
+.process-number {
+
+  position:
+    absolute;
+
+  right:
+    18px;
+
+  top:
+    12px;
+
+  color:
+    rgba(15,42,68,.07);
+
+  font-size:
+    3.5rem;
+
+  font-weight:
+    800;
+
+  line-height:
+    1;
+
+  transition:
+    color .35s ease,
+    transform .4s var(--ease);
+
+}
+
+
+.process-card:hover .process-number {
+
+  color:
+    rgba(34,197,94,.14);
+
+  transform:
+    scale(1.08)
+    rotate(4deg);
+
+}
+
+
+.process-icon {
+
+  width:
+    55px;
+
+  height:
+    55px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    17px;
+
+  background:
+    rgba(34,197,94,.10);
+
+  color:
+    var(--green);
+
+  margin-bottom:
+    18px;
+
+  transition:
+    transform .45s var(--ease);
+
+}
+
+
+.process-card:hover .process-icon {
+
+  transform:
+    translateY(-5px)
+    rotate(6deg);
+
+}
+
+
+.process-title {
+
+  color:
+    var(--navy);
+
+  font-size:
+    1.08rem;
+
+  font-weight:
+    800;
+
+  margin-bottom:
+    7px;
+
+}
+
+
+.process-text {
+
+  color:
+    var(--muted);
+
+  font-size:
+    .83rem;
+
+  line-height:
+    1.7;
+
+}
+
+
+/* ======================================================
+   FORMAT COMPARISON
+   ====================================================== */
+
+.format-section {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+}
+
+
+.format-card {
+
+  padding:
+    30px;
+
+}
+
+
+.format-badge {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    7px;
+
+  padding:
+    7px 11px;
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(34,197,94,.08);
+
+  border:
+    1px solid rgba(34,197,94,.13);
+
+  color:
+    #15803D;
+
+  font-size:
+    .73rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.format-icon {
+
+  width:
+    64px;
+
+  height:
+    64px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    19px;
+
+  margin:
+    22px 0 17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34,197,94,.14),
+      rgba(74,222,128,.04)
+    );
+
+  color:
+    var(--green);
+
+  font-size:
+    1.45rem;
+
+}
+
+
+.format-title {
+
+  color:
+    var(--navy);
+
+  font-size:
+    1.35rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.format-text {
+
+  color:
+    var(--muted);
+
+  line-height:
+    1.8;
+
+  font-size:
+    .9rem;
+
+  margin-top:
+    10px;
+
+}
+
+
+.format-feature {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  color:
+    #475569;
+
+  font-size:
+    .83rem;
+
+  margin-top:
+    12px;
+
+}
+
+
+.format-feature-dot {
+
+  width:
+    8px;
+
+  height:
+    8px;
+
+  flex-shrink:
+    0;
+
+  border-radius:
+    50%;
+
+  background:
+    var(--green);
+
+  box-shadow:
+    0 0 12px rgba(34,197,94,.35);
+
+}
+
+
+/* ======================================================
+   DIGITAL PLATFORM
+   ====================================================== */
+
+.platform-section {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  background:
+
+    linear-gradient(
+      135deg,
+      #0F2A44,
+      #12365A 55%,
+      #1E4E79
+    );
+
+  color:
+    white;
+
+}
+
+
+.platform-section::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  opacity:
+    .12;
+
+  background-image:
+
+    linear-gradient(
+      rgba(255,255,255,.08) 1px,
+      transparent 1px
+    ),
+
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.08) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    46px 46px;
+
+  animation:
+    gridMove 20s linear infinite;
+
+}
+
+
+.platform-glow {
+
+  position:
+    absolute;
+
+  width:
+    460px;
+
+  height:
+    460px;
+
+  border-radius:
+    50%;
+
+  right:
+    -170px;
+
+  top:
+    -210px;
+
+  background:
+    rgba(34,197,94,.13);
+
+  filter:
+    blur(90px);
+
+  animation:
+    ambientGreen 12s ease-in-out infinite;
+
+}
+
+
+.platform-content {
+
+  position:
+    relative;
+
+  z-index:
+    2;
+
+}
+
+
+/* ======================================================
+   PLATFORM FEATURE LIST
+   ====================================================== */
+
+.platform-feature {
+
+  display:
+    flex;
+
+  gap:
+    14px;
+
+  padding:
+    17px;
+
+  border-radius:
+    17px;
+
+  background:
+    rgba(255,255,255,.055);
+
+  border:
+    1px solid rgba(255,255,255,.09);
+
+  transition:
+    transform .4s var(--ease),
+    background .35s ease,
+    border-color .35s ease;
+
+}
+
+
+.platform-feature:hover {
+
+  transform:
+    translateX(6px);
+
+  background:
+    rgba(255,255,255,.09);
+
+  border-color:
+    rgba(74,222,128,.20);
+
+}
+
+
+.platform-feature-icon {
+
+  width:
+    40px;
+
+  height:
+    40px;
+
+  flex-shrink:
+    0;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    12px;
+
+  background:
+    rgba(34,197,94,.12);
+
+  color:
+    var(--green-soft);
+
+}
+
+
+.platform-feature-title {
+
+  font-size:
+    .90rem;
+
+  font-weight:
+    800;
+
+  color:
+    white;
+
+}
+
+
+.platform-feature-text {
+
+  color:
+    rgba(255,255,255,.57);
+
+  font-size:
+    .75rem;
+
+  line-height:
+    1.55;
+
+  margin-top:
+    4px;
+
+}
+
+
+/* ======================================================
+   PLATFORM MOCKUP
+   ====================================================== */
+
+.platform-dashboard {
+
+  position:
+    relative;
+
+  padding:
+    15px;
+
+  border:
+    1px solid rgba(255,255,255,.15);
+
+  border-radius:
+    27px;
+
+  background:
+    rgba(255,255,255,.075);
+
+  backdrop-filter:
+    blur(20px);
+
+  -webkit-backdrop-filter:
+    blur(20px);
+
+  box-shadow:
+    0 35px 90px rgba(0,0,0,.22);
+
+  animation:
+    platformFloat 7s ease-in-out infinite;
+
+}
+
+
+@keyframes platformFloat {
+
+  0%,
+  100% {
+
+    transform:
+      translateY(0)
+      rotate(0deg);
+
+  }
+
+  50% {
+
+    transform:
+      translateY(-11px)
+      rotate(.6deg);
+
+  }
+
+}
+
+
+.platform-window {
+
+  overflow:
+    hidden;
+
+  border-radius:
+    20px;
+
+  background:
+    #F8FAFC;
+
+}
+
+
+.platform-window-header {
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  padding:
+    15px 17px;
+
+  background:
+    white;
+
+  border-bottom:
+    1px solid #E2E8F0;
+
+}
+
+
+.platform-brand-small {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    7px;
+
+  color:
+    var(--navy);
+
+  font-size:
+    .75rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.platform-brand-dot {
+
+  width:
+    7px;
+
+  height:
+    7px;
+
+  border-radius:
+    50%;
+
+  background:
+    var(--green);
+
+}
+
+
+.platform-status {
+
+  padding:
+    5px 8px;
+
+  border-radius:
+    999px;
+
+  background:
+    rgba(34,197,94,.08);
+
+  color:
+    #15803D;
+
+  font-size:
+    .58rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.platform-body {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    130px 1fr;
+
+  min-height:
+    310px;
+
+}
+
+
+.platform-sidebar {
+
+  padding:
+    16px 10px;
+
+  background:
+    #F1F5F9;
+
+  border-right:
+    1px solid #E2E8F0;
+
+}
+
+
+.platform-side-item {
+
+  padding:
+    9px 10px;
+
+  margin-bottom:
+    5px;
+
+  border-radius:
+    9px;
+
+  color:
+    #64748B;
+
+  font-size:
+    .60rem;
+
+  font-weight:
+    700;
+
+}
+
+
+.platform-side-item.active {
+
+  background:
+    rgba(34,197,94,.10);
+
+  color:
+    #15803D;
+
+}
+
+
+.platform-main {
+
+  padding:
+    18px;
+
+}
+
+
+.platform-main-title {
+
+  color:
+    var(--navy);
+
+  font-size:
+    1rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.platform-main-subtitle {
+
+  color:
+    #94A3B8;
+
+  font-size:
+    .62rem;
+
+  margin-top:
+    4px;
+
+}
+
+
+.platform-stat-grid {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:
+    9px;
+
+  margin-top:
+    15px;
+
+}
+
+
+.platform-stat {
+
+  padding:
+    13px;
+
+  border:
+    1px solid #E2E8F0;
+
+  border-radius:
+    13px;
+
+  background:
+    white;
+
+}
+
+
+.platform-stat-label {
+
+  color:
+    #94A3B8;
+
+  font-size:
+    .57rem;
+
+}
+
+
+.platform-stat-value {
+
+  margin-top:
+    5px;
+
+  color:
+    var(--navy);
+
+  font-size:
+    .85rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.platform-progress {
+
+  height:
+    6px;
+
+  margin-top:
+    8px;
+
+  border-radius:
+    999px;
+
+  background:
+    #E2E8F0;
+
+  overflow:
+    hidden;
+
+}
+
+
+.platform-progress span {
+
+  display:
+    block;
+
+  height:
+    100%;
+
+  width:
+    72%;
+
+  border-radius:
+    inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      var(--green-soft)
+    );
+
+  animation:
+    progressGrow 2s ease both;
+
+}
+
+
+@keyframes progressGrow {
+
+  from {
+
+    width:
+      0;
+
+  }
+
+  to {
+
+    width:
+      72%;
+
+  }
+
+}
+
+
+/* ======================================================
+   EDUCATOR PREVIEW
+   ====================================================== */
+
+.educator-preview {
+
+  position:
+    relative;
+
+  padding:
+    25px;
+
+}
+
+
+.educator-avatar {
+
+  width:
+    72px;
+
+  height:
+    72px;
+
+  border-radius:
+    50%;
+
+  object-fit:
+    cover;
+
+  border:
+    3px solid white;
+
+  box-shadow:
+    0 12px 30px rgba(15,42,68,.13);
+
+  transition:
+    transform .45s var(--ease);
+
+}
+
+
+.educator-preview:hover .educator-avatar {
+
+  transform:
+    scale(1.07)
+    rotate(2deg);
+
+}
+
+
+.educator-name {
+
+  color:
+    var(--navy);
+
+  font-size:
+    1.08rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.educator-role {
+
+  color:
+    var(--green);
+
+  font-size:
+    .75rem;
+
+  font-weight:
+    700;
+
+  margin-top:
+    3px;
+
+}
+
+
+/* ======================================================
+   PROGRAMS
+   ====================================================== */
+
+.program-card {
+
+  padding:
+    25px;
+
+  transition:
+    transform .5s var(--ease),
+    box-shadow .5s ease;
+
+}
+
+
+.program-card:hover {
+
+  transform:
+    translateY(-9px);
+
+}
+
+
+.program-icon {
+
+  width:
+    54px;
+
+  height:
+    54px;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border-radius:
+    17px;
+
+  background:
+    rgba(34,197,94,.10);
+
+  color:
+    var(--green);
+
+  margin-bottom:
+    17px;
+
+  transition:
+    transform .45s var(--ease);
+
+}
+
+
+.program-card:hover .program-icon {
+
+  transform:
+    translateY(-5px)
+    rotate(-5deg);
+
+}
+
+
+.program-title {
+
+  color:
+    var(--navy);
+
+  font-size:
+    1.12rem;
+
+  font-weight:
+    800;
+
+}
+
+
+.program-text {
+
+  color:
+    var(--muted);
+
+  font-size:
+    .84rem;
+
+  line-height:
+    1.7;
+
+  margin-top:
+    7px;
+
+}
+
+
+.program-link {
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  gap:
+    7px;
+
+  margin-top:
+    17px;
+
+  color:
+    var(--green);
+
+  font-size:
+    .78rem;
+
+  font-weight:
+    800;
+
+  transition:
+    gap .35s var(--ease);
+
+}
+
+
+.program-link:hover {
+
+  gap:
+    12px;
+
+}
+
+
+/* ======================================================
+   CTA
+   ====================================================== */
+
+.cta-section {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+}
+
+
+.cta-card {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  padding:
+    clamp(2.3rem,6vw,4.2rem);
+
+  border-radius:
+    32px;
+
+  background:
+
+    linear-gradient(
+      135deg,
+      rgba(15,42,68,.98),
+      rgba(18,54,90,.96),
+      rgba(30,78,121,.96)
+    );
+
+  box-shadow:
+    0 30px 90px rgba(15,42,68,.20);
+
+}
+
+
+.cta-card::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  width:
+    370px;
+
+  height:
+    370px;
+
+  right:
+    -160px;
+
+  top:
+    -200px;
+
+  border-radius:
+    50%;
+
+  background:
+
+    radial-gradient(
+      circle,
+      rgba(34,197,94,.25),
+      transparent 70%
+    );
+
+  animation:
+    ambientGreen 10s ease-in-out infinite;
+
+}
+
+
+.cta-card::after {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  opacity:
+    .10;
+
+  pointer-events:
+    none;
+
+  background-image:
+
+    radial-gradient(
+      rgba(255,255,255,.5) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    25px 25px;
+
+}
+
+
+.cta-content {
+
+  position:
+    relative;
+
+  z-index:
+    2;
+
+}
+
+
+.cta-button {
+
+  position:
+    relative;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    9px;
+
+  overflow:
+    hidden;
+
+  padding:
+    14px 25px;
+
+  border-radius:
+    14px;
+
+  background:
+    var(--green);
+
+  color:
+    white;
+
+  font-weight:
+    800;
+
+  box-shadow:
+    0 12px 35px rgba(34,197,94,.24);
+
+  transition:
+    transform .4s var(--ease),
+    box-shadow .4s ease,
+    background .3s ease;
+
+}
+
+
+.cta-button::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  left:
+    -120%;
+
+  top:
+    0;
+
+  width:
+    75%;
+
+  height:
+    100%;
+
+  transform:
+    skewX(-18deg);
+
+  background:
+
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255,255,255,.35),
+      transparent
+    );
+
+  transition:
+    left .7s ease;
+
+}
+
+
+.cta-button:hover::before {
+
+  left:
+    150%;
+
+}
+
+
+.cta-button:hover {
+
+  transform:
+    translateY(-4px)
+    scale(1.02);
+
+  background:
+    #16A34A;
+
+  box-shadow:
+    0 18px 45px rgba(34,197,94,.34);
+
+}
+
+
+/* ======================================================
+   FOOTER
+   ====================================================== */
+
+.site-footer {
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  background:
+    #091D30;
+
+  color:
+    rgba(255,255,255,.55);
+
+}
+
+
+.site-footer::before {
+
+  content:
+    "";
+
+  position:
+    absolute;
+
+  width:
+    380px;
+
+  height:
+    380px;
+
+  right:
+    -180px;
+
+  top:
+    -230px;
+
+  border-radius:
+    50%;
+
+  background:
+
+    radial-gradient(
+      circle,
+      rgba(34,197,94,.10),
+      transparent 70%
+    );
+
+}
+
+
+.footer-link {
+
+  transition:
+    color .3s ease,
+    transform .3s var(--ease);
+
+}
+
+
+.footer-link:hover {
+
+  color:
+    var(--green-soft);
+
+}
+
+
+/* ======================================================
+   REVEALS
+   ====================================================== */
+
+.reveal {
+
+  opacity:
+    0;
+
+  transform:
+    translateY(42px)
+    scale(.985);
+
+  filter:
+    blur(5px);
+
+  transition:
+
+    opacity .9s ease,
+
+    transform .9s var(--ease),
+
+    filter .9s ease;
+
+}
+
+
+.reveal-active {
+
+  opacity:
+    1;
+
+  transform:
+    translateY(0)
+    scale(1);
+
+  filter:
+    blur(0);
+
+}
+
+
+.reveal-left {
+
+  opacity:
+    0;
+
+  transform:
+    translateX(-55px);
+
+  filter:
+    blur(5px);
+
+  transition:
+
+    opacity .9s ease,
+
+    transform .9s var(--ease),
+
+    filter .9s ease;
+
+}
+
+
+.reveal-left.reveal-active {
+
+  opacity:
+    1;
+
+  transform:
+    translateX(0);
+
+  filter:
+    blur(0);
+
+}
+
+
+.reveal-right {
+
+  opacity:
+    0;
+
+  transform:
+    translateX(55px);
+
+  filter:
+    blur(5px);
+
+  transition:
+
+    opacity .9s ease,
+
+    transform .9s var(--ease),
+
+    filter .9s ease;
+
+}
+
+
+.reveal-right.reveal-active {
+
+  opacity:
+    1;
+
+  transform:
+    translateX(0);
+
+  filter:
+    blur(0);
+
+}
+
+
+.reveal-scale {
+
+  opacity:
+    0;
+
+  transform:
+    scale(.88);
+
+  filter:
+    blur(4px);
+
+  transition:
+
+    opacity .9s ease,
+
+    transform .9s var(--ease),
+
+    filter .9s ease;
+
+}
+
+
+.reveal-scale.reveal-active {
+
+  opacity:
+    1;
+
+  transform:
+    scale(1);
+
+  filter:
+    blur(0);
+
+}
+
+
+/* ======================================================
+   STAGGER
+   ====================================================== */
+
+.stagger-children > * {
+
+  opacity:
+    0;
+
+  transform:
+    translateY(28px);
+
+  transition:
+
+    opacity .75s ease,
+
+    transform .75s var(--ease);
+
+}
+
+
+.stagger-children.reveal-active > *:nth-child(1) {
+
+  transition-delay:
+    .05s;
+
+}
+
+
+.stagger-children.reveal-active > *:nth-child(2) {
+
+  transition-delay:
+    .14s;
+
+}
+
+
+.stagger-children.reveal-active > *:nth-child(3) {
+
+  transition-delay:
+    .23s;
+
+}
+
+
+.stagger-children.reveal-active > *:nth-child(4) {
+
+  transition-delay:
+    .32s;
+
+}
+
+
+.stagger-children.reveal-active > *:nth-child(5) {
+
+  transition-delay:
+    .41s;
+
+}
+
+
+.stagger-children.reveal-active > * {
+
+  opacity:
+    1;
+
+  transform:
+    translateY(0);
+
+}
+
+
+/* ======================================================
+   TILT
+   ====================================================== */
+
+[data-tilt] {
+
+  transform-style:
+    preserve-3d;
+
+  will-change:
+    transform;
+
+}
+
+
+/* ======================================================
+   PARALLAX
+   ====================================================== */
+
+[data-parallax] {
+
+  will-change:
+    transform;
+
+}
+
+
+/* ======================================================
+   SCROLL PROGRESS
+   ====================================================== */
+
+.scroll-progress {
+
+  position:
+    fixed;
+
+  top:
+    0;
+
+  left:
+    0;
+
+  width:
+    0%;
+
+  height:
+    3px;
+
+  z-index:
+    9999;
+
+  transform-origin:
+    left;
+
+  background:
+
+    linear-gradient(
+      90deg,
+      var(--green),
+      var(--green-soft)
+    );
+
+  box-shadow:
+    0 0 15px rgba(34,197,94,.45);
+
+}
+
+
+/* ======================================================
+   RESPONSIVE
+   ====================================================== */
+
+@media (max-width:1024px) {
+
+  .hero-floating-badge {
+
+    right:
+      3%;
+
+    transform:
+      scale(.88);
+
+  }
+
+}
+
+
+@media (max-width:768px) {
+
+  .hero {
+
+    min-height:
+      650px;
+
+  }
+
+  .hero-floating-badge {
+
+    display:
+      none;
+
+  }
+
+  .hero-title {
+
+    letter-spacing:
+      -.045em;
+
+  }
+
+  .platform-body {
+
+    grid-template-columns:
+      90px 1fr;
+
+  }
+
+  .platform-sidebar {
+
+    padding:
+      12px 7px;
+
+  }
+
+  .platform-side-item {
+
+    font-size:
+      .52rem;
+
+  }
+
+}
+
+
+@media (max-width:520px) {
+
+  .hero {
+
+    min-height:
+      620px;
+
+  }
+
+  .hero-pill {
+
+    font-size:
+      .70rem;
+
+  }
+
+  .dashboard-body {
+
+    gap:
+      7px;
+
+    padding:
+      10px;
+
+  }
+
+  .platform-body {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+  .platform-sidebar {
+
+    display:
+      none;
+
+  }
+
+}
+
+
+/* ======================================================
+   REDUCED MOTION
+   ====================================================== */
+
+@media (prefers-reduced-motion:reduce) {
+
+  html {
+
+    scroll-behavior:
+      auto;
+
+  }
+
+  *,
+  *::before,
+  *::after {
+
+    animation-duration:
+      .01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      .01ms !important;
+
+  }
+
+  [data-parallax],
+  [data-tilt] {
+
+    transform:
+      none !important;
+
+  }
+
+}
+
+
+/* Master Mentora Edge navbar alignment */
+.site-header {
+  transition: background .4s ease, box-shadow .4s ease, border-color .4s ease, transform .4s var(--ease);
+}
+
+.site-header.scrolled {
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 15px 45px rgba(15,42,68,.10);
+  border-bottom-color: rgba(15,42,68,.12);
+}
+
+.mobile-nav-link {
+  border-radius: 12px;
+  transition: color .3s ease, transform .3s var(--ease), background .3s ease;
+}
+
+.mobile-nav-link:hover {
+  color: var(--green);
+  transform: translateX(5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .mobile-nav-link {
+    transition: none !important;
+  }
+}
+
+</style>
+
+</head>
+
+
+<body class="font-inter">
+
+
+<!-- =====================================================
+     SCROLL PROGRESS
+     ===================================================== -->
+
+<div
+  id="scrollProgress"
+  class="scroll-progress">
+</div>
+
+
+<!-- =====================================================
+     AMBIENT BACKGROUND
+     ===================================================== -->
+
+<div class="ambient-glow ambient-green"></div>
+<div class="ambient-glow ambient-blue"></div>
+
+
+<!-- =====================================================
+     NAVBAR
+     ===================================================== -->
+
+<header id="siteHeader" class="site-header fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <div class="h-[76px] flex items-center justify-between">
+
+      <a href="index.html" class="flex items-center gap-3 group" aria-label="Mentora Edge Home">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primarySoft flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+          <img src="Assets/Images/mentora-edge-logo.png" alt="Mentora Edge Logo" class="w-8 h-8 object-contain" />
+        </div>
+        <div>
+          <div class="text-lg sm:text-xl font-extrabold tracking-tight text-primary">Mentora Edge</div>
+          <div class="hidden sm:block text-[10px] uppercase tracking-[0.18em] text-gray-500">Shaping Minds · Sharpening Futures</div>
+        </div>
+      </a>
+
+      <nav class="hidden xl:flex items-center gap-6 text-sm font-semibold" aria-label="Primary Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="programs.html" class="nav-link">Programs</a>
+        <a href="offline.html" class="nav-link">Offline Coaching</a>
+        <a href="online-tution.html" class="nav-link active" aria-current="page">Online Tuition</a>
+        <a href="educators.html" class="nav-link">Educators</a>
+        <a href="learning-platform.html" class="nav-link">Learning Platform</a>
+        <a href="resources.html" class="nav-link">Resources</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="login.html" class="px-4 py-2 rounded-xl border border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">Login</a>
+        <a href="enquiry.html" class="px-5 py-2.5 rounded-xl bg-accent text-white shadow-lg shadow-green-500/20 hover:bg-green-600 hover:-translate-y-0.5 transition-all duration-300">Book an Enquiry</a>
+      </nav>
+
+      <button id="menuBtn" type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+        class="xl:hidden w-11 h-11 rounded-xl bg-primary/5 text-primary border border-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300">
+        <span id="menuIcon" class="text-xl">☰</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="hidden xl:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl">
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-2" aria-label="Mobile Navigation">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="programs.html" class="mobile-nav-link">Programs</a>
+      <a href="offline.html" class="mobile-nav-link">Offline Coaching</a>
+      <a href="online-tution.html" class="mobile-nav-link text-primary font-bold bg-green-50/70" aria-current="page">Online Personal Tuition</a>
+      <a href="educators.html" class="mobile-nav-link">Educators</a>
+      <a href="learning-platform.html" class="mobile-nav-link">Learning Platform</a>
+      <a href="resources.html" class="mobile-nav-link">Resources</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="login.html" class="mobile-nav-link text-primary font-bold">Login</a>
+      <a href="enquiry.html" class="mt-3 bg-accent text-white text-center px-5 py-3 rounded-xl font-semibold shadow-lg">Book an Enquiry</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+
+<section class="hero">
+
+
+  <!-- GRID -->
+
+  <div class="hero-grid"></div>
+
+
+  <!-- GLOWS -->
+
+  <div class="hero-glow hero-glow-green"></div>
+  <div class="hero-glow hero-glow-blue"></div>
+
+
+  <!-- ORBS -->
+
+  <div
+    class="decor-orb orb-green
+           top-[18%] left-[7%]"
+    data-parallax="0.10">
+  </div>
+
+  <div
+    class="decor-orb orb-blue
+           bottom-[12%] right-[7%]"
+    data-parallax="-0.08">
+  </div>
+
+
+  <!-- CONTENT -->
+
+  <div
+    class="hero-content
+           max-w-7xl
+           mx-auto
+           w-full
+           px-6
+           py-24">
+
+
+    <div
+      class="grid
+             lg:grid-cols-2
+             gap-14
+             items-center">
+
+
+      <!-- LEFT -->
+
+      <div
+        class="text-center
+               lg:text-left">
+
+
+        <div
+          class="reveal-scale">
+
+          <div
+            class="hero-pill
+                   mx-auto
+                   lg:mx-0
+                   mb-7">
+
+            <span
+              class="hero-pill-dot">
+            </span>
+
+            Online Personal Tuition • Classes VI–XII
+
+          </div>
+
+        </div>
+
+
+        <div class="reveal">
+
+          <h1
+            class="hero-title
+                   font-extrabold">
+
+            Personalised
+
+            <span class="highlight">
+              Online Tuition
+            </span>
+
+            Built Around Every Student.
+
+          </h1>
+
+        </div>
+
+
+        <div class="reveal">
+
+          <p
+            class="hero-description
+                   text-lg
+                   md:text-xl
+                   max-w-xl
+                   mx-auto
+                   lg:mx-0
+                   mt-8">
+
+            Learn from experienced educators through
+            structured online sessions designed to
+            support focused academic learning.
+
+          </p>
+
+        </div>
+
+
+        <div
+          class="reveal
+                 mt-9
+                 flex flex-wrap
+                 justify-center
+                 lg:justify-start
+                 gap-4">
+
+
+          <a
+            href="enquiry.html"
+            class="cta-button">
+
+            Book an Enquiry
+
+            <span>
+              →
+            </span>
+
+          </a>
+
+
+          <a
+            href="#how-it-works"
+            class="px-6 py-3.5
+                   rounded-xl
+                   border
+                   border-white/20
+                   bg-white/5
+                   backdrop-blur-md
+                   text-white
+                   font-semibold
+                   hover:bg-white/10
+                   transition">
+
+            How It Works
+
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- RIGHT VISUAL -->
+
+      <div
+        class="reveal-right">
+
+
+        <div class="hero-dashboard">
+
+
+          <div class="dashboard-window">
+
+
+            <div class="dashboard-top">
+
+              <div
+                class="dashboard-dots">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+              </div>
+
+              <div
+                class="dashboard-title">
+
+                MENTORA EDGE
+
+              </div>
+
+              <div
+                class="text-[10px]
+                       text-green-600
+                       font-bold">
+
+                ONLINE
+
+              </div>
+
+            </div>
+
+
+            <div class="dashboard-body">
+
+
+              <div class="dashboard-card">
+
+                <div class="dashboard-icon">
+                  ◉
+                </div>
+
+                <div class="dashboard-card-title">
+                  Live Session
+                </div>
+
+                <div class="dashboard-card-text">
+                  Personalised learning
+                </div>
+
+              </div>
+
+
+              <div class="dashboard-card">
+
+                <div class="dashboard-icon">
+                  ✓
+                </div>
+
+                <div class="dashboard-card-title">
+                  Assessment
+                </div>
+
+                <div class="dashboard-card-text">
+                  Check understanding
+                </div>
+
+              </div>
+
+
+              <div class="dashboard-card">
+
+                <div class="dashboard-icon">
+                  ◫
+                </div>
+
+                <div class="dashboard-card-title">
+                  Learning
+                </div>
+
+                <div class="dashboard-card-text">
+                  Structured courses
+                </div>
+
+              </div>
+
+
+              <div class="dashboard-card">
+
+                <div class="dashboard-icon">
+                  ↗
+                </div>
+
+                <div class="dashboard-card-title">
+                  Progress
+                </div>
+
+                <div class="dashboard-card-text">
+                  Analyse & improve
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- FLOATING BADGE -->
+
+  <div
+    class="hero-floating-badge"
+    data-parallax="-0.12">
+
+    <div class="floating-icon">
+      ✦
+    </div>
+
+    <div
+      class="text-sm
+             font-extrabold
+             text-white">
+
+      Learn From Anywhere
+
+    </div>
+
+    <p
+      class="text-xs
+             text-white/55
+             mt-2
+             leading-relaxed">
+
+      A dedicated online learning
+      experience with Mentora Edge.
+
+    </p>
+
+  </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     INTRO / VALUE
+     ===================================================== -->
+
+<section
+  class="py-24 lg:py-32 relative overflow-hidden">
+
+
+  <div
+    class="absolute
+           w-96 h-96
+           rounded-full
+           bg-green-400/10
+           blur-3xl
+           -left-48
+           top-20"
+    data-parallax="0.08">
+  </div>
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="max-w-3xl
+             mx-auto
+             text-center
+             mb-16
+             reveal">
+
+      <div
+        class="section-eyebrow
+               justify-center
+               mb-5">
+
+        THE ONLINE EXPERIENCE
+
+      </div>
+
+      <h2
+        class="section-title
+               font-extrabold">
+
+        More than an online class.
+        <span class="text-accent">
+          A structured learning experience.
+        </span>
+
+      </h2>
+
+      <p
+        class="section-description
+               mt-6">
+
+        Online students get access to the Mentora Edge
+        learning approach, experienced educators,
+        structured courses, periodic assessments,
+        and the Mentora Edge digital learning platform.
+
+      </p>
+
+    </div>
+
+
+    <!-- BENEFITS -->
+
+    <div
+      class="grid
+             sm:grid-cols-2
+             lg:grid-cols-4
+             gap-6
+             stagger-children
+             reveal">
+
+
+      <!-- 01 -->
+
+      <div
+        class="glass-card
+               benefit-card"
+        data-tilt>
+
+        <div class="benefit-icon">
+          ◎
+        </div>
+
+        <h3 class="benefit-title">
+          Personalised Attention
+        </h3>
+
+        <p class="benefit-text">
+          Online tuition is designed around the
+          student's learning requirements and
+          academic needs.
+        </p>
+
+      </div>
+
+
+      <!-- 02 -->
+
+      <div
+        class="glass-card
+               benefit-card"
+        data-tilt>
+
+        <div class="benefit-icon">
+          ◫
+        </div>
+
+        <h3 class="benefit-title">
+          Structured Courses
+        </h3>
+
+        <p class="benefit-text">
+          Follow a structured academic path
+          instead of disconnected online lessons.
+        </p>
+
+      </div>
+
+
+      <!-- 03 -->
+
+      <div
+        class="glass-card
+               benefit-card"
+        data-tilt>
+
+        <div class="benefit-icon">
+          ✓
+        </div>
+
+        <h3 class="benefit-title">
+          Periodic Assessments
+        </h3>
+
+        <p class="benefit-text">
+          Assessments help review understanding
+          and identify areas requiring attention.
+        </p>
+
+      </div>
+
+
+      <!-- 04 -->
+
+      <div
+        class="glass-card
+               benefit-card"
+        data-tilt>
+
+        <div class="benefit-icon">
+          ◈
+        </div>
+
+        <h3 class="benefit-title">
+          Digital Platform
+        </h3>
+
+        <p class="benefit-text">
+          Every Mentora Edge student gets access
+          to the digital learning platform.
+        </p>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     HOW IT WORKS
+     ===================================================== -->
+
+<section
+  id="how-it-works"
+  class="py-24 lg:py-32
+         bg-white/40
+         relative
+         overflow-hidden">
+
+
+  <div
+    class="absolute
+           w-80 h-80
+           rounded-full
+           bg-blue-400/10
+           blur-3xl
+           right-[-100px]
+           top-20">
+  </div>
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="max-w-3xl
+             mb-16
+             reveal">
+
+      <div
+        class="section-eyebrow
+               mb-5">
+
+        HOW IT WORKS
+
+      </div>
+
+      <h2
+        class="section-title
+               font-extrabold">
+
+        A simple path to
+        <span class="text-accent">
+          structured learning.
+        </span>
+
+      </h2>
+
+      <p
+        class="section-description
+               mt-5">
+
+        The online tuition experience follows
+        a clear learning journey from enquiry
+        to continuous academic improvement.
+
+      </p>
+
+    </div>
+
+
+    <div
+      class="grid
+             sm:grid-cols-2
+             lg:grid-cols-5
+             gap-5
+             stagger-children
+             reveal">
+
+
+      <!-- STEP 1 -->
+
+      <div
+        class="glass-card
+               process-card"
+        data-tilt>
+
+        <span class="process-number">
+          01
+        </span>
+
+        <div class="process-icon">
+          ?
+        </div>
+
+        <h3 class="process-title">
+          Enquire
+        </h3>
+
+        <p class="process-text">
+          Share your requirements and
+          explore the available programmes.
+        </p>
+
+      </div>
+
+
+      <!-- STEP 2 -->
+
+      <div
+        class="glass-card
+               process-card"
+        data-tilt>
+
+        <span class="process-number">
+          02
+        </span>
+
+        <div class="process-icon">
+          ◫
+        </div>
+
+        <h3 class="process-title">
+          Choose Programme
+        </h3>
+
+        <p class="process-text">
+          Select the appropriate academic
+          programme for the student.
+        </p>
+
+      </div>
+
+
+      <!-- STEP 3 -->
+
+      <div
+        class="glass-card
+               process-card"
+        data-tilt>
+
+        <span class="process-number">
+          03
+        </span>
+
+        <div class="process-icon">
+          ◷
+        </div>
+
+        <h3 class="process-title">
+          Schedule Sessions
+        </h3>
+
+        <p class="process-text">
+          Online sessions follow their
+          dedicated online schedule.
+        </p>
+
+      </div>
+
+
+      <!-- STEP 4 -->
+
+      <div
+        class="glass-card
+               process-card"
+        data-tilt>
+
+        <span class="process-number">
+          04
+        </span>
+
+        <div class="process-icon">
+          ↗
+        </div>
+
+        <h3 class="process-title">
+          Learn & Practice
+        </h3>
+
+        <p class="process-text">
+          Build understanding through
+          teaching, practice and guidance.
+        </p>
+
+      </div>
+
+
+      <!-- STEP 5 -->
+
+      <div
+        class="glass-card
+               process-card"
+        data-tilt>
+
+        <span class="process-number">
+          05
+        </span>
+
+        <div class="process-icon">
+          ↑
+        </div>
+
+        <h3 class="process-title">
+          Assess & Improve
+        </h3>
+
+        <p class="process-text">
+          Review learning through assessment
+          and identify areas for improvement.
+        </p>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ONLINE VS OFFLINE
+     ===================================================== -->
+
+<section
+  class="format-section
+         py-24 lg:py-32">
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="max-w-3xl
+             mx-auto
+             text-center
+             mb-16
+             reveal">
+
+      <div
+        class="section-eyebrow
+               justify-center
+               mb-5">
+
+        TWO LEARNING FORMATS
+
+      </div>
+
+      <h2
+        class="section-title
+               font-extrabold">
+
+        Choose the learning format
+        that fits your needs.
+
+      </h2>
+
+      <p
+        class="section-description
+               mt-5">
+
+        Mentora Edge brings structured learning
+        to students through both online and
+        offline formats.
+
+      </p>
+
+    </div>
+
+
+    <div
+      class="grid
+             lg:grid-cols-2
+             gap-8">
+
+
+      <!-- ONLINE -->
+
+      <div
+        class="glass-card
+               format-card
+               reveal-left"
+        data-tilt>
+
+        <span class="format-badge">
+          ONLINE TUITION
+        </span>
+
+        <div class="format-icon">
+          ◉
+        </div>
+
+        <h3 class="format-title">
+          Online Personal Tuition
+        </h3>
+
+        <p class="format-text">
+          Dedicated online sessions conducted
+          according to the student's online
+          schedule, with access to the Mentora
+          Edge digital learning platform.
+        </p>
+
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Online sessions
+        </div>
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Personalised academic attention
+        </div>
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Periodic assessments
+        </div>
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Digital platform access
+        </div>
+
+      </div>
+
+
+      <!-- OFFLINE -->
+
+      <div
+        class="glass-card
+               format-card
+               reveal-right"
+        data-tilt>
+
+        <span class="format-badge">
+          OFFLINE COACHING
+        </span>
+
+        <div
+          class="format-icon">
+
+          ◈
+
+        </div>
+
+        <h3 class="format-title">
+          Offline Coaching
+        </h3>
+
+        <p class="format-text">
+          Structured classroom learning currently
+          available exclusively in Begusarai,
+          Bihar, supported by experienced educators
+          and the Mentora Edge digital platform.
+        </p>
+
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Classroom learning
+        </div>
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Experienced educators
+        </div>
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Structured courses
+        </div>
+
+        <div class="format-feature">
+          <span class="format-feature-dot"></span>
+          Digital platform access
+        </div>
+
+
+        <a
+          href="offline.html"
+          class="program-link">
+
+          Explore Offline Coaching
+
+          <span>
+            →
+          </span>
+
+        </a>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     DIGITAL PLATFORM
+     ===================================================== -->
+
+<section
+  class="platform-section
+         py-24 lg:py-32">
+
+
+  <div class="platform-glow"></div>
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="platform-content
+             grid
+             lg:grid-cols-2
+             gap-14
+             items-center">
+
+
+      <!-- LEFT -->
+
+      <div
+        class="reveal-left">
+
+        <div
+          class="section-eyebrow
+                 text-green-300
+                 mb-6">
+
+          MENTORA EDGE DIGITAL PLATFORM
+
+        </div>
+
+        <h2
+          class="text-4xl
+                 md:text-5xl
+                 font-extrabold
+                 leading-tight">
+
+          Your learning experience
+          continues
+          <span class="text-green-300">
+            beyond the session.
+          </span>
+
+        </h2>
+
+        <p
+          class="mt-6
+                 text-white/65
+                 leading-relaxed
+                 max-w-xl">
+
+          Every Mentora Edge student gets access
+          to the digital learning platform, creating
+          a connected academic experience alongside
+          their learning sessions.
+
+        </p>
+
+
+        <div
+          class="mt-8
+                 space-y-3">
+
+
+          <div
+            class="platform-feature">
+
+            <div
+              class="platform-feature-icon">
+
+              ◫
+
+            </div>
+
+            <div>
+
+              <div
+                class="platform-feature-title">
+
+                Structured Learning
+
+              </div>
+
+              <div
+                class="platform-feature-text">
+
+                Keep the learning journey organised
+                around the student's programme.
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="platform-feature">
+
+            <div
+              class="platform-feature-icon">
+
+              ✓
+
+            </div>
+
+            <div>
+
+              <div
+                class="platform-feature-title">
+
+                Assessments
+
+              </div>
+
+              <div
+                class="platform-feature-text">
+
+                Support periodic academic assessment
+                and review.
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="platform-feature">
+
+            <div
+              class="platform-feature-icon">
+
+              ↗
+
+            </div>
+
+            <div>
+
+              <div
+                class="platform-feature-title">
+
+                Connected Learning
+
+              </div>
+
+              <div
+                class="platform-feature-text">
+
+                Bring digital learning into the
+                broader Mentora Edge experience.
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- RIGHT DASHBOARD -->
+
+      <div
+        class="reveal-right">
+
+
+        <div class="platform-dashboard">
+
+
+          <div class="platform-window">
+
+
+            <div
+              class="platform-window-header">
+
+              <div
+                class="platform-brand-small">
+
+                <span
+                  class="platform-brand-dot">
+                </span>
+
+                Mentora Edge
+
+              </div>
+
+              <span
+                class="platform-status">
+
+                ACTIVE
+
+              </span>
+
+            </div>
+
+
+            <div
+              class="platform-body">
+
+
+              <!-- SIDEBAR -->
+
+              <aside
+                class="platform-sidebar">
+
+                <div
+                  class="platform-side-item active">
+
+                  Dashboard
+
+                </div>
+
+                <div
+                  class="platform-side-item">
+
+                  My Learning
+
+                </div>
+
+                <div
+                  class="platform-side-item">
+
+                  Sessions
+
+                </div>
+
+                <div
+                  class="platform-side-item">
+
+                  Assessments
+
+                </div>
+
+                <div
+                  class="platform-side-item">
+
+                  Resources
+
+                </div>
+
+              </aside>
+
+
+              <!-- MAIN -->
+
+              <div class="platform-main">
+
+                <div
+                  class="platform-main-title">
+
+                  Learning Dashboard
+
+                </div>
+
+                <div
+                  class="platform-main-subtitle">
+
+                  Your Mentora Edge learning space
+
+                </div>
+
+
+                <div
+                  class="platform-stat-grid">
+
+
+                  <div
+                    class="platform-stat">
+
+                    <div
+                      class="platform-stat-label">
+
+                      Programme
+
+                    </div>
+
+                    <div
+                      class="platform-stat-value">
+
+                      Active
+
+                    </div>
+
+                  </div>
+
+
+                  <div
+                    class="platform-stat">
+
+                    <div
+                      class="platform-stat-label">
+
+                      Learning
+
+                    </div>
+
+                    <div
+                      class="platform-stat-value">
+
+                      Structured
+
+                    </div>
+
+                  </div>
+
+
+                  <div
+                    class="platform-stat">
+
+                    <div
+                      class="platform-stat-label">
+
+                      Assessment
+
+                    </div>
+
+                    <div
+                      class="platform-stat-value">
+
+                      Periodic
+
+                    </div>
+
+                  </div>
+
+
+                  <div
+                    class="platform-stat">
+
+                    <div
+                      class="platform-stat-label">
+
+                      Access
+
+                    </div>
+
+                    <div
+                      class="platform-stat-value">
+
+                      Digital
+
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+
+                <div
+                  class="platform-stat mt-3">
+
+                  <div
+                    class="platform-stat-label">
+
+                    Learning Journey
+
+                  </div>
+
+                  <div
+                    class="platform-progress">
+
+                    <span></span>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     PROGRAMMES
+     ===================================================== -->
+
+<section
+  class="py-24 lg:py-32">
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="max-w-3xl
+             mx-auto
+             text-center
+             mb-16
+             reveal">
+
+      <div
+        class="section-eyebrow
+               justify-center
+               mb-5">
+
+        ONLINE PROGRAMMES
+
+      </div>
+
+      <h2
+        class="section-title
+               font-extrabold">
+
+        Online learning for
+        <span class="text-accent">
+          Classes VI–XII
+        </span>
+
+      </h2>
+
+      <p
+        class="section-description
+               mt-5">
+
+        Explore the academic programmes available
+        through Mentora Edge.
+
+      </p>
+
+    </div>
+
+
+    <div
+      class="grid
+             md:grid-cols-3
+             gap-6
+             stagger-children
+             reveal">
+
+
+      <!-- MIDDLE -->
+
+      <div
+        class="glass-card
+               program-card"
+        data-tilt>
+
+        <div class="program-icon">
+          VI
+        </div>
+
+        <h3 class="program-title">
+          Middle School
+        </h3>
+
+        <p class="program-text">
+          Classes VI–VIII with structured
+          academic learning and subject support.
+        </p>
+
+        <a
+          href="programs.html#middle-school"
+          class="program-link">
+
+          Explore Programme
+          <span>→</span>
+
+        </a>
+
+      </div>
+
+
+      <!-- SECONDARY -->
+
+      <div
+        class="glass-card
+               program-card"
+        data-tilt>
+
+        <div class="program-icon">
+          IX
+        </div>
+
+        <h3 class="program-title">
+          Secondary
+        </h3>
+
+        <p class="program-text">
+          Classes IX–X with focused learning
+          and structured academic preparation.
+        </p>
+
+        <a
+          href="programs.html#secondary-school"
+          class="program-link">
+
+          Explore Programme
+          <span>→</span>
+
+        </a>
+
+      </div>
+
+
+      <!-- SENIOR -->
+
+      <div
+        class="glass-card
+               program-card"
+        data-tilt>
+
+        <div class="program-icon">
+          XI
+        </div>
+
+        <h3 class="program-title">
+          Senior Secondary
+        </h3>
+
+        <p class="program-text">
+          Classes XI–XII with structured
+          subject-focused learning.
+        </p>
+
+        <a
+          href="programs.html#senior-secondary"
+          class="program-link">
+
+          Explore Programme
+          <span>→</span>
+
+        </a>
+
+      </div>
+
+
+    </div>
+
+
+    <div
+      class="text-center
+             mt-10
+             reveal">
+
+      <a
+        href="programs.html"
+        class="inline-flex
+               items-center
+               gap-2
+               px-6
+               py-3
+               rounded-xl
+               bg-primary
+               text-white
+               font-semibold
+               shadow-lg
+               hover:bg-[#12365A]
+               hover:-translate-y-1
+               transition">
+
+        View All Programmes
+
+        <span>
+          →
+        </span>
+
+      </a>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     EDUCATORS
+     ===================================================== -->
+
+<section
+  class="py-24 lg:py-28
+         bg-white/40">
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="grid
+             lg:grid-cols-2
+             gap-14
+             items-center">
+
+
+      <!-- LEFT -->
+
+      <div
+        class="reveal-left">
+
+        <div
+          class="section-eyebrow
+                 mb-5">
+
+          EXPERIENCED EDUCATORS
+
+        </div>
+
+        <h2
+          class="section-title
+                 font-extrabold">
+
+          Learn from educators
+          with years of
+          <span class="text-accent">
+            experience.
+          </span>
+
+        </h2>
+
+        <p
+          class="section-description
+                 mt-6">
+
+          Mentora Edge's online learning experience
+          is supported by experienced educators focused
+          on clear, structured and student-friendly
+          academic learning.
+
+        </p>
+
+
+        <a
+          href="educators.html"
+          class="program-link
+                 mt-7">
+
+          Meet Our Educators
+
+          <span>
+            →
+          </span>
+
+        </a>
+
+      </div>
+
+
+      <!-- RIGHT -->
+
+      <div
+        class="grid
+               sm:grid-cols-2
+               gap-5
+               stagger-children
+               reveal">
+
+
+        <!-- SUBIR -->
+
+        <div
+          class="glass-card
+                 educator-preview">
+
+          <div
+            class="flex
+                   items-center
+                   gap-4">
+
+            <img
+              src="Assets/Images/subir-munshi.jpeg"
+              alt="Subir Munshi"
+              class="educator-avatar"
+              loading="lazy"
+            />
+
+            <div>
+
+              <h3 class="educator-name">
+                Subir Munshi
+              </h3>
+
+              <p class="educator-role">
+                Social Science Educator
+              </p>
+
+            </div>
+
+          </div>
+
+          <p
+            class="text-xs
+                   text-slate-500
+                   leading-relaxed
+                   mt-5">
+
+            25+ years of experience as
+            Principal and Educator.
+
+          </p>
+
+        </div>
+
+
+        <!-- RANITA -->
+
+        <div
+          class="glass-card
+                 educator-preview">
+
+          <div
+            class="flex
+                   items-center
+                   gap-4">
+
+            <img
+              src="Assets/Images/ranita-munshi.jpeg"
+              alt="Ranita Munshi"
+              class="educator-avatar"
+              loading="lazy"
+            />
+
+            <div>
+
+              <h3 class="educator-name">
+                Ranita Munshi
+              </h3>
+
+              <p class="educator-role">
+                English Educator
+              </p>
+
+            </div>
+
+          </div>
+
+          <p
+            class="text-xs
+                   text-slate-500
+                   leading-relaxed
+                   mt-5">
+
+            25+ years of experience
+            in student-focused education.
+
+          </p>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     FINAL CTA
+     ===================================================== -->
+
+<section
+  class="cta-section
+         py-20 lg:py-28
+         px-6">
+
+
+  <div
+    class="max-w-6xl
+           mx-auto">
+
+
+    <div
+      class="cta-card
+             reveal-scale">
+
+
+      <div
+        class="cta-content
+               text-center">
+
+
+        <div
+          class="section-eyebrow
+                 justify-center
+                 text-green-300
+                 mb-6">
+
+          START YOUR ONLINE LEARNING JOURNEY
+
+        </div>
+
+
+        <h2
+          class="text-3xl
+                 md:text-5xl
+                 font-extrabold
+                 text-white
+                 leading-tight">
+
+          Ready to learn
+          <span class="text-green-300">
+            from anywhere?
+          </span>
+
+        </h2>
+
+
+        <p
+          class="max-w-2xl
+                 mx-auto
+                 mt-6
+                 text-white/65
+                 leading-relaxed">
+
+          Explore Mentora Edge online personal tuition
+          and discover a structured learning experience
+          supported by experienced educators.
+
+        </p>
+
+
+        <div
+          class="mt-9
+                 flex
+                 flex-wrap
+                 justify-center
+                 gap-4">
+
+
+          <a
+            href="enquiry.html"
+            class="cta-button">
+
+            Book an Enquiry
+
+            <span>
+              →
+            </span>
+
+          </a>
+
+
+          <a
+            href="programs.html"
+            class="px-6 py-3.5
+                   rounded-xl
+                   border
+                   border-white/20
+                   bg-white/5
+                   text-white
+                   font-semibold
+                   hover:bg-white/10
+                   transition">
+
+            Explore Programmes
+
+          </a>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer
+  class="site-footer
+         py-12">
+
+
+  <div
+    class="max-w-7xl
+           mx-auto
+           px-6">
+
+
+    <div
+      class="flex
+             flex-col
+             md:flex-row
+             justify-between
+             items-center
+             gap-5">
+
+
+      <div>
+
+        <a
+          href="index.html"
+          class="text-xl
+                 font-extrabold
+                 text-white">
+
+          Mentora Edge
+
+        </a>
+
+        <p
+          class="text-sm
+                 mt-2">
+
+          Shaping Minds, Sharpening Futures
+
+        </p>
+
+      </div>
+
+
+      <div
+        class="flex
+               items-center
+               gap-5
+               text-sm">
+
+        <a
+          href="terms.html"
+          class="footer-link">
+
+          Terms
+
+        </a>
+
+        <a
+          href="privacy.html"
+          class="footer-link">
+
+          Privacy
+
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="mt-9
+             pt-6
+             border-t
+             border-white/10
+             text-center
+             text-sm">
+
+      © 2025 Mentora Edge.
+      All Rights Reserved.
+
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+/* ======================================================
+   ELEMENTS
+   ====================================================== */
+
+const menuBtn =
+  document.getElementById(
+    "menuBtn"
+  );
+
+const mobileMenu =
+  document.getElementById(
+    "mobileMenu"
+  );
+
+const siteHeader =
+  document.getElementById(
+    "siteHeader"
+  );
+
+const scrollProgress =
+  document.getElementById(
+    "scrollProgress"
+  );
+
+
+/* ======================================================
+   MOBILE MENU
+   ====================================================== */
+
+if (
+  menuBtn &&
+  mobileMenu
+) {
+
+  menuBtn.addEventListener(
+    "click",
+    () => {
+
+      const hidden =
+        mobileMenu.classList.contains(
+          "hidden"
+        );
+
+      mobileMenu.classList.toggle(
+        "hidden"
+      );
+
+      menuBtn.setAttribute(
+        "aria-expanded",
+        String(hidden)
+      );
+
+      menuBtn.textContent =
+        hidden
+          ? "✕"
+          : "☰";
+
+    }
+  );
+
+
+  mobileMenu
+    .querySelectorAll("a")
+    .forEach(link => {
+
+      link.addEventListener(
+        "click",
+        () => {
+
+          mobileMenu.classList.add(
+            "hidden"
+          );
+
+          menuBtn.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+
+          menuBtn.textContent =
+            "☰";
+
+        }
+      );
+
+    });
+
+}
+
+
+/* ======================================================
+   HEADER
+   ====================================================== */
+
+function updateHeader() {
+
+  if (!siteHeader)
+    return;
+
+  if (
+    window.scrollY > 30
+  ) {
+
+    siteHeader.classList.add(
+      "scrolled"
+    );
+
+  } else {
+
+    siteHeader.classList.remove(
+      "scrolled"
+    );
+
+  }
+
+}
+
+
+/* ======================================================
+   SCROLL PROGRESS
+   ====================================================== */
+
+function updateScrollProgress() {
+
+  if (!scrollProgress)
+    return;
+
+  const scrollTop =
+    window.scrollY;
+
+  const documentHeight =
+    document.documentElement.scrollHeight -
+    window.innerHeight;
+
+  const progress =
+    documentHeight > 0
+      ? (
+          scrollTop /
+          documentHeight
+        ) * 100
+      : 0;
+
+  scrollProgress.style.width =
+    `${progress}%`;
+
+}
+
+
+/* ======================================================
+   SCROLL HANDLER
+   ====================================================== */
+
+let scrollTicking =
+  false;
+
+
+function handleScroll() {
+
+  if (
+    scrollTicking
+  )
+    return;
+
+  window.requestAnimationFrame(
+    () => {
+
+      updateHeader();
+
+      updateScrollProgress();
+
+      scrollTicking =
+        false;
+
+    }
+  );
+
+  scrollTicking =
+    true;
+
+}
+
+
+window.addEventListener(
+  "scroll",
+  handleScroll,
+  {
+    passive:
+      true
+  }
+);
+
+
+updateHeader();
+updateScrollProgress();
+
+
+/* ======================================================
+   REVEAL OBSERVER
+   ====================================================== */
+
+const revealElements =
+  document.querySelectorAll(
+    ".reveal, .reveal-left, .reveal-right, .reveal-scale"
+  );
+
+
+const revealObserver =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(
+        entry => {
+
+          if (
+            entry.isIntersecting
+          ) {
+
+            entry.target.classList.add(
+              "reveal-active"
+            );
+
+            revealObserver.unobserve(
+              entry.target
+            );
+
+          }
+
+        }
+      );
+
+    },
+    {
+      threshold:
+        .12,
+
+      rootMargin:
+        "0px 0px -50px 0px"
+    }
+  );
+
+
+revealElements.forEach(
+  element => {
+
+    revealObserver.observe(
+      element
+    );
+
+  }
+);
+
+
+/* ======================================================
+   PARALLAX
+   ====================================================== */
+
+const parallaxElements =
+  document.querySelectorAll(
+    "[data-parallax]"
+  );
+
+
+let parallaxTicking =
+  false;
+
+
+function updateParallax() {
+
+  if (
+    parallaxTicking
+  )
+    return;
+
+  parallaxTicking =
+    true;
+
+  window.requestAnimationFrame(
+    () => {
+
+      const viewportCenter =
+        window.innerHeight /
+        2;
+
+
+      parallaxElements.forEach(
+        element => {
+
+          const rect =
+            element.getBoundingClientRect();
+
+          const speed =
+            parseFloat(
+              element.dataset.parallax
+            ) || 0;
+
+          const elementCenter =
+            rect.top +
+            rect.height /
+            2;
+
+          const distance =
+            elementCenter -
+            viewportCenter;
+
+          const movement =
+            distance *
+            speed;
+
+          element.style.transform =
+            `translate3d(0, ${movement}px, 0)`;
+
+        }
+      );
+
+
+      parallaxTicking =
+        false;
+
+    }
+  );
+
+}
+
+
+if (
+  parallaxElements.length
+) {
+
+  window.addEventListener(
+    "scroll",
+    updateParallax,
+    {
+      passive:
+        true
+    }
+  );
+
+  window.addEventListener(
+    "resize",
+    updateParallax
+  );
+
+  updateParallax();
+
+}
+
+
+/* ======================================================
+   3D TILT
+   ====================================================== */
+
+const tiltElements =
+  document.querySelectorAll(
+    "[data-tilt]"
+  );
+
+
+tiltElements.forEach(
+  card => {
+
+    let rect;
+
+
+    card.addEventListener(
+      "pointerenter",
+      () => {
+
+        rect =
+          card.getBoundingClientRect();
+
+      }
+    );
+
+
+    card.addEventListener(
+      "pointermove",
+      event => {
+
+        if (
+          window.innerWidth < 768
+        )
+          return;
+
+        if (
+          window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          ).matches
+        )
+          return;
+
+
+        if (!rect) {
+
+          rect =
+            card.getBoundingClientRect();
+
+        }
+
+
+        const x =
+          event.clientX -
+          rect.left;
+
+        const y =
+          event.clientY -
+          rect.top;
+
+
+        const centerX =
+          rect.width /
+          2;
+
+        const centerY =
+          rect.height /
+          2;
+
+
+        const rotateX =
+          (
+            (y - centerY) /
+            centerY
+          ) * -3.5;
+
+
+        const rotateY =
+          (
+            (x - centerX) /
+            centerX
+          ) * 3.5;
+
+
+        card.style.transform =
+
+          `perspective(1000px)
+           rotateX(${rotateX}deg)
+           rotateY(${rotateY}deg)
+           translateY(-9px)`;
+
+      }
+    );
+
+
+    card.addEventListener(
+      "pointerleave",
+      () => {
+
+        card.style.transform =
+          "";
+
+        rect =
+          null;
+
+      }
+    );
+
+  }
+);
+
+
+/* ======================================================
+   MAGNETIC BUTTON EFFECT
+   ====================================================== */
+
+const magneticButtons =
+  document.querySelectorAll(
+    ".cta-button, .login-btn"
+  );
+
+
+magneticButtons.forEach(
+  button => {
+
+
+    button.addEventListener(
+      "pointermove",
+      event => {
+
+        if (
+          window.innerWidth < 768
+        )
+          return;
+
+
+        if (
+          window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          ).matches
+        )
+          return;
+
+
+        const rect =
+          button.getBoundingClientRect();
+
+
+        const x =
+          event.clientX -
+          (
+            rect.left +
+            rect.width /
+            2
+          );
+
+
+        const y =
+          event.clientY -
+          (
+            rect.top +
+            rect.height /
+            2
+          );
+
+
+        button.style.transform =
+          `translate(
+            ${x * .07}px,
+            ${y * .07}px
+          )`;
+
+      }
+    );
+
+
+    button.addEventListener(
+      "pointerleave",
+      () => {
+
+        button.style.transform =
+          "";
+
+      }
+    );
+
+  }
+);
+
+
+/* ======================================================
+   IMAGE FADE-IN
+   ====================================================== */
+
+document
+  .querySelectorAll("img")
+  .forEach(
+    image => {
+
+      image.style.transition =
+        "opacity .7s ease";
+
+
+      if (
+        image.complete
+      ) {
+
+        image.style.opacity =
+          "1";
+
+      } else {
+
+        image.style.opacity =
+          "0";
+
+        image.addEventListener(
+          "load",
+          () => {
+
+            image.style.opacity =
+              "1";
+
+          },
+          {
+            once:
+              true
+          }
+        );
+
+      }
+
+    }
+  );
+
+
+/* ======================================================
+   CURRENT PAGE
+   ====================================================== */
+
+const currentPage =
+  window.location.pathname
+    .split("/")
+    .pop() ||
+  "index.html";
+
+
+document
+  .querySelectorAll(
+    ".nav-link"
+  )
+  .forEach(
+    link => {
+
+      const href =
+        link.getAttribute(
+          "href"
+        );
+
+
+      if (
+        href === currentPage
+      ) {
+
+        link.classList.add(
+          "active"
+        );
+
+      }
+
+    }
+  );
+
+
+/* ======================================================
+   INITIALISE
+   ====================================================== */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    updateParallax();
+
+    updateHeader();
+
+    updateScrollProgress();
+
+  }
+);
+
+
+// Master navbar scroll state
+(() => {
+  const header = document.getElementById("siteHeader");
+  if (!header) return;
+  const update = () => header.classList.toggle("scrolled", window.scrollY > 12);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,208 +1,1385 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0F2A44">
   <link rel="apple-touch-icon" href="/icons/ios/180.png">
-
-  <title>Login | Mentora Edge</title>
-
   <link rel="icon" href="favicon.ico">
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Login | Mentora Edge</title>
+  <meta name="description" content="Login to the Mentora Edge learning platform for secure access to your academic experience.">
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
+  <style>
+    :root{
+      --navy:#0F2A44;
+      --navy2:#173A5C;
+      --green:#22C55E;
+      --green2:#4ADE80;
+      --green3:#86EFAC;
+      --white:#fff;
+      --ink:#10243A;
+      --muted:#64748B;
+      --line:rgba(15,42,68,.10);
+      --glass:rgba(255,255,255,.67);
+      --shadow:0 30px 90px rgba(15,42,68,.16);
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
 
-      theme: {
-        extend: {
-          fontFamily: {
-            inter: ['Inter', 'sans-serif']
-          },
+    *{box-sizing:border-box;margin:0;padding:0}
 
-          colors: {
-            primary: '#0F2A44',
-            accent: '#22C55E',
-            accentSoft: '#4ADE80'
-          }
-        }
+    html{
+      scroll-behavior:smooth;
+      scroll-padding-top:90px;
+    }
+
+    body{
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 7% 8%,rgba(34,197,94,.13),transparent 28%),
+        radial-gradient(circle at 94% 18%,rgba(15,42,68,.12),transparent 31%),
+        linear-gradient(145deg,#f8fbfd 0%,#edf5f4 48%,#f8fafc 100%);
+      overflow-x:hidden;
+      animation:pageIn .7s ease both;
+    }
+
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+
+    /* Ambient environment */
+    .ambient{
+      position:fixed;
+      inset:0;
+      z-index:-5;
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    .ambient-grid{
+      position:absolute;
+      inset:0;
+      opacity:.45;
+      background-image:
+        linear-gradient(rgba(15,42,68,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(15,42,68,.025) 1px,transparent 1px);
+      background-size:46px 46px;
+      mask-image:linear-gradient(to bottom,black,transparent 92%);
+    }
+
+    .ambient-glow{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(3px);
+    }
+
+    .glow-green{
+      width:480px;
+      height:480px;
+      left:-170px;
+      top:-150px;
+      background:radial-gradient(circle,rgba(34,197,94,.20),transparent 68%);
+      animation:orbFloat 12s ease-in-out infinite;
+    }
+
+    .glow-blue{
+      width:580px;
+      height:580px;
+      right:-250px;
+      bottom:-250px;
+      background:radial-gradient(circle,rgba(15,42,68,.15),transparent 68%);
+      animation:orbFloatReverse 15s ease-in-out infinite;
+    }
+
+    .glow-center{
+      width:350px;
+      height:350px;
+      left:48%;
+      top:22%;
+      background:radial-gradient(circle,rgba(74,222,128,.08),transparent 70%);
+      animation:pulseGlow 7s ease-in-out infinite;
+    }
+
+    .orbit{
+      position:absolute;
+      width:520px;
+      height:520px;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      border:1px solid rgba(34,197,94,.10);
+      border-radius:50%;
+      animation:spin 28s linear infinite;
+    }
+
+    .orbit::before,
+    .orbit::after{
+      content:"";
+      position:absolute;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 8px rgba(34,197,94,.08),0 0 30px rgba(34,197,94,.35);
+    }
+
+    .orbit::before{top:45px;left:72px}
+    .orbit::after{
+      right:55px;
+      bottom:70px;
+      background:var(--navy);
+      box-shadow:0 0 0 8px rgba(15,42,68,.08),0 0 30px rgba(15,42,68,.28);
+    }
+
+    /* Master navbar */
+    .navbar{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:1000;
+      padding:15px 0;
+      transition:background .4s ease,box-shadow .4s ease,padding .4s ease,backdrop-filter .4s ease;
+    }
+
+    .navbar.scrolled{
+      padding:9px 0;
+      background:rgba(248,250,252,.78);
+      border-bottom:1px solid rgba(15,42,68,.07);
+      box-shadow:0 10px 35px rgba(15,42,68,.09);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+    }
+
+    .container{
+      width:min(1180px,calc(100% - 40px));
+      margin:auto;
+    }
+
+    .nav-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-width:max-content;
+      color:var(--navy);
+    }
+
+    .brand-logo{
+      width:43px;
+      height:43px;
+      object-fit:contain;
+      border-radius:13px;
+      box-shadow:0 10px 25px rgba(15,42,68,.15);
+      transition:transform .45s var(--ease),box-shadow .45s ease;
+    }
+
+    .brand:hover .brand-logo{
+      transform:translateY(-3px) rotate(-2deg);
+      box-shadow:0 15px 32px rgba(15,42,68,.20);
+    }
+
+    .brand-copy{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .brand-name{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:-.035em;
+      line-height:1;
+    }
+
+    .brand-tagline{
+      font-size:8px;
+      font-weight:750;
+      letter-spacing:.08em;
+      color:#6b7d8e;
+      text-transform:uppercase;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+
+    .nav-link{
+      position:relative;
+      padding:10px 11px;
+      color:#31485e;
+      font-size:13px;
+      font-weight:700;
+      transition:color .3s ease,transform .3s ease;
+      white-space:nowrap;
+    }
+
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:11px;
+      right:11px;
+      bottom:4px;
+      height:2px;
+      border-radius:99px;
+      background:var(--green);
+      transform:scaleX(0);
+      transform-origin:center;
+      transition:transform .35s var(--ease);
+    }
+
+    .nav-link:hover{
+      color:var(--navy);
+      transform:translateY(-2px);
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after{
+      transform:scaleX(1);
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .nav-login,
+    .nav-cta{
+      padding:10px 14px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:800;
+      transition:transform .3s var(--ease),box-shadow .3s ease;
+    }
+
+    .nav-login{
+      color:var(--navy);
+      background:rgba(255,255,255,.54);
+      border:1px solid rgba(15,42,68,.08);
+    }
+
+    .nav-cta{
+      color:#fff;
+      background:var(--navy);
+      box-shadow:0 9px 22px rgba(15,42,68,.16);
+    }
+
+    .nav-login:hover,.nav-cta:hover{transform:translateY(-3px)}
+    .nav-cta:hover{box-shadow:0 14px 30px rgba(15,42,68,.23)}
+
+    .menu-btn{
+      display:none;
+      border:0;
+      background:transparent;
+      color:var(--navy);
+      font-size:27px;
+      line-height:1;
+    }
+
+    .mobile-menu{
+      display:none;
+      margin-top:12px;
+      padding:12px;
+      border-radius:20px;
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(255,255,255,.9);
+      box-shadow:0 18px 45px rgba(15,42,68,.12);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+
+    .mobile-menu.open{
+      display:block;
+      animation:menuIn .35s var(--ease) both;
+    }
+
+    .mobile-menu a{
+      display:block;
+      padding:12px 11px;
+      border-radius:12px;
+      color:#31485e;
+      font-size:13px;
+      font-weight:700;
+      transition:background .25s ease,color .25s ease,transform .25s ease;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a.active{
+      background:rgba(34,197,94,.09);
+      color:var(--navy);
+      transform:translateX(4px);
+    }
+
+    /* Login page */
+    .login-shell{
+      min-height:100vh;
+      padding:128px 0 48px;
+      display:flex;
+      align-items:center;
+    }
+
+    .login-layout{
+      display:grid;
+      grid-template-columns:1.05fr .85fr;
+      gap:60px;
+      align-items:center;
+    }
+
+    .intro{
+      position:relative;
+      z-index:2;
+    }
+
+    .hero-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      padding:9px 14px;
+      border-radius:99px;
+      background:rgba(255,255,255,.67);
+      border:1px solid rgba(255,255,255,.9);
+      box-shadow:0 12px 30px rgba(15,42,68,.08);
+      color:#496276;
+      font-size:11px;
+      font-weight:850;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      animation:float 5s ease-in-out infinite;
+    }
+
+    .pulse-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 7px rgba(34,197,94,.10);
+      animation:pulse 2.2s ease-in-out infinite;
+    }
+
+    .intro h1{
+      margin-top:24px;
+      color:var(--navy);
+      font-size:clamp(45px,6vw,74px);
+      line-height:.98;
+      letter-spacing:-.065em;
+      max-width:700px;
+    }
+
+    .intro h1 span{
+      color:var(--green);
+      position:relative;
+    }
+
+    .intro h1 span::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:-6px;
+      height:5px;
+      border-radius:99px;
+      background:linear-gradient(90deg,var(--green),transparent);
+      opacity:.35;
+    }
+
+    .intro-text{
+      max-width:610px;
+      margin-top:21px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.78;
+    }
+
+    .intro-points{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:11px;
+      margin-top:28px;
+      max-width:610px;
+    }
+
+    .intro-point{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:13px;
+      border-radius:15px;
+      background:rgba(255,255,255,.54);
+      border:1px solid rgba(255,255,255,.78);
+      box-shadow:0 10px 24px rgba(15,42,68,.055);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      transition:transform .35s var(--ease),box-shadow .35s ease;
+    }
+
+    .intro-point:hover{
+      transform:translateY(-4px);
+      box-shadow:0 15px 30px rgba(15,42,68,.09);
+    }
+
+    .intro-point-icon{
+      width:31px;
+      height:31px;
+      flex:0 0 31px;
+      display:grid;
+      place-items:center;
+      border-radius:10px;
+      background:rgba(34,197,94,.11);
+      color:#16883f;
+      font-size:14px;
+    }
+
+    .intro-point span{
+      color:#506579;
+      font-size:10px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    /* Login glass card */
+    .login-card-wrap{
+      position:relative;
+      perspective:1300px;
+    }
+
+    .login-card-wrap::before{
+      content:"";
+      position:absolute;
+      inset:-35px;
+      border-radius:45px;
+      background:radial-gradient(circle,rgba(34,197,94,.17),transparent 68%);
+      filter:blur(12px);
+      z-index:-1;
+      animation:cardAura 7s ease-in-out infinite;
+    }
+
+    .login-card{
+      position:relative;
+      overflow:hidden;
+      padding:34px;
+      border-radius:32px;
+      background:rgba(255,255,255,.69);
+      border:1px solid rgba(255,255,255,.88);
+      box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.8);
+      backdrop-filter:blur(25px);
+      -webkit-backdrop-filter:blur(25px);
+      transform:rotateY(-4deg) rotateX(2deg);
+      transition:transform .8s var(--ease),box-shadow .5s ease;
+      animation:cardFloat 7s ease-in-out infinite;
+    }
+
+    .login-card:hover{
+      transform:rotateY(0) rotateX(0) translateY(-7px);
+      box-shadow:0 38px 100px rgba(15,42,68,.19),inset 0 1px 0 rgba(255,255,255,.9);
+    }
+
+    .login-card::before{
+      content:"";
+      position:absolute;
+      width:230px;
+      height:230px;
+      right:-120px;
+      top:-130px;
+      border-radius:50%;
+      background:rgba(34,197,94,.11);
+      filter:blur(3px);
+      pointer-events:none;
+    }
+
+    .login-card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(115deg,transparent 16%,rgba(255,255,255,.38) 49%,transparent 75%);
+      transform:translateX(-125%);
+      transition:transform 1s var(--ease);
+    }
+
+    .login-card:hover::after{
+      transform:translateX(125%);
+    }
+
+    .card-content{
+      position:relative;
+      z-index:2;
+    }
+
+    .login-header{
+      text-align:center;
+      margin-bottom:27px;
+    }
+
+    .login-logo{
+      width:58px;
+      height:58px;
+      object-fit:contain;
+      margin:0 auto 13px;
+      border-radius:17px;
+      box-shadow:0 14px 32px rgba(15,42,68,.16);
+      transition:transform .45s var(--ease);
+    }
+
+    .login-logo:hover{
+      transform:translateY(-4px) rotate(-2deg) scale(1.04);
+    }
+
+    .login-header h2{
+      color:var(--navy);
+      font-size:26px;
+      line-height:1.1;
+      letter-spacing:-.045em;
+      font-weight:900;
+    }
+
+    .login-header p{
+      color:#738396;
+      font-size:11px;
+      margin-top:7px;
+      line-height:1.55;
+    }
+
+    .form{
+      display:grid;
+      gap:13px;
+    }
+
+    .field{
+      position:relative;
+    }
+
+    .field-label{
+      display:block;
+      margin:0 0 7px 3px;
+      color:#506579;
+      font-size:10px;
+      font-weight:850;
+      letter-spacing:.03em;
+    }
+
+    .input-wrap{
+      position:relative;
+    }
+
+    .input-icon{
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#8292a1;
+      font-size:14px;
+      pointer-events:none;
+      z-index:2;
+      transition:color .3s ease,transform .3s ease;
+    }
+
+    .input{
+      width:100%;
+      min-height:48px;
+      padding:13px 14px 13px 42px;
+      border-radius:14px;
+      border:1px solid rgba(15,42,68,.10);
+      background:rgba(255,255,255,.65);
+      color:var(--ink);
+      outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+      transition:border-color .3s ease,box-shadow .3s ease,background .3s ease,transform .3s ease;
+    }
+
+    .input:focus{
+      border-color:rgba(34,197,94,.60);
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(34,197,94,.09),0 12px 28px rgba(15,42,68,.06);
+      transform:translateY(-1px);
+    }
+
+    .input:focus + .input-icon{
+      color:#16883f;
+    }
+
+    .input::placeholder{color:#9aa7b4}
+
+    .password-toggle{
+      position:absolute;
+      right:9px;
+      top:50%;
+      transform:translateY(-50%);
+      width:32px;
+      height:32px;
+      border:0;
+      border-radius:9px;
+      background:transparent;
+      color:#758697;
+      transition:background .25s ease,color .25s ease,transform .25s ease;
+    }
+
+    .password-toggle:hover{
+      background:rgba(15,42,68,.06);
+      color:var(--navy);
+      transform:translateY(-50%) scale(1.05);
+    }
+
+    .password-input{
+      padding-right:48px;
+    }
+
+    .form-meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:1px;
+    }
+
+    .remember{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      color:#708195;
+      font-size:10px;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .remember input{
+      accent-color:var(--green);
+      width:14px;
+      height:14px;
+    }
+
+    .forgot{
+      border:0;
+      background:none;
+      color:#16883f;
+      font-size:10px;
+      font-weight:850;
+      cursor:pointer;
+      padding:3px;
+    }
+
+    .forgot:hover{text-decoration:underline}
+
+    .login-btn{
+      width:100%;
+      min-height:49px;
+      border:0;
+      border-radius:14px;
+      color:#fff;
+      background:linear-gradient(110deg,#16a34a,var(--green),#31cf70);
+      box-shadow:0 15px 30px rgba(34,197,94,.20);
+      font-size:13px;
+      font-weight:900;
+      position:relative;
+      overflow:hidden;
+      transition:transform .35s var(--ease),box-shadow .35s ease,filter .35s ease;
+    }
+
+    .login-btn::before{
+      content:"";
+      position:absolute;
+      inset:0 auto 0 -30%;
+      width:28%;
+      background:rgba(255,255,255,.34);
+      transform:skewX(-20deg);
+      transition:transform .7s var(--ease);
+    }
+
+    .login-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 20px 40px rgba(34,197,94,.29);
+      filter:saturate(1.08);
+    }
+
+    .login-btn:hover::before{
+      transform:translateX(520%) skewX(-20deg);
+    }
+
+    .login-btn:active{
+      transform:translateY(0) scale(.985);
+    }
+
+    .login-btn:disabled{
+      cursor:not-allowed;
+      opacity:.75;
+      transform:none;
+    }
+
+    .btn-content{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      position:relative;
+      z-index:2;
+    }
+
+    .spinner{
+      width:17px;
+      height:17px;
+      border:2px solid rgba(255,255,255,.38);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin .75s linear infinite;
+    }
+
+    .biometric-btn{
+      width:100%;
+      min-height:48px;
+      border:1px solid rgba(15,42,68,.09);
+      border-radius:14px;
+      color:var(--navy);
+      background:rgba(255,255,255,.60);
+      box-shadow:0 10px 22px rgba(15,42,68,.06);
+      font-size:11px;
+      font-weight:850;
+      transition:transform .35s var(--ease),box-shadow .35s ease,background .35s ease;
+    }
+
+    .biometric-btn:hover{
+      transform:translateY(-3px);
+      background:rgba(255,255,255,.85);
+      box-shadow:0 15px 30px rgba(15,42,68,.10);
+    }
+
+    .divider{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:2px 0;
+      color:#9aa7b4;
+      font-size:9px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+    }
+
+    .divider::before,
+    .divider::after{
+      content:"";
+      height:1px;
+      flex:1;
+      background:rgba(15,42,68,.08);
+    }
+
+    .register-note{
+      text-align:center;
+      color:#6f8091;
+      font-size:10px;
+      line-height:1.5;
+      margin-top:2px;
+    }
+
+    .register-note a{
+      color:#16883f;
+      font-weight:850;
+    }
+
+    .register-note a:hover{text-decoration:underline}
+
+    .error{
+      margin-top:3px;
+      padding:11px 12px;
+      border-radius:12px;
+      text-align:center;
+      font-size:10px;
+      line-height:1.55;
+      color:#b42318;
+      background:rgba(254,242,242,.88);
+      border:1px solid rgba(248,113,113,.27);
+      animation:scaleIn .3s ease both;
+    }
+
+    .success{
+      color:#166534;
+      background:rgba(240,253,244,.9);
+      border-color:rgba(34,197,94,.22);
+    }
+
+    .security-note{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      margin-top:17px;
+      color:#8190a0;
+      font-size:8px;
+      font-weight:700;
+    }
+
+    .security-note strong{
+      color:#5c7083;
+    }
+
+    /* Decorative side cards */
+    .floating-card{
+      position:absolute;
+      z-index:4;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(255,255,255,.92);
+      box-shadow:0 18px 42px rgba(15,42,68,.13);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+
+    .floating-card small{
+      display:block;
+      color:#8090a0;
+      font-size:7px;
+      font-weight:850;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+    }
+
+    .floating-card strong{
+      display:block;
+      color:var(--navy);
+      font-size:10px;
+      margin-top:4px;
+    }
+
+    .float-card-one{
+      left:-52px;
+      top:13%;
+      animation:float 5.5s ease-in-out infinite;
+    }
+
+    .float-card-two{
+      right:-43px;
+      bottom:16%;
+      animation:floatReverse 6.5s ease-in-out infinite;
+    }
+
+    .login-footer{
+      margin-top:25px;
+      text-align:center;
+      color:#8190a0;
+      font-size:9px;
+    }
+
+    .login-footer a{
+      color:#16883f;
+      font-weight:800;
+    }
+
+    /* Site footer */
+    footer{
+      position:relative;
+      z-index:10;
+      padding:18px 0 22px;
+      border-top:1px solid rgba(15,42,68,.07);
+      background:rgba(255,255,255,.30);
+    }
+
+    .footer-inner{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+      color:#7b8a9b;
+      font-size:9px;
+    }
+
+    .footer-inner a{
+      color:#16883f;
+      font-weight:800;
+    }
+
+    /* Animations */
+    @keyframes pageIn{from{opacity:0}to{opacity:1}}
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
+    }
+    @keyframes floatReverse{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(8px)}
+    }
+    @keyframes orbFloat{
+      0%,100%{transform:translate3d(0,0,0) scale(1)}
+      50%{transform:translate3d(28px,-25px,0) scale(1.06)}
+    }
+    @keyframes orbFloatReverse{
+      0%,100%{transform:translate3d(0,0,0) scale(1)}
+      50%{transform:translate3d(-28px,25px,0) scale(.96)}
+    }
+    @keyframes pulse{
+      0%,100%{box-shadow:0 0 0 5px rgba(34,197,94,.08)}
+      50%{box-shadow:0 0 0 10px rgba(34,197,94,.02)}
+    }
+    @keyframes pulseGlow{
+      0%,100%{transform:scale(1);opacity:.75}
+      50%{transform:scale(1.13);opacity:1}
+    }
+    @keyframes spin{
+      from{transform:rotate(0deg)}
+      to{transform:rotate(360deg)}
+    }
+    @keyframes cardFloat{
+      0%,100%{transform:rotateY(-4deg) rotateX(2deg) translateY(0)}
+      50%{transform:rotateY(-3deg) rotateX(2deg) translateY(-7px)}
+    }
+    @keyframes cardAura{
+      0%,100%{transform:scale(.96);opacity:.7}
+      50%{transform:scale(1.06);opacity:1}
+    }
+    @keyframes menuIn{
+      from{opacity:0;transform:translateY(-8px) scale(.98)}
+      to{opacity:1;transform:none}
+    }
+    @keyframes scaleIn{
+      from{opacity:0;transform:scale(.95)}
+      to{opacity:1;transform:scale(1)}
+    }
+
+    /* Responsive */
+    @media(max-width:1180px){
+      .nav-links{gap:0}
+      .nav-link{padding-left:8px;padding-right:8px;font-size:12px}
+      .nav-link::after{left:8px;right:8px}
+      .brand-tagline{display:none}
+    }
+
+    @media(max-width:1050px){
+      .nav-links,.nav-actions{display:none}
+      .menu-btn{display:block}
+      .login-layout{grid-template-columns:1fr;gap:40px}
+      .intro{text-align:center}
+      .intro h1,.intro-text{margin-left:auto;margin-right:auto}
+      .intro-points{margin-left:auto;margin-right:auto;text-align:left}
+      .login-card-wrap{max-width:530px;margin:auto;width:100%}
+      .float-card-one{left:-20px}
+      .float-card-two{right:-20px}
+      .orbit{width:680px;height:680px}
+    }
+
+    @media(max-width:700px){
+      .container{width:min(100% - 28px,1180px)}
+      .login-shell{padding:112px 0 35px}
+      .intro h1{font-size:clamp(42px,12vw,58px)}
+      .intro-text{font-size:14px}
+      .intro-points{grid-template-columns:1fr}
+      .login-card{padding:27px 20px;border-radius:27px;transform:none;animation:none}
+      .login-card:hover{transform:translateY(-4px)}
+      .float-card-one{left:-8px;top:8%}
+      .float-card-two{right:-8px;bottom:10%}
+      .orbit{width:500px;height:500px}
+    }
+
+    @media(max-width:500px){
+      .intro-points{display:none}
+      .login-card{padding:25px 17px}
+      .login-header h2{font-size:23px}
+      .form-meta{align-items:flex-start}
+      .floating-card{display:none}
+      .orbit{width:390px;height:390px}
+      .login-footer{margin-top:19px}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        animation-duration:.001ms!important;
+        animation-iteration-count:1!important;
+        scroll-behavior:auto!important;
+        transition-duration:.001ms!important;
       }
+      .login-card{transform:none!important}
     }
-  </script>
-
-  <!-- AUTO THEME -->
-  <script>
-    const savedTheme = localStorage.getItem("theme");
-
-    if (
-      savedTheme === "dark" ||
-      (!savedTheme &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-    }
-  </script>
-
+  </style>
 </head>
 
-<body class="min-h-screen bg-[#F8FAFC] dark:bg-[#07162B] font-inter overflow-x-hidden transition-colors duration-500">
+<body>
 
-<!-- BACKGROUND GLOW -->
-<div class="absolute w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px] pointer-events-none"></div>
+  <!-- Ambient background -->
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-grid"></div>
+    <div class="ambient-glow glow-green"></div>
+    <div class="ambient-glow glow-blue"></div>
+    <div class="ambient-glow glow-center"></div>
+    <div class="orbit"></div>
+  </div>
 
-<div class="absolute w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px] pointer-events-none"></div>
+  <!-- Master navbar -->
+  <header class="navbar" id="siteHeader">
+    <div class="container">
+      <div class="nav-inner">
 
-<!-- CONTAINER -->
-<div class="min-h-screen flex items-center justify-center px-4 relative z-10">
-
-  <div class="bg-white/70 dark:bg-white/5 backdrop-blur-xl p-8 rounded-3xl shadow-2xl w-full max-w-md
-              border border-white/30 dark:border-white/10 animate-fadeIn transition-all duration-500">
-
-    <!-- HEADER -->
-    <div class="mb-8 text-center">
-
-      <img
-        src="Assets/Images/mentora-edge-logo.png"
-        alt="Mentora Edge"
-        class="h-12 mx-auto mb-4 transition-transform duration-300 hover:scale-110"
-      />
-
-      <h2 class="text-2xl font-extrabold text-primary dark:text-white">
-        Admin / Student Login
-      </h2>
-
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-        Mentora Edge · Unified Login Portal
-      </p>
-
-    </div>
-
-    <!-- FORM -->
-    <form id="loginForm" class="space-y-4">
-
-      <input
-        type="email"
-        id="email"
-        placeholder="Email address"
-        required
-        class="input"
-      />
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Password"
-        required
-        class="input"
-      />
-
-      <!-- Forgot Password -->
-      <p class="text-sm text-right">
-
-        <button
-          type="button"
-          id="forgotPasswordBtn"
-          class="text-accent font-medium hover:underline">
-
-          Forgot password?
-
-        </button>
-
-      </p>
-
-      <!-- LOGIN BUTTON -->
-      <button
-        type="submit"
-        id="loginBtn"
-        class="w-full flex items-center justify-center gap-2
-               bg-gradient-to-r from-green-500 to-green-600
-               text-white py-3 rounded-xl font-semibold
-               shadow-lg hover:scale-[1.02]
-               hover:shadow-xl active:scale-[0.98]
-               transition-all duration-300 glow-hover"
-      >
-
-        <span id="btnText">Login</span>
-
-        <!-- Spinner -->
-        <svg
-          id="spinner"
-          class="hidden w-5 h-5 animate-spin text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24">
-
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4">
-          </circle>
-
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
-          </path>
-
-        </svg>
-
-      </button>
-
-      <!-- BIOMETRIC BUTTON -->
-      <button
-        type="button"
-        id="biometricLoginBtn"
-        class="w-full flex items-center justify-center gap-2
-               bg-white/70 dark:bg-white/10
-               border border-gray-200 dark:border-white/10
-               text-primary dark:text-white
-               py-3 rounded-xl font-semibold
-               shadow-md hover:scale-[1.02]
-               hover:shadow-lg transition-all duration-300"
-      >
-
-        🔐 Login with Biometrics
-
-      </button>
-
-      <p class="text-sm text-center text-gray-600 dark:text-gray-400">
-
-        Don’t have an account?
-
-        <a href="courses.html"
-           class="text-accent font-semibold hover:underline">
-
-          Register here
-
+        <a href="index.html" class="brand" aria-label="Mentora Edge Home">
+          <img
+            src="Assets/Images/mentora-edge-logo.png"
+            alt="Mentora Edge"
+            class="brand-logo"
+          >
+          <span class="brand-copy">
+            <span class="brand-name">Mentora Edge</span>
+            <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+          </span>
         </a>
 
-      </p>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="programs.html">Programs</a>
+          <a class="nav-link" href="offline.html">Offline Coaching</a>
+          <a class="nav-link" href="online-tution.html">Online Tuition</a>
+          <a class="nav-link" href="educators.html">Educators</a>
+          <a class="nav-link" href="learning-platform.html">Learning Platform</a>
+          <a class="nav-link" href="resources.html">Resources</a>
+          <a class="nav-link" href="about.html">About</a>
+        </nav>
 
-    </form>
+        <div class="nav-actions">
+          <a class="nav-login active" href="login.html" aria-current="page">Login</a>
+          <a class="nav-cta" href="enquiry.html">Book an Enquiry</a>
+        </div>
 
-    <!-- ERROR -->
-    <div
-      id="error"
-      class="hidden mt-5 text-sm text-red-600 bg-red-50 border border-red-200
-             rounded-xl px-4 py-3 text-center animate-scaleIn">
+        <button
+          class="menu-btn"
+          id="menuBtn"
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >☰</button>
+
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="programs.html">Programs</a>
+        <a href="offline.html">Offline Coaching</a>
+        <a href="online-tution.html">Online Tuition</a>
+        <a href="educators.html">Educators</a>
+        <a href="learning-platform.html">Learning Platform</a>
+        <a href="resources.html">Resources</a>
+        <a href="about.html">About</a>
+        <a href="login.html" class="active">Login</a>
+        <a href="enquiry.html">Book an Enquiry</a>
+      </div>
     </div>
+  </header>
 
-  </div>
-</div>
+  <main class="login-shell">
+    <div class="container">
 
-<!-- SCRIPT -->
+      <div class="login-layout">
+
+        <!-- Intro -->
+        <section class="intro">
+
+          <div class="hero-pill">
+            <span class="pulse-dot"></span>
+            Mentora Edge Learning Platform
+          </div>
+
+          <h1>
+            Welcome back to
+            <span>Mentora Edge.</span>
+          </h1>
+
+          <p class="intro-text">
+            Sign in to continue your academic journey and access the
+            Mentora Edge digital learning experience.
+          </p>
+
+          <div class="intro-points">
+
+            <div class="intro-point">
+              <div class="intro-point-icon">📚</div>
+              <span>Access your learning experience</span>
+            </div>
+
+            <div class="intro-point">
+              <div class="intro-point-icon">🎯</div>
+              <span>Continue structured learning</span>
+            </div>
+
+            <div class="intro-point">
+              <div class="intro-point-icon">📝</div>
+              <span>Stay connected with academic resources</span>
+            </div>
+
+            <div class="intro-point">
+              <div class="intro-point-icon">🔐</div>
+              <span>Secure account authentication</span>
+            </div>
+
+          </div>
+
+          <div class="login-footer">
+            Need help accessing your account?
+            <a href="enquiry.html">Book an Enquiry</a>
+          </div>
+
+        </section>
+
+        <!-- Login -->
+        <section class="login-card-wrap">
+
+          <div class="floating-card float-card-one" aria-hidden="true">
+            <small>Learning</small>
+            <strong>Pick up where you left off</strong>
+          </div>
+
+          <div class="floating-card float-card-two" aria-hidden="true">
+            <small>Security</small>
+            <strong>Protected account access</strong>
+          </div>
+
+          <div class="login-card">
+
+            <div class="card-content">
+
+              <div class="login-header">
+                <img
+                  src="Assets/Images/mentora-edge-logo.png"
+                  alt="Mentora Edge"
+                  class="login-logo"
+                >
+
+                <h2>Admin / Student Login</h2>
+
+                <p>
+                  Mentora Edge · Unified Login Portal
+                </p>
+              </div>
+
+              <form id="loginForm" class="form">
+
+                <div class="field">
+                  <label class="field-label" for="email">
+                    Email address
+                  </label>
+
+                  <div class="input-wrap">
+                    <input
+                      type="email"
+                      id="email"
+                      placeholder="Enter your email address"
+                      autocomplete="email"
+                      required
+                      class="input"
+                    >
+                    <span class="input-icon">✉</span>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="field-label" for="password">
+                    Password
+                  </label>
+
+                  <div class="input-wrap">
+                    <input
+                      type="password"
+                      id="password"
+                      placeholder="Enter your password"
+                      autocomplete="current-password"
+                      required
+                      class="input password-input"
+                    >
+                    <span class="input-icon">●</span>
+
+                    <button
+                      type="button"
+                      id="passwordToggle"
+                      class="password-toggle"
+                      aria-label="Show password"
+                    >◉</button>
+                  </div>
+                </div>
+
+                <div class="form-meta">
+
+                  <label class="remember">
+                    <input type="checkbox" id="rememberMe">
+                    Remember me
+                  </label>
+
+                  <button
+                    type="button"
+                    id="forgotPasswordBtn"
+                    class="forgot"
+                  >
+                    Forgot password?
+                  </button>
+
+                </div>
+
+                <button
+                  type="submit"
+                  id="loginBtn"
+                  class="login-btn"
+                >
+                  <span class="btn-content">
+                    <span id="btnText">Login</span>
+
+                    <span
+                      id="spinner"
+                      class="spinner"
+                      style="display:none;"
+                      aria-hidden="true"
+                    ></span>
+                  </span>
+                </button>
+
+                <div class="divider">or</div>
+
+                <button
+                  type="button"
+                  id="biometricLoginBtn"
+                  class="biometric-btn"
+                >
+                  🔐 &nbsp; Login with Biometrics
+                </button>
+
+                <p class="register-note">
+                  Don’t have an account?
+                  <a href="register.html">Register here</a>
+                </p>
+
+                <div
+                  id="error"
+                  class="error"
+                  style="display:none;"
+                  role="alert"
+                  aria-live="polite"
+                ></div>
+
+              </form>
+
+              <div class="security-note">
+                <span>🛡</span>
+                <span><strong>Secure access</strong> · Mentora Edge authentication</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© 2026 <strong>Mentora Edge</strong>. All rights reserved</span>
+        <span>·</span>
+        <a href="terms.html">Terms & Conditions</a>
+        <span>·</span>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* Master navbar */
+    const navbar = document.getElementById('siteHeader');
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    const updateNavbar = () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 25);
+    };
+
+    window.addEventListener('scroll', updateNavbar, { passive:true });
+    updateNavbar();
+
+    menuBtn.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute(
+        'aria-label',
+        open ? 'Close navigation menu' : 'Open navigation menu'
+      );
+      menuBtn.textContent = open ? '×' : '☰';
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded','false');
+        menuBtn.setAttribute('aria-label','Open navigation menu');
+        menuBtn.textContent = '☰';
+      });
+    });
+
+    /* Password visibility */
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+
+    passwordToggle.addEventListener('click', () => {
+      const visible = passwordInput.type === 'text';
+
+      passwordInput.type = visible ? 'password' : 'text';
+      passwordToggle.textContent = visible ? '◉' : '◎';
+      passwordToggle.setAttribute(
+        'aria-label',
+        visible ? 'Show password' : 'Hide password'
+      );
+    });
+
+    /* Remember email locally, without changing the original auth flow */
+    const savedEmail = localStorage.getItem('mentora_saved_email');
+    const rememberMe = document.getElementById('rememberMe');
+    const emailInput = document.getElementById('email');
+
+    if (savedEmail) {
+      emailInput.value = savedEmail;
+      rememberMe.checked = true;
+    }
+
+    rememberMe.addEventListener('change', () => {
+      if (!rememberMe.checked) {
+        localStorage.removeItem('mentora_saved_email');
+      }
+    });
+
+    /* Subtle pointer tilt for desktop */
+    const cardWrap = document.querySelector('.login-card-wrap');
+    const card = document.querySelector('.login-card');
+
+    if (window.matchMedia('(pointer:fine)').matches &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+      cardWrap.addEventListener('pointermove', (event) => {
+        const rect = cardWrap.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - .5;
+        const y = (event.clientY - rect.top) / rect.height - .5;
+
+        card.style.transform =
+          `rotateY(${x * 7}deg) rotateX(${y * -5}deg) translateY(-4px)`;
+      });
+
+      cardWrap.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
+    }
+  </script>
+
 <script type="module">
 
   import { auth, db } from "./js/firebase.js";
@@ -540,121 +1717,6 @@
   });
 
 </script>
-
-<!-- STYLES -->
-<style>
-
-html {
-  scroll-behavior: smooth;
-}
-
-* {
-  transition:
-    background-color 0.4s ease,
-    color 0.4s ease,
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
-}
-
-.input {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 0.9rem;
-  border: 1px solid #E5E7EB;
-  background: rgba(255,255,255,0.7);
-  color: #111827;
-  backdrop-filter: blur(6px);
-  transition: 0.3s;
-}
-
-.dark .input {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
-}
-
-.input::placeholder {
-  color: #9CA3AF;
-}
-
-.dark .input::placeholder {
-  color: #94A3B8;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #22C55E;
-  box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
-}
-
-.glow-hover:hover {
-  box-shadow: 0 0 25px rgba(34,197,94,0.35);
-}
-
-@keyframes fadeIn {
-
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.7s ease;
-}
-
-@keyframes scaleIn {
-
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-}
-
-.animate-scaleIn {
-  animation: scaleIn 0.3s ease;
-}
-
-</style>
-
-<!-- FOOTER -->
-<footer class="mt-16 bg-gray-100 dark:bg-[#081221] border-t dark:border-white/10 transition-colors duration-500">
-
-  <div class="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-
-    © 2026 <strong>Mentora Edge</strong>. All rights reserved ·
-
-    <a href="/terms.html"
-       class="text-accent hover:underline">
-
-      Terms & Conditions
-
-    </a>
-
-    ·
-
-    <a href="privacy.html"
-       class="text-accent hover:underline">
-
-      Privacy Policy
-
-    </a>
-
-  </div>
-
-</footer>
 
 </body>
 </html>

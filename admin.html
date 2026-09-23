@@ -3,397 +3,1263 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0F2A44">
+<meta name="description" content="Mentora Edge administration dashboard for students, resources, SEO, announcements, study materials and fee management.">
+<link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icons/ios/180.png">
 <link rel="stylesheet" href="css/theme.css">
-<title>Admin Panel | Mentora Edge</title>
+<title>Admin Dashboard | Mentora Edge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-<script>
-tailwind.config = {
-  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
-
-  theme: {
-    extend: {
-      fontFamily: { inter: ['Inter', 'sans-serif'] },
-
-      colors: {
-        primary: '#0F2A44',
-        accent: '#22C55E',
-        accentSoft: '#4ADE80'
-      }
-    }
-  }
+<style>
+:root{
+  --navy:#0F2A44;--navy2:#173A5C;--green:#22C55E;--green2:#4ADE80;
+  --ink:#10243A;--muted:#64748B;--soft:#F8FAFC;--glass:rgba(255,255,255,.72);
+  --danger:#DC2626;--warning:#F59E0B;--blue:#2563EB;
+  --ease:cubic-bezier(.2,.8,.2,1)
 }
-</script>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:95px}
+body{
+  margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);
+  background:
+    radial-gradient(circle at 5% 5%,rgba(34,197,94,.13),transparent 27%),
+    radial-gradient(circle at 96% 12%,rgba(15,42,68,.13),transparent 29%),
+    linear-gradient(180deg,#f8fbfd 0%,#eef5f5 52%,#f8fafc 100%);
+  overflow-x:hidden
+}
+body:before{
+  content:"";position:fixed;inset:0;z-index:-5;pointer-events:none;
+  background-image:linear-gradient(rgba(15,42,68,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(15,42,68,.025) 1px,transparent 1px);
+  background-size:45px 45px;mask-image:linear-gradient(to bottom,black,transparent 88%)
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none}
+.container{width:min(1320px,calc(100% - 36px));margin:auto}
+.ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-4}
+.orb{position:absolute;border-radius:50%}
+.orb-1{width:420px;height:420px;left:-150px;top:10%;background:radial-gradient(circle,rgba(34,197,94,.16),transparent 68%);animation:floatOrb 12s ease-in-out infinite}
+.orb-2{width:500px;height:500px;right:-220px;top:34%;background:radial-gradient(circle,rgba(15,42,68,.12),transparent 68%);animation:floatOrbReverse 15s ease-in-out infinite}
+.orb-3{width:300px;height:300px;left:42%;bottom:-160px;background:radial-gradient(circle,rgba(74,222,128,.12),transparent 68%);animation:pulseGlow 8s ease-in-out infinite}
+
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:1000;padding:13px 0;
+  background:rgba(248,250,252,.7);border-bottom:1px solid rgba(15,42,68,.05);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;color:var(--navy)}
+.brand-logo{width:43px;height:43px;object-fit:contain;border-radius:13px;box-shadow:0 10px 25px rgba(15,42,68,.14)}
+.brand-copy{display:flex;flex-direction:column;gap:2px}
+.brand-name{font-size:18px;line-height:1;font-weight:900;letter-spacing:-.035em}
+.brand-tagline{font-size:8px;line-height:1;font-weight:800;letter-spacing:.08em;color:#6b7d8e;text-transform:uppercase}
+.admin-chip{
+  display:inline-flex;align-items:center;gap:7px;margin-left:6px;padding:6px 9px;border-radius:999px;
+  color:#16883f;background:rgba(34,197,94,.09);border:1px solid rgba(34,197,94,.13);
+  font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase
+}
+.admin-chip-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.nav-actions{display:flex;align-items:center;gap:9px}
+.nav-link{color:#607286;font-size:10px;font-weight:850;padding:9px 11px;border-radius:11px}
+.nav-link:hover{background:rgba(34,197,94,.08);color:var(--navy)}
+.logout-btn{
+  border:1px solid rgba(220,38,38,.13);background:rgba(254,242,242,.78);color:#dc2626;
+  padding:10px 15px;border-radius:12px;font-size:10px;font-weight:850
+}
+.menu-btn{display:none;border:0;background:transparent;color:var(--navy);font-size:28px;line-height:1}
+.mobile-menu{
+  display:none;margin-top:12px;padding:12px;border-radius:20px;background:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.9);box-shadow:0 18px 45px rgba(15,42,68,.12);backdrop-filter:blur(18px)
+}
+.mobile-menu.open{display:block}
+.mobile-menu a,.mobile-menu button{
+  display:block;width:100%;padding:11px;border:0;border-radius:11px;background:transparent;
+  color:#53677b;text-align:left;font-size:12px;font-weight:800
+}
+.mobile-menu a:hover,.mobile-menu button:hover{background:rgba(34,197,94,.07)}
+.mobile-menu button{color:var(--danger)}
+
+.admin-main{padding:115px 0 70px}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:18px;align-items:start}
+.sidebar{
+  position:sticky;top:92px;padding:13px;border-radius:25px;background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.88);box-shadow:0 20px 60px rgba(15,42,68,.09);
+  backdrop-filter:blur(20px)
+}
+.sidebar-title{padding:9px 10px 12px;color:#8997a6;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.side-btn{
+  width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;margin:3px 0;border:0;border-radius:13px;
+  background:transparent;color:#617487;text-align:left;font-size:10px;font-weight:850;transition:.25s ease
+}
+.side-btn:hover{background:rgba(34,197,94,.08);color:var(--navy);transform:translateX(2px)}
+.side-btn.active{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(15,42,68,.06));color:var(--navy);box-shadow:inset 3px 0 0 var(--green)}
+.side-icon{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:rgba(15,42,68,.05);font-size:12px}
+.sidebar-note{margin:12px 3px 3px;padding:12px;border-radius:15px;background:rgba(15,42,68,.045);color:#718295;font-size:8px;line-height:1.55}
+.sidebar-note strong{color:var(--navy)}
+
+.content{min-width:0}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:25px;margin-bottom:20px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#16883f;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.eyebrow:before{content:"";width:24px;height:2px;border-radius:99px;background:var(--green)}
+.hero h1{margin:9px 0 0;color:var(--navy);font-size:clamp(34px,5vw,55px);line-height:1;letter-spacing:-.065em}
+.hero h1 span{color:var(--green)}
+.hero p{max-width:760px;margin:11px 0 0;color:var(--muted);font-size:12px;line-height:1.7}
+.hero-status{
+  display:flex;align-items:center;gap:9px;padding:12px 15px;border-radius:15px;background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.84);box-shadow:0 12px 28px rgba(15,42,68,.06);
+  color:#617589;font-size:9px;font-weight:850;white-space:nowrap
+}
+.hero-status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(34,197,94,.09);animation:statusPulse 2.2s ease-in-out infinite}
+
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:panelIn .45s var(--ease) both}
+.glass-card{
+  position:relative;overflow:hidden;padding:22px;margin-bottom:16px;border-radius:25px;background:var(--glass);
+  border:1px solid rgba(255,255,255,.84);box-shadow:0 25px 70px rgba(15,42,68,.10),inset 0 1px 0 rgba(255,255,255,.72);
+  backdrop-filter:blur(21px);-webkit-backdrop-filter:blur(21px)
+}
+.glass-card:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.3) 49%,transparent 74%);
+  transform:translateX(-125%);transition:transform 1s var(--ease)
+}
+.glass-card:hover:before{transform:translateX(125%)}
+.glass-card>*{position:relative;z-index:1}
+.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:17px}
+.section-title{display:flex;align-items:center;gap:10px;color:var(--navy);font-size:15px;font-weight:900;letter-spacing:-.025em}
+.section-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,rgba(34,197,94,.14),rgba(15,42,68,.07));font-size:16px}
+.section-description{margin-top:4px;color:#8391a0;font-size:9px;line-height:1.5}
+
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-bottom:16px}
+.metric-card{
+  padding:15px;border-radius:18px;background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.8);
+  box-shadow:0 12px 28px rgba(15,42,68,.06)
+}
+.metric-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:rgba(34,197,94,.11);font-size:13px}
+.metric-label{color:#8492a1;margin-top:9px;font-size:7px;font-weight:850;letter-spacing:.07em;text-transform:uppercase}
+.metric-value{color:var(--navy);margin-top:3px;font-size:20px;font-weight:900}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-grid.three{grid-template-columns:repeat(3,1fr)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.label{color:#53677b;font-size:9px;font-weight:900}
+.input{
+  width:100%;padding:12px 14px;border:1px solid rgba(15,42,68,.1);border-radius:13px;outline:none;color:var(--ink);
+  background:rgba(255,255,255,.67);box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+  transition:border-color .3s ease,box-shadow .3s ease,background .3s ease
+}
+.input::placeholder{color:#9aa7b5}
+.input:focus{border-color:rgba(34,197,94,.48);background:rgba(255,255,255,.88);box-shadow:0 0 0 4px rgba(34,197,94,.08)}
+textarea.input{min-height:110px;resize:vertical}
+.content-editor{
+  min-height:260px;padding:16px;border:1px solid rgba(15,42,68,.1);border-radius:14px;
+  outline:none;background:rgba(255,255,255,.72);line-height:1.7;font-size:12px
+}
+.content-editor:focus{border-color:rgba(34,197,94,.48);box-shadow:0 0 0 4px rgba(34,197,94,.08)}
+.content-editor h2,.content-editor h3{color:var(--navy)}
+.content-editor img{max-width:100%;border-radius:12px}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid rgba(15,42,68,.08);border-bottom:0;border-radius:13px 13px 0 0;background:rgba(248,250,252,.75)}
+.tool-btn{border:0;border-radius:8px;padding:7px 9px;background:rgba(15,42,68,.05);color:var(--navy);font-size:9px;font-weight:900}
+.tool-btn:hover{background:rgba(34,197,94,.13)}
+.content-wrap .content-editor{border-radius:0 0 13px 13px}
+.check-row{display:flex;flex-wrap:wrap;gap:12px}
+.check{display:flex;align-items:center;gap:7px;color:#5e7184;font-size:9px;font-weight:800}
+.check input{accent-color:var(--green)}
+.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:15px}
+.btn{
+  border:0;padding:10px 15px;border-radius:12px;font-size:9px;font-weight:900;transition:.3s var(--ease)
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{color:#fff;background:linear-gradient(135deg,#22C55E,#16A34A);box-shadow:0 12px 25px rgba(34,197,94,.2)}
+.btn-secondary{color:var(--navy);background:rgba(15,42,68,.07)}
+.btn-danger{color:#fff;background:linear-gradient(135deg,#ef4444,#dc2626)}
+.btn-blue{color:#fff;background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+.toolbar-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.search-row{display:grid;grid-template-columns:minmax(220px,1fr) 160px 160px;gap:9px}
+.table-wrap{overflow:auto;border-radius:17px;border:1px solid rgba(15,42,68,.07);background:rgba(255,255,255,.34)}
+table{width:100%;min-width:820px;border-collapse:collapse}
+thead{background:rgba(255,255,255,.68)}
+th{padding:12px 14px;color:#708295;font-size:8px;font-weight:900;letter-spacing:.07em;text-align:left;text-transform:uppercase;white-space:nowrap}
+td{padding:13px 14px;color:#4d6276;font-size:9px;border-top:1px solid rgba(15,42,68,.06);white-space:nowrap}
+tbody tr:hover{background:rgba(255,255,255,.72)}
+.name-cell{color:var(--navy);font-weight:850}
+.status{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:7px;font-weight:900;text-transform:uppercase}
+.status.active,.status.published{color:#15803d;background:rgba(34,197,94,.11)}
+.status.pending,.status.draft{color:#b45309;background:rgba(245,158,11,.12)}
+.status.inactive{color:#64748b;background:rgba(100,116,139,.1)}
+.action-group{display:flex;flex-wrap:wrap;gap:8px}
+.table-action{border:0;background:transparent;font-size:8px;font-weight:900}
+.action-green{color:#16a34a}.action-red{color:#dc2626}.action-blue{color:#2563eb}.action-gray{color:#64748b}
+
+.resource-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,.75fr);gap:14px}
+.preview-card{position:sticky;top:92px}
+.preview-box{padding:17px;border-radius:18px;background:rgba(248,250,252,.75);border:1px solid rgba(15,42,68,.07)}
+.preview-thumb{height:135px;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#0F2A44,#22C55E);display:grid;place-items:center;color:#fff;font-size:36px}
+.preview-thumb img{width:100%;height:100%;object-fit:cover}
+.preview-title{margin-top:12px;color:var(--navy);font-size:17px;font-weight:900}
+.preview-meta{margin-top:6px;color:#7a8a9b;font-size:8px}
+.preview-description{margin-top:10px;color:#627589;font-size:9px;line-height:1.6}
+.preview-content{margin-top:13px;padding-top:13px;border-top:1px solid rgba(15,42,68,.07);color:#53677b;font-size:9px;line-height:1.7}
+.preview-content h2,.preview-content h3{color:var(--navy)}
+
+.notice{
+  padding:11px 13px;border-radius:12px;font-size:9px;line-height:1.5;margin-bottom:12px
+}
+.notice.info{color:#1e40af;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.09)}
+.notice.success{color:#166534;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.1)}
+.notice.warning{color:#92400e;background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.11)}
+
+.fee-controls{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px}
+.fee-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.fee-card{padding:14px;border-radius:15px;background:rgba(255,255,255,.68);border:1px solid rgba(15,42,68,.06)}
+.fee-month{color:var(--navy);font-size:10px;font-weight:900}
+.fee-card p{margin:4px 0;color:#708295;font-size:8px}
+.fee-card button{border:0;background:transparent;color:#16883f;font-size:8px;font-weight:900}
+
+.empty{padding:28px;text-align:center;color:#8a98a7;font-size:10px}
+.loading{opacity:.65;pointer-events:none}
+
+.toast{
+  position:fixed;right:20px;bottom:20px;z-index:3000;max-width:360px;padding:13px 15px;border-radius:14px;
+  color:#fff;background:rgba(15,42,68,.95);box-shadow:0 20px 45px rgba(15,42,68,.25);
+  transform:translateY(30px);opacity:0;pointer-events:none;transition:.35s var(--ease);font-size:9px;font-weight:800
+}
+.toast.show{transform:none;opacity:1}
+.toast.success{background:rgba(22,128,65,.96)}
+.toast.error{background:rgba(185,28,28,.96)}
+
+footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(255,255,255,.28)}
+.footer-inner{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;color:#7b8a9b;font-size:9px}
+.footer-inner a{color:#16883f;font-weight:850}
+
+@keyframes floatOrb{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(25px,-25px,0)}}
+@keyframes floatOrbReverse{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-30px,20px,0)}}
+@keyframes pulseGlow{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes statusPulse{0%,100%{box-shadow:0 0 0 4px rgba(34,197,94,.08)}50%{box-shadow:0 0 0 8px rgba(34,197,94,.02)}}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+@media(max-width:1120px){
+  .layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;align-items:center;gap:3px;overflow:auto;padding:8px}.sidebar-title,.sidebar-note{display:none}
+  .side-btn{width:auto;min-width:max-content;margin:0}.metrics{grid-template-columns:repeat(3,1fr)}
+  .resource-layout{grid-template-columns:1fr}.preview-card{position:static}
+}
+@media(max-width:900px){
+  .nav-actions{display:none}.menu-btn{display:block}.form-grid.three{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}.fee-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:680px){
+  .container{width:min(100% - 26px,1320px)}.admin-main{padding-top:105px}.hero{display:block}
+  .hero-status{width:max-content;margin-top:16px}.metrics{grid-template-columns:1fr 1fr}.form-grid,.form-grid.three{grid-template-columns:1fr}
+  .field.full{grid-column:auto}.search-row{grid-template-columns:1fr}.fee-controls{grid-template-columns:1fr}.fee-grid{grid-template-columns:1fr 1fr}
+  .glass-card{padding:18px;border-radius:21px}.brand-tagline{display:none}
+}
+@media(max-width:430px){.metrics{grid-template-columns:1fr}.fee-grid{grid-template-columns:1fr}.hero h1{font-size:39px}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+</style>
 </head>
 
-<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
+<body>
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+</div>
 
-<!-- BACKGROUND GLOW -->
-<div class="fixed w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-<div class="fixed w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
-
-<!-- ================= NAVBAR ================= -->
-<header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-40 border-b">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-    <h1 class="text-xl font-extrabold text-primary tracking-tight">
-      Mentora Edge Admin
-    </h1>
-
-    <button id="logoutBtn"
-      class="px-4 py-2 rounded-lg bg-red-50 text-red-600 font-semibold
-             hover:bg-red-100 transition">
-      Logout
-    </button>
-
+<header class="site-header">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="brand" aria-label="Mentora Edge Home">
+        <img src="Assets/Images/mentora-edge-logo.png" alt="Mentora Edge" class="brand-logo">
+        <span class="brand-copy">
+          <span class="brand-name">Mentora Edge</span>
+          <span class="brand-tagline">Shaping Minds · Sharpening Futures</span>
+        </span>
+        <span class="admin-chip"><span class="admin-chip-dot"></span>Admin</span>
+      </a>
+      <div class="nav-actions">
+        <a class="nav-link" href="index.html">View Site</a>
+        <a class="nav-link" href="resources.html">Resources</a>
+        <a class="nav-link" href="enquiry.html">Enquiries</a>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </div>
+      <button id="menuBtn" class="menu-btn" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">View Site</a>
+      <a href="resources.html">Resources</a>
+      <a href="enquiry.html">Enquiries</a>
+      <button id="mobileLogoutBtn" type="button">Logout</button>
+    </div>
   </div>
 </header>
 
-<!-- ================= MAIN ================= -->
-<main class="max-w-7xl mx-auto px-6 py-10 space-y-12 relative z-10">
-
-<!-- ANNOUNCEMENT -->
-<section class="glass-card">
-  <h2 class="section-title">📢 Global Announcement</h2>
-
-  <textarea id="announcementText"
-    class="input mt-3"
-    rows="4"
-    placeholder="Write announcement..."></textarea>
-
-  <div class="text-right mt-4">
-    <button id="publishAnnouncementBtn" class="btn-primary">
-      Publish
-    </button>
-  </div>
-</section>
-
-<!-- MATERIAL UPLOAD -->
-<section class="glass-card">
-  <h2 class="section-title">📚 Upload Study Material</h2>
-
-  <div class="grid md:grid-cols-4 gap-4 mt-4">
-
-    <select id="materialClass" class="input">
-      <option value="">Class</option>
-      <option value="VIII">VIII</option>
-      <option value="IX">IX</option>
-      <option value="X">X</option>
-    </select>
-
-    <input id="materialTitle" class="input" placeholder="Title">
-
-    <input id="materialFile" type="file" class="input-file">
-
-    <button id="uploadMaterialBtn" class="btn-primary">
-      Upload
-    </button>
-
-  </div>
-</section>
-
-<!-- STUDENTS -->
-<section class="glass-card overflow-hidden">
-  <h2 class="section-title">👥 Student Approvals</h2>
-
-  <div class="overflow-x-auto mt-4">
-    <table class="w-full text-sm">
-      <thead class="bg-white/50 backdrop-blur">
-        <tr>
-          <th class="px-6 py-3 text-left">Name</th>
-          <th>Email</th>
-          <th>Class</th>
-          <th>Status</th>
-          <th>Student ID</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody id="studentsTable" class="divide-y"></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- FEES -->
-<section class="glass-card">
-  <h2 class="section-title">💰 Monthly Fees Management</h2>
-
-  <div class="flex gap-4 mt-4">
-    <select id="feeStudent" class="input"></select>
-
-    <button id="showFeesBtn" class="btn-primary">
-      Show Fee Status
-    </button>
+<main class="admin-main">
+<div class="container">
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Administration portal</span>
+      <h1>Mentora Edge <span>Admin.</span></h1>
+      <p>One central workspace for students, resources, content publishing, SEO metadata, announcements and fee management.</p>
+    </div>
+    <div class="hero-status"><span class="hero-status-dot"></span>Administrator access</div>
   </div>
 
-  <div id="feesGrid" class="grid md:grid-cols-3 gap-4 mt-6"></div>
-</section>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Admin navigation">
+      <div class="sidebar-title">Control Center</div>
+      <button class="side-btn active" data-tab="overview"><span class="side-icon">⌂</span>Overview</button>
+      <button class="side-btn" data-tab="students"><span class="side-icon">👥</span>Students</button>
+      <button class="side-btn" data-tab="resources"><span class="side-icon">📚</span>Resource CMS</button>
+      <button class="side-btn" data-tab="seo"><span class="side-icon">⌕</span>SEO Manager</button>
+      <button class="side-btn" data-tab="announcements"><span class="side-icon">📢</span>Announcements</button>
+      <button class="side-btn" data-tab="materials"><span class="side-icon">📄</span>Study Materials</button>
+      <button class="side-btn" data-tab="fees"><span class="side-icon">₹</span>Fees</button>
+      <button class="side-btn" data-tab="settings"><span class="side-icon">⚙</span>Settings</button>
+      <div class="sidebar-note"><strong>CMS architecture</strong><br>Resources are stored separately from the existing student-dashboard <strong>materials</strong> collection so the current student portal keeps working.</div>
+    </aside>
 
+    <section class="content">
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="metrics">
+          <div class="metric-card"><div class="metric-icon">👥</div><div class="metric-label">Student accounts</div><div class="metric-value" id="metricStudents">—</div></div>
+          <div class="metric-card"><div class="metric-icon">✓</div><div class="metric-label">Active students</div><div class="metric-value" id="metricActive">—</div></div>
+          <div class="metric-card"><div class="metric-icon">⏳</div><div class="metric-label">Pending approvals</div><div class="metric-value" id="metricPending">—</div></div>
+          <div class="metric-card"><div class="metric-icon">📚</div><div class="metric-label">CMS resources</div><div class="metric-value" id="metricResources">—</div></div>
+          <div class="metric-card"><div class="metric-icon">🟢</div><div class="metric-label">Published</div><div class="metric-value" id="metricPublished">—</div></div>
+          <div class="metric-card"><div class="metric-icon">📢</div><div class="metric-label">Announcements</div><div class="metric-value" id="metricAnnouncements">—</div></div>
+        </div>
+
+        <div class="grid-2">
+          <section class="glass-card">
+            <div class="section-head">
+              <div><h2 class="section-title"><span class="section-icon">⚡</span>Quick Actions</h2><p class="section-description">Jump directly into common admin tasks.</p></div>
+            </div>
+            <div class="grid-2">
+              <button class="btn btn-primary quick-tab" data-tab="resources">Create Resource</button>
+              <button class="btn btn-secondary quick-tab" data-tab="seo">Manage SEO</button>
+              <button class="btn btn-secondary quick-tab" data-tab="students">Review Students</button>
+              <button class="btn btn-secondary quick-tab" data-tab="announcements">Publish Announcement</button>
+            </div>
+          </section>
+
+          <section class="glass-card">
+            <div class="section-head">
+              <div><h2 class="section-title"><span class="section-icon">🧭</span>Publishing Flow</h2><p class="section-description">How the new CMS is intended to work.</p></div>
+            </div>
+            <div class="notice info">Create a resource → add academic content → add SEO metadata → save as draft or publish → display it through the public resource pages.</div>
+            <div class="notice success">Existing Firebase authentication, student management, fees, announcements and study-material uploads remain connected.</div>
+          </section>
+        </div>
+
+        <section class="glass-card">
+          <div class="section-head">
+            <div><h2 class="section-title"><span class="section-icon">📝</span>Recent CMS Resources</h2><p class="section-description">Latest records from the new <strong>resources</strong> collection.</p></div>
+            <button class="btn btn-secondary quick-tab" data-tab="resources">Open Resource CMS</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Class</th><th>Subject</th><th>Type</th><th>Status</th><th>Updated</th></tr></thead>
+              <tbody id="recentResourcesTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="tab-panel" id="tab-students">
+        <section class="glass-card">
+          <div class="section-head">
+            <div><h2 class="section-title"><span class="section-icon">👥</span>Student Management</h2><p class="section-description">Review registrations, approve accounts, generate Student IDs and remove records.</p></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Class</th><th>Status</th><th>Student ID</th><th>Action</th></tr></thead>
+              <tbody id="studentsTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- RESOURCE CMS -->
+      <div class="tab-panel" id="tab-resources">
+        <div class="resource-layout">
+          <div>
+            <section class="glass-card">
+              <div class="section-head">
+                <div><h2 class="section-title"><span class="section-icon">📚</span>Resource CMS</h2><p class="section-description">Create, edit, draft, publish and delete educational resources.</p></div>
+                <button id="newResourceBtn" class="btn btn-secondary" type="button">New Resource</button>
+              </div>
+
+              <div class="form-grid">
+                <div class="field"><label class="label">Resource Title *</label><input id="resourceTitle" class="input" placeholder="e.g. Life Processes Complete Notes"></div>
+                <div class="field"><label class="label">URL Slug *</label><input id="resourceSlug" class="input" placeholder="life-processes-complete-notes"></div>
+                <div class="field"><label class="label">Class *</label>
+                  <select id="resourceClass" class="input">
+                    <option value="">Select class</option>
+                    <option>VI</option><option>VII</option><option>VIII</option><option>IX</option><option>X</option><option>XI</option><option>XII</option>
+                  </select>
+                </div>
+                <div class="field"><label class="label">Subject *</label><input id="resourceSubject" class="input" placeholder="English / Social Science / Science / Mathematics"></div>
+                <div class="field"><label class="label">Resource Type *</label>
+                  <select id="resourceType" class="input">
+                    <option value="">Select type</option><option>Notes</option><option>Worksheet</option><option>Revision Material</option><option>MCQs</option><option>Question Paper</option><option>Practice Set</option><option>Video</option><option>Assessment</option><option>PDF</option>
+                  </select>
+                </div>
+                <div class="field"><label class="label">Chapter / Topic</label><input id="resourceChapter" class="input" placeholder="Chapter or topic name"></div>
+                <div class="field full"><label class="label">Short Description</label><textarea id="resourceDescription" class="input" placeholder="Brief description shown on resource cards and previews."></textarea></div>
+                <div class="field"><label class="label">Thumbnail Image</label><input id="resourceThumbnail" class="input-file" type="file" accept="image/*"></div>
+                <div class="field"><label class="label">Resource File / PDF</label><input id="resourceFile" class="input-file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*"></div>
+                <div class="field full">
+                  <label class="label">Resource Content</label>
+                  <div class="content-wrap">
+                    <div class="toolbar">
+                      <button class="tool-btn" type="button" data-command="bold"><b>B</b></button>
+                      <button class="tool-btn" type="button" data-command="italic"><i>I</i></button>
+                      <button class="tool-btn" type="button" data-command="underline"><u>U</u></button>
+                      <button class="tool-btn" type="button" data-command="formatBlock" data-value="h2">H2</button>
+                      <button class="tool-btn" type="button" data-command="formatBlock" data-value="h3">H3</button>
+                      <button class="tool-btn" type="button" data-command="insertUnorderedList">• List</button>
+                      <button class="tool-btn" type="button" data-command="insertOrderedList">1. List</button>
+                      <button class="tool-btn" type="button" id="insertLinkBtn">Link</button>
+                      <button class="tool-btn" type="button" id="clearEditorBtn">Clear</button>
+                    </div>
+                    <div id="resourceContent" class="content-editor" contenteditable="true" aria-label="Resource content editor"></div>
+                  </div>
+                </div>
+                <div class="field full">
+                  <label class="label">Publishing Status</label>
+                  <div class="check-row">
+                    <label class="check"><input id="resourcePublished" type="checkbox"> Publish this resource</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="deleteResourceBtn" class="btn btn-danger" type="button" style="display:none">Delete</button>
+                <button id="saveDraftBtn" class="btn btn-secondary" type="button">Save Draft</button>
+                <button id="savePublishBtn" class="btn btn-primary" type="button">Save & Publish</button>
+              </div>
+            </section>
+          </div>
+
+          <aside class="preview-card">
+            <section class="glass-card">
+              <div class="section-head">
+                <div><h2 class="section-title"><span class="section-icon">👁</span>Live Preview</h2><p class="section-description">Preview of the resource card.</p></div>
+              </div>
+              <div class="preview-box">
+                <div id="previewThumb" class="preview-thumb">📚</div>
+                <div id="previewTitle" class="preview-title">Your resource title</div>
+                <div id="previewMeta" class="preview-meta">Class · Subject · Type</div>
+                <div id="previewDescription" class="preview-description">Your short description will appear here.</div>
+                <div id="previewContent" class="preview-content">Resource content preview...</div>
+              </div>
+            </section>
+          </aside>
+        </div>
+
+        <section class="glass-card">
+          <div class="section-head">
+            <div><h2 class="section-title"><span class="section-icon">🗂</span>Resource Library</h2><p class="section-description">Manage records stored in Firestore under <strong>resources/{resourceId}</strong>.</p></div>
+          </div>
+          <div class="search-row">
+            <input id="resourceSearch" class="input" placeholder="Search title, chapter, subject or slug">
+            <select id="resourceStatusFilter" class="input"><option value="">All status</option><option value="published">Published</option><option value="draft">Draft</option></select>
+            <select id="resourceClassFilter" class="input"><option value="">All classes</option><option>VI</option><option>VII</option><option>VIII</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select>
+          </div>
+          <div style="height:10px"></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Title</th><th>Class</th><th>Subject</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="resourcesTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- SEO -->
+      <div class="tab-panel" id="tab-seo">
+        <section class="glass-card">
+          <div class="section-head">
+            <div><h2 class="section-title"><span class="section-icon">⌕</span>SEO Manager</h2><p class="section-description">Store page-level search and social metadata alongside each CMS resource.</p></div>
+          </div>
+          <div class="notice info">SEO fields are saved to the selected CMS resource. A dynamic <strong>resource.html?id=...</strong> page can later consume these values to generate its title, meta description, canonical URL and social tags.</div>
+          <div class="form-grid">
+            <div class="field full"><label class="label">Selected Resource</label><select id="seoResourceSelect" class="input"><option value="">Select a resource to edit SEO</option></select></div>
+            <div class="field full"><label class="label">SEO Title</label><input id="seoTitle" class="input" maxlength="70" placeholder="Primary search title"></div>
+            <div class="field full"><label class="label">Meta Description</label><textarea id="seoDescription" class="input" maxlength="170" placeholder="Concise description for search engines"></textarea></div>
+            <div class="field"><label class="label">URL Slug</label><input id="seoSlug" class="input" placeholder="resource-slug"></div>
+            <div class="field"><label class="label">Focus Keywords</label><input id="seoKeywords" class="input" placeholder="CBSE notes, class 10, science notes"></div>
+            <div class="field"><label class="label">Canonical URL</label><input id="seoCanonical" class="input" placeholder="https://your-domain/resource.html?id=..."></div>
+            <div class="field"><label class="label">OG Title</label><input id="seoOgTitle" class="input" placeholder="Social sharing title"></div>
+            <div class="field full"><label class="label">OG Description</label><textarea id="seoOgDescription" class="input" placeholder="Social sharing description"></textarea></div>
+            <div class="field"><label class="label">OG Image</label><input id="seoOgImage" class="input" placeholder="https://... or uploaded image URL"></div>
+            <div class="field">
+              <label class="label">Indexing</label>
+              <div class="check-row" style="margin-top:9px">
+                <label class="check"><input id="seoIndexable" type="checkbox" checked> Allow search indexing</label>
+                <label class="check"><input id="seoSitemap" type="checkbox" checked> Include in sitemap</label>
+              </div>
+            </div>
+          </div>
+          <div class="actions"><button id="saveSeoBtn" class="btn btn-primary" type="button">Save SEO Settings</button></div>
+        </section>
+
+        <section class="glass-card">
+          <div class="section-head">
+            <div><h2 class="section-title"><span class="section-icon">🔎</span>SEO Checklist</h2><p class="section-description">Fields the CMS can manage for every resource.</p></div>
+          </div>
+          <div class="grid-3">
+            <div class="notice success">✓ Unique SEO title</div>
+            <div class="notice success">✓ Meta description</div>
+            <div class="notice success">✓ Clean URL slug</div>
+            <div class="notice success">✓ Canonical URL</div>
+            <div class="notice success">✓ Open Graph title</div>
+            <div class="notice success">✓ Open Graph image</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ANNOUNCEMENTS -->
+      <div class="tab-panel" id="tab-announcements">
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">📢</span>Global Announcement</h2><p class="section-description">Publish an update that can appear on the student dashboard.</p></div></div>
+          <textarea id="announcementText" class="input" rows="5" placeholder="Write announcement..."></textarea>
+          <div class="actions"><button id="publishAnnouncementBtn" class="btn btn-primary" type="button">Publish Announcement</button></div>
+        </section>
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">🕘</span>Recent Announcements</h2><p class="section-description">Latest announcements stored in Firestore.</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Announcement</th><th>Created</th></tr></thead><tbody id="announcementsTable"></tbody></table></div>
+        </section>
+      </div>
+
+      <!-- MATERIALS -->
+      <div class="tab-panel" id="tab-materials">
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">📄</span>Study Material Upload</h2><p class="section-description">This preserves the existing student-dashboard materials collection and upload flow.</p></div></div>
+          <div class="form-grid">
+            <div class="field"><label class="label">Class</label>
+              <select id="materialClass" class="input"><option value="">Class</option><option value="VI">VI</option><option value="VII">VII</option><option value="VIII">VIII</option><option value="IX">IX</option><option value="X">X</option><option value="XI">XI</option><option value="XII">XII</option></select>
+            </div>
+            <div class="field"><label class="label">Material Title</label><input id="materialTitle" class="input" placeholder="Material title"></div>
+            <div class="field full"><label class="label">File</label><input id="materialFile" type="file" class="input-file"></div>
+          </div>
+          <div class="actions"><button id="uploadMaterialBtn" class="btn btn-primary" type="button">Upload Material</button></div>
+        </section>
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">🗃</span>Existing Materials</h2><p class="section-description">Records from the legacy <strong>materials</strong> collection.</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Title</th><th>Class</th><th>File</th><th>Created</th></tr></thead><tbody id="materialsTable"></tbody></table></div>
+        </section>
+      </div>
+
+      <!-- FEES -->
+      <div class="tab-panel" id="tab-fees">
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">₹</span>Monthly Fees Management</h2><p class="section-description">Select a student to view and update their 2026 fee status.</p></div></div>
+          <div class="fee-controls">
+            <select id="feeStudent" class="input"><option value="">Select Student</option></select>
+            <button id="showFeesBtn" class="btn btn-primary" type="button">Show Fee Status</button>
+          </div>
+          <div id="feesGrid" class="fee-grid"></div>
+        </section>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tab-panel" id="tab-settings">
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">⚙</span>Admin Settings</h2><p class="section-description">Reference settings for the current Mentora Edge administration setup.</p></div></div>
+          <div class="grid-2">
+            <div class="notice info"><strong>Firebase:</strong> Authentication, Firestore and Storage are connected through <strong>js/firebase.js</strong>.</div>
+            <div class="notice info"><strong>Resource collection:</strong> <strong>resources</strong> is the proposed CMS collection for structured resources.</div>
+            <div class="notice success"><strong>Legacy materials:</strong> The existing <strong>materials</strong> collection remains untouched for the student dashboard.</div>
+            <div class="notice warning"><strong>SEO rendering:</strong> The stored SEO data needs to be consumed by the public resource detail page to become live per-resource HTML metadata.</div>
+          </div>
+        </section>
+      </div>
+
+    </section>
+  </div>
+</div>
 </main>
 
-<!-- ================= SCRIPT (UNCHANGED LOGIC) ================= -->
-<script type="module">
-import { auth, db } from "./js/firebase.js";
-import { onAuthStateChanged, signOut } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span>© 2026 <strong>Mentora Edge</strong>. All rights reserved</span><span>·</span>
+      <a href="terms.html">Terms & Conditions</a><span>·</span>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
 
-import {
-  collection, getDocs, doc, getDoc,
-  addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<div id="toast" class="toast"></div>
 
-import {
-  getStorage, ref, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+<script>
+(function(){
+  const menuBtn=document.getElementById("menuBtn");
+  const mobileMenu=document.getElementById("mobileMenu");
+  if(menuBtn){
+    menuBtn.addEventListener("click",()=>{
+      const open=mobileMenu.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded",open?"true":"false");
+      menuBtn.textContent=open?"×":"☰";
+    });
+  }
 
-const storage = getStorage();
-const studentsTable = document.getElementById("studentsTable");
-const feeStudent = document.getElementById("feeStudent");
-const feesGrid = document.getElementById("feesGrid");
+  const buttons=document.querySelectorAll(".side-btn,.quick-tab");
+  const panels=document.querySelectorAll(".tab-panel");
+  function activateTab(name){
+    panels.forEach(p=>p.classList.toggle("active",p.id==="tab-"+name));
+    document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  buttons.forEach(btn=>btn.addEventListener("click",()=>activateTab(btn.dataset.tab)));
+  window.activateAdminTab=activateTab;
 
-const months = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
-];
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return location.href = "login.html";
-  const snap = await getDoc(doc(db,"users",user.uid));
-  if (snap.data().role !== "admin") return location.href="login.html";
-
-  loadStudents();
-  loadFeeStudents();
-});
-
-async function getNextStudentId() {
-  const snap = await getDocs(collection(db, "users"));
-  let max = 0;
-
-  snap.forEach(d => {
-    const id = d.data().studentId;
-    if (id && id.startsWith("ME")) {
-      const num = parseInt(id.replace("ME",""));
-      if (num > max) max = num;
-    }
+  document.querySelectorAll("[data-command]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.execCommand(btn.dataset.command,false,btn.dataset.value||null);
+      document.getElementById("resourceContent").focus();
+    });
   });
 
-  return "ME" + String(max + 1).padStart(4,"0");
+  document.getElementById("insertLinkBtn").addEventListener("click",()=>{
+    const url=prompt("Enter URL");
+    if(url) document.execCommand("createLink",false,url);
+  });
+  document.getElementById("clearEditorBtn").addEventListener("click",()=>{
+    if(confirm("Clear resource content?")) document.getElementById("resourceContent").innerHTML="";
+  });
+})();
+</script>
+
+<script type="module">
+import { auth, db } from "./js/firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  collection,getDocs,doc,getDoc,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,
+  query,orderBy,limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getStorage,ref,uploadBytes,getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const storage=getStorage();
+
+const $=id=>document.getElementById(id);
+const toast=(message,type="")=>{
+  const el=$("toast"); el.textContent=message; el.className="toast show "+type;
+  clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>el.className="toast",3200);
+};
+const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const slugify=value=>String(value||"").toLowerCase().trim().replace(/[^a-z0-9\s-]/g,"").replace(/\s+/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
+const formatDate=value=>{
+  if(!value) return "—";
+  try{
+    const d=value.toDate?value.toDate():new Date(value);
+    if(Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+  }catch{return "—"}
+};
+
+let currentUser=null;
+let currentResourceId=null;
+let resourcesCache=[];
+let studentsCache=[];
+
+const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+/* ---------------- AUTH ---------------- */
+onAuthStateChanged(auth,async user=>{
+  if(!user){location.href="login.html";return;}
+  try{
+    const snap=await getDoc(doc(db,"users",user.uid));
+    const data=snap.data();
+    if(!data || data.role!=="admin"){location.href="login.html";return;}
+    currentUser=user;
+    await Promise.all([
+      loadStudents(),
+      loadFeeStudents(),
+      loadResources(),
+      loadAnnouncements(),
+      loadMaterials()
+    ]);
+    updateMetrics();
+    loadSeoResourceOptions();
+    resetResourceEditor();
+  }catch(error){
+    console.error(error);
+    toast("Could not load the admin workspace. Check Firebase configuration and permissions.","error");
+  }
+});
+
+/* ---------------- METRICS ---------------- */
+function updateMetrics(){
+  const total=studentsCache.length;
+  const active=studentsCache.filter(s=>s.status==="active").length;
+  const pending=studentsCache.filter(s=>s.status==="pending").length;
+  const published=resourcesCache.filter(r=>r.status==="published").length;
+  $("metricStudents").textContent=total;
+  $("metricActive").textContent=active;
+  $("metricPending").textContent=pending;
+  $("metricResources").textContent=resourcesCache.length;
+  $("metricPublished").textContent=published;
+}
+
+/* ---------------- STUDENTS ---------------- */
+async function getNextStudentId(){
+  const snap=await getDocs(collection(db,"users"));
+  let max=0;
+  snap.forEach(d=>{
+    const id=d.data().studentId;
+    if(id && id.startsWith("ME")){
+      const num=parseInt(id.replace("ME",""),10);
+      if(num>max) max=num;
+    }
+  });
+  return "ME"+String(max+1).padStart(4,"0");
 }
 
 async function loadStudents(){
-  studentsTable.innerHTML="";
-  const snap = await getDocs(collection(db,"users"));
-
-  snap.forEach(d=>{
-    const u = d.data();
-    if(u.role !== "student") return;
-
-    studentsTable.innerHTML += `
-      <tr class="hover:bg-gray-50 transition">
-        <td class="px-6 py-3 font-medium">${u.name}</td>
-        <td>${u.email}</td>
-        <td>${u.class}</td>
-        <td class="${u.status==="active"?"text-green-600":"text-orange-500"}">${u.status}</td>
-        <td class="font-mono">${u.studentId || "-"}</td>
-        <td class="space-x-3">
-          ${
-            u.status === "pending"
-            ? `
-              <button onclick="approve('${d.id}')" class="text-green-600 hover:underline">Approve</button>
-              <button onclick="rejectStudent('${d.id}')" class="text-red-600 hover:underline">Reject</button>
-            `
-            : `
-              ${!u.studentId
-                ? `<button onclick="generateId('${d.id}')" class="text-blue-600 hover:underline">Generate ID</button>`
-                : ""
-              }
-              <button onclick="removeStudent('${d.id}')" class="text-red-600 hover:underline">Remove</button>
-            `
-          }
-        </td>
-      </tr>`;
-  });
-}
-
-/* (ALL YOUR LOGIC BELOW IS EXACT SAME — NO CHANGE) */
-window.generateId = async (uid) => {
-  const userRef = doc(db,"users",uid);
-  const snap = await getDoc(userRef);
-  const u = snap.data();
-
-  const studentId = await getNextStudentId();
-
-  await updateDoc(userRef,{ studentId });
-
-  await setDoc(doc(db,"studentVerifications", studentId), {
-    studentId,
-    name: u.name,
-    class: u.class,
-    fatherName: u.fatherName || "",
-    motherName: u.motherName || "",
-    verifiedAt: serverTimestamp()
-  });
-
-  alert("Student ID generated: " + studentId);
-  loadStudents();
-};
-
-window.approve = async (id) => {
-  await updateDoc(doc(db,"users",id), { status:"active" });
-  loadStudents();
-};
-
-window.rejectStudent = async (id) => {
-  if(!confirm("Reject student permanently?")) return;
-  await deleteDoc(doc(db,"users",id));
-  loadStudents();
-};
-
-window.removeStudent = async (id) => {
-  if(!confirm("Remove student permanently?")) return;
-  await deleteDoc(doc(db,"users",id));
-  loadStudents();
-};
-
-async function loadFeeStudents(){
-  feeStudent.innerHTML="<option value=''>Select Student</option>";
   const snap=await getDocs(collection(db,"users"));
+  studentsCache=[];
   snap.forEach(d=>{
-    if(d.data().role==="student"){
-      feeStudent.innerHTML+=`<option value="${d.id}">${d.data().name}</option>`;
-    }
+    const u=d.data();
+    if(u.role==="student") studentsCache.push({id:d.id,...u});
   });
+  renderStudents();
+  loadFeeStudents();
+  updateMetrics();
 }
 
-showFeesBtn.onclick = async () => {
-  if(!feeStudent.value) return alert("Select a student");
-  feesGrid.innerHTML="";
-
-  const snap = await getDoc(doc(db,"users",feeStudent.value));
-  const fees = snap.data().fees?.["2026"] || {};
-
-  months.forEach(m=>{
-    const paid = fees[m]?.paid === true;
-    feesGrid.innerHTML += `
-      <div class="fee-card">
-        <div>
-          <p class="font-semibold">${m}</p>
-          <p class="${paid?"text-green-600":"text-red-500"} text-sm">
-            ${paid?"Paid":"Not Paid"}
-          </p>
-        </div>
-        ${paid ? "✔️" : `<button onclick="markPaid('${m}')" class="text-accent text-sm">Mark Paid</button>`}
-      </div>`;
-  });
-};
-
-window.markPaid = async (month)=>{
-  const refUser = doc(db,"users",feeStudent.value);
-  const snap = await getDoc(refUser);
-  const fees = snap.data().fees || {};
-  fees["2026"] = fees["2026"] || {};
-  fees["2026"][month] = { paid:true, paidOn:serverTimestamp() };
-  await updateDoc(refUser,{ fees });
-  showFeesBtn.click();
-};
-
-publishAnnouncementBtn.onclick = async () => {
-  if(!announcementText.value.trim()) return alert("Empty announcement");
-  await addDoc(collection(db,"announcements"),{
-    text:announcementText.value,
-    createdAt:serverTimestamp()
-  });
-  announcementText.value="";
-  alert("Announcement published");
-};
-
-uploadMaterialBtn.onclick = async () => {
-  if(!materialClass.value || !materialTitle.value || !materialFile.files[0]){
-    alert("Fill all fields"); return;
+function renderStudents(){
+  const tbody=$("studentsTable");
+  tbody.innerHTML="";
+  if(!studentsCache.length){
+    tbody.innerHTML='<tr><td colspan="6" class="empty">No student accounts found.</td></tr>';
+    return;
   }
-  uploadMaterialBtn.disabled=true;
-  const file = materialFile.files[0];
-  const storageRef = ref(storage, `materials/${Date.now()}_${file.name}`);
-  await uploadBytes(storageRef,file);
-  const url = await getDownloadURL(storageRef);
-  await addDoc(collection(db,"materials"),{
-    title: materialTitle.value,
-    class: materialClass.value,
-    fileURL: url,
-    createdAt: serverTimestamp()
+  studentsCache.forEach(u=>{
+    const tr=document.createElement("tr");
+    const status=u.status==="active"?"active":"pending";
+    let actions="";
+    if(u.status==="pending"){
+      actions=`<button class="table-action action-green" data-action="approve" data-id="${escapeHTML(u.id)}">Approve</button>
+               <button class="table-action action-red" data-action="reject" data-id="${escapeHTML(u.id)}">Reject</button>`;
+    }else{
+      if(!u.studentId) actions+=`<button class="table-action action-blue" data-action="generate" data-id="${escapeHTML(u.id)}">Generate ID</button>`;
+      actions+=`<button class="table-action action-red" data-action="remove" data-id="${escapeHTML(u.id)}">Remove</button>`;
+    }
+    tr.innerHTML=`
+      <td class="name-cell">${escapeHTML(u.name||"—")}</td>
+      <td>${escapeHTML(u.email||"—")}</td>
+      <td>${escapeHTML(u.class||"—")}</td>
+      <td><span class="status ${status}">${escapeHTML(u.status||"pending")}</span></td>
+      <td>${escapeHTML(u.studentId||"—")}</td>
+      <td><div class="action-group">${actions}</div></td>`;
+    tbody.appendChild(tr);
   });
-  uploadMaterialBtn.disabled=false;
-  materialClass.value=""; materialTitle.value=""; materialFile.value="";
-  alert("Material uploaded");
-};
+}
 
-logoutBtn.onclick = async()=>{
-  await signOut(auth);
-  location.href="login.html";
-};
+$("studentsTable").addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-action]");
+  if(!btn)return;
+  const id=btn.dataset.id;
+  try{
+    if(btn.dataset.action==="approve"){
+      await updateDoc(doc(db,"users",id),{status:"active"});
+      toast("Student approved.","success");
+    }
+    if(btn.dataset.action==="reject"){
+      if(!confirm("Reject student permanently?"))return;
+      await deleteDoc(doc(db,"users",id));
+      toast("Student rejected.","success");
+    }
+    if(btn.dataset.action==="remove"){
+      if(!confirm("Remove student permanently?"))return;
+      await deleteDoc(doc(db,"users",id));
+      toast("Student removed.","success");
+    }
+    if(btn.dataset.action==="generate"){
+      const userRef=doc(db,"users",id);
+      const snap=await getDoc(userRef);
+      const u=snap.data();
+      const studentId=await getNextStudentId();
+      await updateDoc(userRef,{studentId});
+      await setDoc(doc(db,"studentVerifications",studentId),{
+        studentId,name:u.name,class:u.class,fatherName:u.fatherName||"",
+        motherName:u.motherName||"",verifiedAt:serverTimestamp()
+      });
+      toast("Student ID generated: "+studentId,"success");
+    }
+    await loadStudents();
+  }catch(error){
+    console.error(error);toast("Student action failed: "+(error.message||"Unknown error"),"error");
+  }
+});
+
+/* ---------------- LEGACY MATERIALS ---------------- */
+async function loadMaterials(){
+  const tbody=$("materialsTable");
+  try{
+    const snap=await getDocs(collection(db,"materials"));
+    tbody.innerHTML="";
+    let count=0;
+    snap.forEach(d=>{
+      count++;
+      const m=d.data();
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td class="name-cell">${escapeHTML(m.title||"—")}</td>
+        <td>${escapeHTML(m.class||"—")}</td>
+        <td><a class="table-action action-blue" href="${escapeHTML(m.fileURL||"#")}" target="_blank" rel="noopener">Open</a></td>
+        <td>${formatDate(m.createdAt)}</td>`;
+      tbody.appendChild(tr);
+    });
+    if(!count)tbody.innerHTML='<tr><td colspan="4" class="empty">No study materials uploaded yet.</td></tr>';
+    $("metricMaterials")?.textContent=count;
+  }catch(error){
+    console.error(error);
+    tbody.innerHTML='<tr><td colspan="4" class="empty">Materials could not be loaded.</td></tr>';
+  }
+}
+
+$("uploadMaterialBtn").addEventListener("click",async()=>{
+  const classValue=$("materialClass").value;
+  const title=$("materialTitle").value.trim();
+  const file=$("materialFile").files[0];
+  if(!classValue||!title||!file){toast("Fill all material fields.","error");return;}
+  const btn=$("uploadMaterialBtn");btn.disabled=true;
+  try{
+    const storageRef=ref(storage,`materials/${Date.now()}_${file.name}`);
+    await uploadBytes(storageRef,file);
+    const url=await getDownloadURL(storageRef);
+    await addDoc(collection(db,"materials"),{
+      title,class:classValue,fileURL:url,createdAt:serverTimestamp()
+    });
+    $("materialClass").value="";$("materialTitle").value="";$("materialFile").value="";
+    await loadMaterials();
+    toast("Material uploaded successfully.","success");
+  }catch(error){
+    console.error(error);toast("Material upload failed: "+(error.message||"Unknown error"),"error");
+  }finally{btn.disabled=false;}
+});
+
+/* ---------------- FEES ---------------- */
+async function loadFeeStudents(){
+  const select=$("feeStudent");
+  select.innerHTML="<option value=''>Select Student</option>";
+  studentsCache.forEach(u=>{
+    const option=document.createElement("option");
+    option.value=u.id;option.textContent=u.name||u.email||u.id;
+    select.appendChild(option);
+  });
+}
+$("showFeesBtn").addEventListener("click",showFees);
+
+async function showFees(){
+  if(!$("feeStudent").value){toast("Select a student.","error");return;}
+  $("feesGrid").innerHTML="";
+  try{
+    const snap=await getDoc(doc(db,"users",$("feeStudent").value));
+    const fees=snap.data()?.fees?.["2026"]||{};
+    months.forEach(month=>{
+      const paid=fees[month]?.paid===true;
+      const card=document.createElement("div");card.className="fee-card";
+      card.innerHTML=`<div class="fee-month">${month}</div>
+        <p style="color:${paid?"#16a34a":"#dc2626"}">${paid?"Paid":"Not Paid"}</p>
+        ${paid?"✔️":`<button data-month="${month}" type="button">Mark Paid</button>`}`;
+      const button=card.querySelector("button");
+      if(button)button.addEventListener("click",()=>markPaid(month));
+      $("feesGrid").appendChild(card);
+    });
+  }catch(error){console.error(error);toast("Could not load fee status.","error");}
+}
+async function markPaid(month){
+  const refUser=doc(db,"users",$("feeStudent").value);
+  try{
+    const snap=await getDoc(refUser);
+    const fees=snap.data().fees||{};
+    fees["2026"]=fees["2026"]||{};
+    fees["2026"][month]={paid:true,paidOn:serverTimestamp()};
+    await updateDoc(refUser,{fees});
+    await showFees();
+    toast(month+" marked as paid.","success");
+  }catch(error){console.error(error);toast("Could not update fee.","error");}
+}
+
+/* ---------------- ANNOUNCEMENTS ---------------- */
+async function loadAnnouncements(){
+  try{
+    const snap=await getDocs(query(collection(db,"announcements"),orderBy("createdAt","desc"),limit(20)));
+    const tbody=$("announcementsTable");
+    tbody.innerHTML="";
+    let count=0;
+    snap.forEach(d=>{
+      count++;
+      const a=d.data();
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td class="name-cell">${escapeHTML(a.text||"—")}</td><td>${formatDate(a.createdAt)}</td>`;
+      tbody.appendChild(tr);
+    });
+    if(!count)tbody.innerHTML='<tr><td colspan="2" class="empty">No announcements yet.</td></tr>';
+    $("metricAnnouncements").textContent=count;
+  }catch(error){
+    console.error(error);
+    $("announcementsTable").innerHTML='<tr><td colspan="2" class="empty">Announcements could not be loaded.</td></tr>';
+    $("metricAnnouncements").textContent="—";
+  }
+}
+$("publishAnnouncementBtn").addEventListener("click",async()=>{
+  const text=$("announcementText").value.trim();
+  if(!text){toast("Empty announcement.","error");return;}
+  const btn=$("publishAnnouncementBtn");btn.disabled=true;
+  try{
+    await addDoc(collection(db,"announcements"),{text,createdAt:serverTimestamp()});
+    $("announcementText").value="";
+    await loadAnnouncements();
+    toast("Announcement published.","success");
+  }catch(error){console.error(error);toast("Announcement failed: "+(error.message||"Unknown error"),"error");}
+  finally{btn.disabled=false;}
+});
+
+/* ---------------- RESOURCE CMS ---------------- */
+function resetResourceEditor(){
+  currentResourceId=null;
+  $("resourceTitle").value="";
+  $("resourceSlug").value="";
+  $("resourceClass").value="";
+  $("resourceSubject").value="";
+  $("resourceType").value="";
+  $("resourceChapter").value="";
+  $("resourceDescription").value="";
+  $("resourceThumbnail").value="";
+  $("resourceFile").value="";
+  $("resourceContent").innerHTML="";
+  $("resourcePublished").checked=false;
+  $("deleteResourceBtn").style.display="none";
+  updatePreview();
+}
+$("newResourceBtn").addEventListener("click",resetResourceEditor);
+
+$("resourceTitle").addEventListener("input",()=>{
+  if(!currentResourceId && !$("resourceSlug").value.trim())$("resourceSlug").value=slugify($("resourceTitle").value);
+  updatePreview();
+});
+["resourceSlug","resourceClass","resourceSubject","resourceType","resourceChapter","resourceDescription","resourceContent","resourcePublished"].forEach(id=>{
+  $(id).addEventListener("input",updatePreview);
+  $(id).addEventListener("change",updatePreview);
+});
+
+function updatePreview(){
+  $("previewTitle").textContent=$("resourceTitle").value||"Your resource title";
+  const bits=[$("resourceClass").value,$("resourceSubject").value,$("resourceType").value].filter(Boolean);
+  $("previewMeta").textContent=bits.length?bits.join(" · "):"Class · Subject · Type";
+  $("previewDescription").textContent=$("resourceDescription").value||"Your short description will appear here.";
+  $("previewContent").innerHTML=$("resourceContent").innerHTML||"Resource content preview...";
+}
+
+$("resourceThumbnail").addEventListener("change",()=>{
+  const file=$("resourceThumbnail").files[0];
+  if(!file){$("previewThumb").textContent="📚";return;}
+  const reader=new FileReader();
+  reader.onload=e=>{$("previewThumb").innerHTML=`<img src="${e.target.result}" alt="">`};
+  reader.readAsDataURL(file);
+});
+
+async function uploadOptionalFile(file,folder){
+  if(!file)return "";
+  const storageRef=ref(storage,`${folder}/${Date.now()}_${file.name}`);
+  await uploadBytes(storageRef,file);
+  return await getDownloadURL(storageRef);
+}
+
+async function saveResource(status){
+  const title=$("resourceTitle").value.trim();
+  const classValue=$("resourceClass").value;
+  const subject=$("resourceSubject").value.trim();
+  const type=$("resourceType").value;
+  if(!title||!classValue||!subject||!type){
+    toast("Title, class, subject and resource type are required.","error");return;
+  }
+
+  const btn=status==="published"?$("savePublishBtn"):$("saveDraftBtn");
+  btn.disabled=true;
+  try{
+    let thumbnailURL="";
+    let fileURL="";
+    const thumbFile=$("resourceThumbnail").files[0];
+    const resourceFile=$("resourceFile").files[0];
+
+    if(thumbFile)thumbnailURL=await uploadOptionalFile(thumbFile,"resources/thumbnails");
+    if(resourceFile)fileURL=await uploadOptionalFile(resourceFile,"resources/files");
+
+    const slug=$("resourceSlug").value.trim()||slugify(title);
+    const existing=currentResourceId?await getDoc(doc(db,"resources",currentResourceId)):null;
+    const old=existing?.exists()?existing.data():{};
+
+    const data={
+      title,
+      slug,
+      class:classValue,
+      subject,
+      type,
+      chapter:$("resourceChapter").value.trim(),
+      description:$("resourceDescription").value.trim(),
+      content:$("resourceContent").innerHTML,
+      status,
+      thumbnail:thumbnailURL||old.thumbnail||"",
+      fileURL:fileURL||old.fileURL||"",
+      author:currentUser?.email||old.author||"admin",
+      seoTitle:old.seoTitle||title,
+      metaDescription:old.metaDescription||$("resourceDescription").value.trim(),
+      focusKeywords:old.focusKeywords||"",
+      canonicalURL:old.canonicalURL||"",
+      ogTitle:old.ogTitle||title,
+      ogDescription:old.ogDescription||$("resourceDescription").value.trim(),
+      ogImage:old.ogImage||thumbnailURL||old.thumbnail||"",
+      indexable:old.indexable!==false,
+      includeInSitemap:old.includeInSitemap!==false,
+      updatedAt:serverTimestamp()
+    };
+
+    if(currentResourceId){
+      await updateDoc(doc(db,"resources",currentResourceId),data);
+    }else{
+      data.createdAt=serverTimestamp();
+      const created=await addDoc(collection(db,"resources"),data);
+      currentResourceId=created.id;
+    }
+
+    $("resourcePublished").checked=status==="published";
+    $("deleteResourceBtn").style.display="inline-block";
+    await loadResources();
+    loadSeoResourceOptions(currentResourceId);
+    toast(status==="published"?"Resource published.":"Resource saved as draft.","success");
+  }catch(error){
+    console.error(error);
+    toast("Resource save failed: "+(error.message||"Unknown error"),"error");
+  }finally{btn.disabled=false;}
+}
+$("saveDraftBtn").addEventListener("click",()=>saveResource("draft"));
+$("savePublishBtn").addEventListener("click",()=>saveResource("published"));
+
+$("deleteResourceBtn").addEventListener("click",async()=>{
+  if(!currentResourceId)return;
+  if(!confirm("Delete this CMS resource permanently?"))return;
+  try{
+    await deleteDoc(doc(db,"resources",currentResourceId));
+    toast("Resource deleted.","success");
+    resetResourceEditor();
+    await loadResources();
+    loadSeoResourceOptions();
+  }catch(error){console.error(error);toast("Could not delete resource.","error");}
+});
+
+async function loadResources(){
+  try{
+    const snap=await getDocs(collection(db,"resources"));
+    resourcesCache=[];
+    snap.forEach(d=>resourcesCache.push({id:d.id,...d.data()}));
+    resourcesCache.sort((a,b)=>{
+      const ad=a.updatedAt?.toDate?a.updatedAt.toDate():new Date(0);
+      const bd=b.updatedAt?.toDate?b.updatedAt.toDate():new Date(0);
+      return bd-ad;
+    });
+    renderResources();
+    renderRecentResources();
+    updateMetrics();
+    loadSeoResourceOptions(currentResourceId);
+  }catch(error){
+    console.error(error);
+    resourcesCache=[];
+    $("resourcesTable").innerHTML='<tr><td colspan="6" class="empty">The resources collection is not available yet or Firestore permissions are blocking it.</td></tr>';
+    $("recentResourcesTable").innerHTML='<tr><td colspan="6" class="empty">No CMS resources available.</td></tr>';
+    updateMetrics();
+  }
+}
+
+function renderResources(){
+  const tbody=$("resourcesTable");
+  const search=$("resourceSearch").value.trim().toLowerCase();
+  const status=$("resourceStatusFilter").value;
+  const cls=$("resourceClassFilter").value;
+  const filtered=resourcesCache.filter(r=>{
+    const hay=[r.title,r.chapter,r.subject,r.slug,r.type].join(" ").toLowerCase();
+    return (!search||hay.includes(search))&&(!status||r.status===status)&&(!cls||r.class===cls);
+  });
+  tbody.innerHTML="";
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="6" class="empty">No matching resources.</td></tr>';return;
+  }
+  filtered.forEach(r=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="name-cell">${escapeHTML(r.title||"—")}</td>
+      <td>${escapeHTML(r.class||"—")}</td>
+      <td>${escapeHTML(r.subject||"—")}</td>
+      <td>${escapeHTML(r.type||"—")}</td>
+      <td><span class="status ${r.status==="published"?"published":"draft"}">${escapeHTML(r.status||"draft")}</span></td>
+      <td><div class="action-group">
+        <button class="table-action action-blue" data-resource-action="edit" data-id="${escapeHTML(r.id)}">Edit</button>
+        <button class="table-action action-green" data-resource-action="toggle" data-id="${escapeHTML(r.id)}">${r.status==="published"?"Unpublish":"Publish"}</button>
+        <button class="table-action action-gray" data-resource-action="preview" data-id="${escapeHTML(r.id)}">Preview</button>
+        <button class="table-action action-red" data-resource-action="delete" data-id="${escapeHTML(r.id)}">Delete</button>
+      </div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+$("resourceSearch").addEventListener("input",renderResources);
+$("resourceStatusFilter").addEventListener("change",renderResources);
+$("resourceClassFilter").addEventListener("change",renderResources);
+
+$("resourcesTable").addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-resource-action]");
+  if(!btn)return;
+  const id=btn.dataset.id;
+  const r=resourcesCache.find(x=>x.id===id);
+  if(!r)return;
+
+  if(btn.dataset.resourceAction==="edit"){
+    currentResourceId=id;
+    $("resourceTitle").value=r.title||"";
+    $("resourceSlug").value=r.slug||slugify(r.title);
+    $("resourceClass").value=r.class||"";
+    $("resourceSubject").value=r.subject||"";
+    $("resourceType").value=r.type||"";
+    $("resourceChapter").value=r.chapter||"";
+    $("resourceDescription").value=r.description||"";
+    $("resourceContent").innerHTML=r.content||"";
+    $("resourcePublished").checked=r.status==="published";
+    $("resourceThumbnail").value="";
+    $("resourceFile").value="";
+    $("deleteResourceBtn").style.display="inline-block";
+    if(r.thumbnail)$("previewThumb").innerHTML=`<img src="${escapeHTML(r.thumbnail)}" alt="${escapeHTML(r.title||"")}">`;
+    else $("previewThumb").textContent="📚";
+    updatePreview();
+    window.activateAdminTab("resources");
+    return;
+  }
+
+  if(btn.dataset.resourceAction==="toggle"){
+    try{
+      await updateDoc(doc(db,"resources",id),{status:r.status==="published"?"draft":"published",updatedAt:serverTimestamp()});
+      await loadResources();toast(r.status==="published"?"Resource unpublished.":"Resource published.","success");
+    }catch(error){console.error(error);toast("Could not update resource.","error");}
+    return;
+  }
+
+  if(btn.dataset.resourceAction==="preview"){
+    const url=`resource.html?id=${encodeURIComponent(id)}`;
+    window.open(url,"_blank","noopener");
+    return;
+  }
+
+  if(btn.dataset.resourceAction==="delete"){
+    if(!confirm("Delete this resource permanently?"))return;
+    try{
+      await deleteDoc(doc(db,"resources",id));
+      if(currentResourceId===id)resetResourceEditor();
+      await loadResources();toast("Resource deleted.","success");
+    }catch(error){console.error(error);toast("Could not delete resource.","error");}
+  }
+});
+
+function renderRecentResources(){
+  const tbody=$("recentResourcesTable");
+  const recent=resourcesCache.slice(0,8);
+  tbody.innerHTML="";
+  if(!recent.length){
+    tbody.innerHTML='<tr><td colspan="6" class="empty">No CMS resources yet.</td></tr>';return;
+  }
+  recent.forEach(r=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="name-cell">${escapeHTML(r.title||"—")}</td>
+      <td>${escapeHTML(r.class||"—")}</td>
+      <td>${escapeHTML(r.subject||"—")}</td>
+      <td>${escapeHTML(r.type||"—")}</td>
+      <td><span class="status ${r.status==="published"?"published":"draft"}">${escapeHTML(r.status||"draft")}</span></td>
+      <td>${formatDate(r.updatedAt||r.createdAt)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ---------------- SEO MANAGER ---------------- */
+function loadSeoResourceOptions(selectedId=""){
+  const select=$("seoResourceSelect");
+  if(!select)return;
+  select.innerHTML='<option value="">Select a resource to edit SEO</option>';
+  resourcesCache.forEach(r=>{
+    const option=document.createElement("option");
+    option.value=r.id;option.textContent=`${r.title||"Untitled"} · ${r.class||"—"}`;
+    select.appendChild(option);
+  });
+  if(selectedId)select.value=selectedId;
+  if(select.value)loadSeoForResource(select.value);
+}
+$("seoResourceSelect").addEventListener("change",()=>loadSeoForResource($("seoResourceSelect").value));
+
+function clearSeo(){
+  $("seoTitle").value="";$("seoDescription").value="";$("seoSlug").value="";
+  $("seoKeywords").value="";$("seoCanonical").value="";$("seoOgTitle").value="";
+  $("seoOgDescription").value="";$("seoOgImage").value="";
+  $("seoIndexable").checked=true;$("seoSitemap").checked=true;
+}
+async function loadSeoForResource(id){
+  clearSeo();
+  if(!id)return;
+  const r=resourcesCache.find(x=>x.id===id);
+  if(!r)return;
+  $("seoTitle").value=r.seoTitle||r.title||"";
+  $("seoDescription").value=r.metaDescription||r.description||"";
+  $("seoSlug").value=r.slug||slugify(r.title);
+  $("seoKeywords").value=r.focusKeywords||"";
+  $("seoCanonical").value=r.canonicalURL||"";
+  $("seoOgTitle").value=r.ogTitle||r.title||"";
+  $("seoOgDescription").value=r.ogDescription||r.description||"";
+  $("seoOgImage").value=r.ogImage||r.thumbnail||"";
+  $("seoIndexable").checked=r.indexable!==false;
+  $("seoSitemap").checked=r.includeInSitemap!==false;
+}
+$("saveSeoBtn").addEventListener("click",async()=>{
+  const id=$("seoResourceSelect").value;
+  if(!id){toast("Select a resource first.","error");return;}
+  try{
+    await updateDoc(doc(db,"resources",id),{
+      seoTitle:$("seoTitle").value.trim(),
+      metaDescription:$("seoDescription").value.trim(),
+      slug:$("seoSlug").value.trim()||slugify(resourcesCache.find(r=>r.id===id)?.title),
+      focusKeywords:$("seoKeywords").value.trim(),
+      canonicalURL:$("seoCanonical").value.trim(),
+      ogTitle:$("seoOgTitle").value.trim(),
+      ogDescription:$("seoOgDescription").value.trim(),
+      ogImage:$("seoOgImage").value.trim(),
+      indexable:$("seoIndexable").checked,
+      includeInSitemap:$("seoSitemap").checked,
+      updatedAt:serverTimestamp()
+    });
+    await loadResources();
+    $("seoResourceSelect").value=id;
+    await loadSeoForResource(id);
+    toast("SEO settings saved.","success");
+  }catch(error){console.error(error);toast("SEO save failed: "+(error.message||"Unknown error"),"error");}
+});
+
+/* ---------------- LOGOUT ---------------- */
+async function logout(){
+  try{await signOut(auth);location.href="login.html";}
+  catch(error){console.error(error);toast("Logout failed.","error");}
+}
+$("logoutBtn").addEventListener("click",logout);
+$("mobileLogoutBtn").addEventListener("click",logout);
 </script>
-
-<!-- ================= STYLES ================= -->
-<style>
-.glass-card {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(14px);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-.section-title {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #0F2A44;
-}
-
-.input {
-  padding: 0.6rem;
-  border-radius: 0.6rem;
-  border: 1px solid #E5E7EB;
-  width: 100%;
-}
-
-.input-file {
-  border: 1px dashed #CBD5E1;
-  padding: 0.5rem;
-  border-radius: 0.6rem;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg,#22C55E,#16A34A);
-  color: white;
-  padding: 0.6rem 1rem;
-  border-radius: 0.6rem;
-  font-weight: 600;
-  transition: 0.3s;
-}
-.btn-primary:hover {
-  transform: scale(1.05);
-}
-
-.fee-card {
-  background: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  display: flex;
-  justify-content: space-between;
-  transition: 0.3s;
-}
-.fee-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-</style>
-
 </body>
 </html>

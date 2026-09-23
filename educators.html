@@ -2,225 +2,3604 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0F2A44">
 <link rel="apple-touch-icon" href="/icons/ios/180.png">
 <link rel="stylesheet" href="css/theme.css">
+
 <title>Educators | Mentora Edge</title>
+
 <link rel="icon" href="favicon.ico">
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet"
+>
 
 <script>
 tailwind.config = {
-  darkMode: 'class', // ⭐ THIS IS THE IMPORTANT LINE
+  darkMode: 'class',
 
   theme: {
     extend: {
-      fontFamily: { inter: ['Inter', 'sans-serif'] },
+
+      fontFamily: {
+        inter: ['Inter', 'sans-serif']
+      },
 
       colors: {
         primary: '#0F2A44',
         accent: '#22C55E',
         accentSoft: '#4ADE80'
       }
+
     }
   }
-}
+};
 </script>
+
+<style>
+
+/* =========================================================
+   MENTORA EDGE
+   EDUCATORS PAGE DESIGN SYSTEM
+   ========================================================= */
+
+/* ---------- ROOT ---------- */
+
+:root {
+  --navy: #0F2A44;
+  --navy-light: #12365A;
+  --navy-mid: #1E4E79;
+
+  --green: #22C55E;
+  --green-soft: #4ADE80;
+
+  --white: #ffffff;
+  --surface: #F8FAFC;
+
+  --text: #1f2937;
+  --muted: #64748b;
+
+  --glass: rgba(255, 255, 255, 0.62);
+  --glass-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.42);
+
+  --shadow-soft:
+    0 20px 60px rgba(15, 42, 68, 0.10);
+
+  --shadow-hover:
+    0 30px 80px rgba(15, 42, 68, 0.18);
+
+  --ease:
+    cubic-bezier(.2, .8, .2, 1);
+}
+
+
+/* ---------- GLOBAL ---------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  padding-top: 76px;
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(34, 197, 94, 0.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(30, 78, 121, 0.08),
+      transparent 30%
+    ),
+    #F8FAFC;
+
+  overflow-x: hidden;
+}
+
+
+/* ---------- PAGE LOAD ---------- */
+
+body {
+  animation: pageEnter 0.9s ease both;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
+   AMBIENT BACKGROUND GRAPHICS
+   ========================================================= */
+
+.ambient-glow {
+  position: fixed;
+  pointer-events: none;
+  z-index: -2;
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: .45;
+}
+
+.ambient-glow.green {
+  width: 420px;
+  height: 420px;
+  background: rgba(34, 197, 94, .20);
+  top: -140px;
+  left: -120px;
+  animation: ambientFloat 12s ease-in-out infinite;
+}
+
+.ambient-glow.blue {
+  width: 480px;
+  height: 480px;
+  background: rgba(30, 78, 121, .18);
+  bottom: -180px;
+  right: -150px;
+  animation: ambientFloatReverse 15s ease-in-out infinite;
+}
+
+@keyframes ambientFloat {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(35px, 30px, 0) scale(1.08);
+  }
+
+}
+
+@keyframes ambientFloatReverse {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-35px, -25px, 0) scale(1.06);
+  }
+
+}
+
+
+/* ---------- DECORATIVE ORBS ---------- */
+
+.decor-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+}
+
+.orb-one {
+  width: 110px;
+  height: 110px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(74, 222, 128, .30),
+      rgba(74, 222, 128, 0)
+    );
+  top: 18%;
+  left: 7%;
+  animation: orbFloat 7s ease-in-out infinite;
+}
+
+.orb-two {
+  width: 160px;
+  height: 160px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(96, 165, 250, .22),
+      rgba(96, 165, 250, 0)
+    );
+  bottom: 12%;
+  right: 6%;
+  animation: orbFloatReverse 9s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+
+  50% {
+    transform: translateY(-20px) translateX(12px);
+  }
+
+}
+
+@keyframes orbFloatReverse {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+
+  50% {
+    transform: translateY(20px) translateX(-14px);
+  }
+
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.site-header {
+  background: rgba(255, 255, 255, .76);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border-bottom:
+    1px solid rgba(15, 42, 68, .08);
+
+  box-shadow:
+    0 10px 35px rgba(15, 42, 68, .05);
+
+  transition:
+    background .4s ease,
+    box-shadow .4s ease,
+    border-color .4s ease,
+    transform .4s var(--ease);
+}
+
+.site-header.scrolled {
+  background: rgba(255, 255, 255, .91);
+
+  box-shadow:
+    0 15px 45px rgba(15, 42, 68, .10);
+
+  border-bottom-color:
+    rgba(15, 42, 68, .12);
+}
+
+.brand {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.brand::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--green);
+
+  box-shadow:
+    0 0 0 5px rgba(34, 197, 94, .10),
+    0 0 20px rgba(34, 197, 94, .45);
+
+  animation: brandPulse 3s ease-in-out infinite;
+}
+
+@keyframes brandPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 5px rgba(34, 197, 94, .10),
+      0 0 20px rgba(34, 197, 94, .35);
+  }
+
+  50% {
+    transform: scale(1.12);
+    box-shadow:
+      0 0 0 8px rgba(34, 197, 94, .06),
+      0 0 28px rgba(34, 197, 94, .50);
+  }
+
+}
+
+.nav-link {
+  position: relative;
+  padding: 7px 2px;
+  color: #334155;
+
+  transition:
+    color .3s ease,
+    transform .3s var(--ease);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 0;
+  height: 2px;
+
+  border-radius: 99px;
+  background: var(--green);
+
+  transition:
+    width .35s var(--ease);
+}
+
+.nav-link:hover {
+  color: var(--green);
+  transform: translateY(-2px);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: var(--green);
+  font-weight: 700;
+}
+
+
+/* ---------- LOGIN BUTTON ---------- */
+
+.login-btn {
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform .35s var(--ease),
+    background .35s ease,
+    color .35s ease,
+    box-shadow .35s ease;
+}
+
+.login-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  transform: translateX(-110%);
+  background:
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, .35),
+      transparent
+    );
+
+  transition:
+    transform .65s ease;
+}
+
+.login-btn:hover::before {
+  transform: translateX(110%);
+}
+
+.login-btn:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 28px rgba(15, 42, 68, .16);
+}
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.mobile-menu {
+  transform-origin: top;
+  animation: mobileMenuIn .35s var(--ease) both;
+}
+
+@keyframes mobileMenuIn {
+
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scaleY(.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+
+}
+
+.mobile-nav-link {
+  position: relative;
+  padding: 10px 0;
+
+  transition:
+    color .3s ease,
+    transform .3s var(--ease);
+}
+
+.mobile-nav-link:hover {
+  color: var(--green);
+  transform: translateX(5px);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  position: relative;
+  min-height: 650px;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(74, 222, 128, .18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 82% 80%,
+      rgba(96, 165, 250, .16),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #0F2A44 0%,
+      #12365A 48%,
+      #1E4E79 100%
+    );
+
+  color: white;
+}
+
+
+/* ---------- HERO GRID ---------- */
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+
+  opacity: .16;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, .08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, .08) 1px,
+      transparent 1px
+    );
+
+  background-size: 55px 55px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 90%
+    );
+
+  animation: gridDrift 22s linear infinite;
+}
+
+@keyframes gridDrift {
+
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(55px, 55px, 0);
+  }
+
+}
+
+
+/* ---------- HERO GLOWS ---------- */
+
+.hero-glow {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+  pointer-events: none;
+
+  opacity: .45;
+}
+
+.hero-glow.green {
+  background: rgba(34, 197, 94, .22);
+  top: -180px;
+  left: -150px;
+
+  animation:
+    heroGlowFloat 10s ease-in-out infinite;
+}
+
+.hero-glow.blue {
+  background: rgba(59, 130, 246, .18);
+  right: -180px;
+  bottom: -180px;
+
+  animation:
+    heroGlowFloatReverse 13s ease-in-out infinite;
+}
+
+@keyframes heroGlowFloat {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(45px, 35px, 0) scale(1.08);
+  }
+
+}
+
+@keyframes heroGlowFloatReverse {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-45px, -30px, 0) scale(1.07);
+  }
+
+}
+
+
+/* ---------- HERO CONTENT ---------- */
+
+.hero-content {
+  position: relative;
+  z-index: 5;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 9px 15px;
+
+  border:
+    1px solid rgba(255, 255, 255, .18);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, .08);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: rgba(255, 255, 255, .92);
+
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .12),
+    0 12px 35px rgba(0, 0, 0, .10);
+
+  animation:
+    heroPillFloat 4s ease-in-out infinite;
+}
+
+.hero-eyebrow-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: var(--green-soft);
+
+  box-shadow:
+    0 0 0 5px rgba(74, 222, 128, .10),
+    0 0 18px rgba(74, 222, 128, .55);
+}
+
+@keyframes heroPillFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+
+}
+
+.hero-title {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+.hero-title .highlight {
+  position: relative;
+  display: inline-block;
+  color: var(--green-soft);
+}
+
+.hero-title .highlight::after {
+  content: "";
+
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  bottom: -9px;
+
+  height: 4px;
+
+  border-radius: 99px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--green-soft),
+      transparent
+    );
+
+  transform: scaleX(.65);
+
+  animation:
+    highlightPulse 3s ease-in-out infinite;
+}
+
+@keyframes highlightPulse {
+
+  0%,
+  100% {
+    opacity: .45;
+    transform: scaleX(.65);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+}
+
+.hero-description {
+  color: rgba(255, 255, 255, .75);
+  line-height: 1.8;
+}
+
+
+/* ---------- HERO FLOATING CARD ---------- */
+
+.hero-floating-card {
+  position: absolute;
+
+  right: 8%;
+  bottom: 18%;
+
+  z-index: 4;
+
+  width: 220px;
+
+  padding: 18px;
+
+  border-radius: 22px;
+
+  background:
+    rgba(255, 255, 255, .09);
+
+  border:
+    1px solid rgba(255, 255, 255, .16);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, .20),
+    inset 0 1px 0 rgba(255, 255, 255, .12);
+
+  animation:
+    floatingCard 6s ease-in-out infinite;
+}
+
+@keyframes floatingCard {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(1deg);
+  }
+
+}
+
+.floating-card-icon {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  background:
+    rgba(34, 197, 94, .15);
+
+  border:
+    1px solid rgba(74, 222, 128, .22);
+
+  color: var(--green-soft);
+
+  margin-bottom: 12px;
+
+  font-size: 1.25rem;
+}
+
+
+/* =========================================================
+   SECTION SYSTEM
+   ========================================================= */
+
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--green);
+
+  font-size: .78rem;
+  font-weight: 800;
+
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.section-eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+
+  border-radius: 99px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      var(--green-soft)
+    );
+}
+
+.section-title {
+  color: var(--navy);
+  font-size: clamp(2rem, 4vw, 3.3rem);
+
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+
+.section-description {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+
+/* =========================================================
+   GLASS SYSTEM
+   ========================================================= */
+
+.glass-section {
+  position: relative;
+
+  border:
+    1px solid rgba(255, 255, 255, .75);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, .70),
+      rgba(255, 255, 255, .40)
+    );
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, .85);
+}
+
+.glass-card {
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, .76),
+      rgba(255, 255, 255, .48)
+    );
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255, 255, 255, .65);
+
+  border-radius: 28px;
+
+  box-shadow:
+    0 20px 60px rgba(15, 42, 68, .10),
+    inset 0 1px 0 rgba(255, 255, 255, .80);
+
+  transition:
+    transform .55s var(--ease),
+    box-shadow .55s ease,
+    border-color .4s ease;
+}
+
+
+/* ---------- CARD SHINE ---------- */
+
+.glass-card::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -120%;
+
+  width: 70%;
+  height: 100%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, .32),
+      transparent
+    );
+
+  transform: skewX(-18deg);
+
+  transition:
+    left .9s var(--ease);
+}
+
+.glass-card:hover::before {
+  left: 150%;
+}
+
+.glass-card:hover {
+  transform:
+    translateY(-12px);
+
+  border-color:
+    rgba(34, 197, 94, .20);
+
+  box-shadow:
+    0 32px 80px rgba(15, 42, 68, .16),
+    0 0 0 1px rgba(34, 197, 94, .04),
+    inset 0 1px 0 rgba(255, 255, 255, .90);
+}
+
+
+/* =========================================================
+   EDUCATORS SECTION
+   ========================================================= */
+
+.educators-section {
+  position: relative;
+}
+
+.educators-background-grid {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: .35;
+
+  background-image:
+    radial-gradient(
+      rgba(15, 42, 68, .08) 1px,
+      transparent 1px
+    );
+
+  background-size: 28px 28px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
+}
+
+
+/* ---------- EDUCATOR CARD ---------- */
+
+.educator-card {
+  position: relative;
+
+  padding: 2.3rem;
+
+  isolation: isolate;
+}
+
+.educator-card::after {
+  content: "";
+
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  right: -80px;
+  top: -80px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(34, 197, 94, .16),
+      transparent 70%
+    );
+
+  z-index: -1;
+
+  transition:
+    transform .7s var(--ease);
+}
+
+.educator-card:hover::after {
+  transform:
+    scale(1.35)
+    translate(-10px, 10px);
+}
+
+
+/* ---------- EDUCATOR TOP ---------- */
+
+.educator-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  margin-bottom: 24px;
+}
+
+
+/* ---------- AVATAR ---------- */
+
+.educator-avatar-wrap {
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+.educator-avatar-ring {
+  position: absolute;
+  inset: -7px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(34, 197, 94, .28);
+
+  animation:
+    avatarRing 4s ease-in-out infinite;
+}
+
+@keyframes avatarRing {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .65;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+
+}
+
+.educator-avatar {
+  position: relative;
+
+  width: 108px;
+  height: 108px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border:
+    4px solid rgba(255, 255, 255, .90);
+
+  box-shadow:
+    0 15px 40px rgba(15, 42, 68, .15);
+
+  transition:
+    transform .55s var(--ease),
+    box-shadow .55s ease,
+    filter .55s ease;
+}
+
+.educator-card:hover .educator-avatar {
+  transform:
+    scale(1.06)
+    rotate(2deg);
+
+  box-shadow:
+    0 20px 50px rgba(34, 197, 94, .20);
+
+  filter:
+    saturate(1.06);
+}
+
+
+/* ---------- STATUS ---------- */
+
+.educator-status {
+  position: absolute;
+
+  right: 2px;
+  bottom: 6px;
+
+  width: 17px;
+  height: 17px;
+
+  border-radius: 50%;
+
+  background: var(--green);
+
+  border:
+    3px solid white;
+
+  box-shadow:
+    0 0 0 5px rgba(34, 197, 94, .10),
+    0 0 18px rgba(34, 197, 94, .35);
+}
+
+
+/* ---------- EDUCATOR INFO ---------- */
+
+.educator-name {
+  color: var(--navy);
+
+  font-size: 1.5rem;
+  font-weight: 800;
+
+  letter-spacing: -.025em;
+
+  transition:
+    color .35s ease,
+    transform .35s var(--ease);
+}
+
+.educator-card:hover .educator-name {
+  color: var(--green);
+  transform: translateX(3px);
+}
+
+.educator-role {
+  margin-top: 4px;
+
+  color: var(--green);
+
+  font-size: .92rem;
+  font-weight: 700;
+}
+
+
+/* ---------- EXPERIENCE BADGE ---------- */
+
+.experience-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 12px;
+
+  padding: 7px 11px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(34, 197, 94, .08);
+
+  border:
+    1px solid rgba(34, 197, 94, .13);
+
+  color:
+    #15803d;
+
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.experience-badge::before {
+  content: "✦";
+
+  color: var(--green);
+
+  animation:
+    badgeSpin 5s linear infinite;
+}
+
+@keyframes badgeSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ---------- EDUCATOR DESCRIPTION ---------- */
+
+.educator-description {
+  color: #64748b;
+
+  line-height: 1.85;
+
+  font-size: .94rem;
+}
+
+.educator-description strong {
+  color: var(--navy);
+}
+
+
+/* ---------- EDUCATOR FOOTER ---------- */
+
+.educator-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 24px;
+  padding-top: 20px;
+
+  border-top:
+    1px solid rgba(15, 42, 68, .08);
+}
+
+.educator-subject {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #475569;
+
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.subject-dot {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: var(--green);
+
+  box-shadow:
+    0 0 12px rgba(34, 197, 94, .45);
+}
+
+.educator-arrow {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    rgba(15, 42, 68, .06);
+
+  color: var(--navy);
+
+  transition:
+    transform .45s var(--ease),
+    background .35s ease,
+    color .35s ease;
+}
+
+.educator-card:hover .educator-arrow {
+  transform:
+    translateX(5px)
+    rotate(-8deg);
+
+  background:
+    var(--green);
+
+  color: white;
+}
+
+
+/* =========================================================
+   TEACHING PHILOSOPHY
+   ========================================================= */
+
+.philosophy-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.philosophy-card {
+  position: relative;
+
+  padding: 2.2rem;
+
+  min-height: 230px;
+}
+
+.philosophy-icon {
+  width: 58px;
+  height: 58px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 20px;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 197, 94, .13),
+      rgba(74, 222, 128, .04)
+    );
+
+  border:
+    1px solid rgba(34, 197, 94, .14);
+
+  color: var(--green);
+
+  font-size: 1.45rem;
+
+  transition:
+    transform .5s var(--ease),
+    background .4s ease,
+    box-shadow .4s ease;
+}
+
+.philosophy-card:hover .philosophy-icon {
+  transform:
+    translateY(-5px)
+    rotate(-5deg)
+    scale(1.08);
+
+  background:
+    rgba(34, 197, 94, .16);
+
+  box-shadow:
+    0 12px 30px rgba(34, 197, 94, .12);
+}
+
+.philosophy-title {
+  color: var(--navy);
+
+  font-size: 1.18rem;
+  font-weight: 800;
+
+  margin-bottom: 9px;
+}
+
+.philosophy-text {
+  color: var(--muted);
+
+  font-size: .9rem;
+
+  line-height: 1.75;
+}
+
+
+/* =========================================================
+   EXPERIENCE SHOWCASE
+   ========================================================= */
+
+.experience-section {
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0F2A44,
+      #12365A 55%,
+      #1E4E79
+    );
+
+  color: white;
+}
+
+.experience-section::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  opacity: .12;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, .08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, .08) 1px,
+      transparent 1px
+    );
+
+  background-size: 45px 45px;
+
+  animation:
+    gridDrift 20s linear infinite;
+}
+
+.experience-glow {
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  background:
+    rgba(34, 197, 94, .15);
+
+  right: -160px;
+  top: -180px;
+
+  animation:
+    heroGlowFloat 12s ease-in-out infinite;
+}
+
+.experience-content {
+  position: relative;
+  z-index: 2;
+}
+
+.experience-number {
+  font-size: clamp(4.5rem, 11vw, 8rem);
+
+  font-weight: 800;
+
+  line-height: .85;
+
+  letter-spacing: -.07em;
+
+  color: var(--green-soft);
+
+  text-shadow:
+    0 0 50px rgba(74, 222, 128, .15);
+}
+
+.experience-label {
+  margin-top: 20px;
+
+  color: rgba(255, 255, 255, .72);
+
+  font-size: .95rem;
+  line-height: 1.7;
+}
+
+
+/* ---------- MINI STATS ---------- */
+
+.mini-stat {
+  padding: 20px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255, 255, 255, .07);
+
+  border:
+    1px solid rgba(255, 255, 255, .12);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+
+  transition:
+    transform .45s var(--ease),
+    background .35s ease,
+    border-color .35s ease;
+}
+
+.mini-stat:hover {
+  transform:
+    translateY(-7px);
+
+  background:
+    rgba(255, 255, 255, .11);
+
+  border-color:
+    rgba(74, 222, 128, .25);
+}
+
+.mini-stat-value {
+  color: white;
+
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.mini-stat-label {
+  margin-top: 5px;
+
+  color:
+    rgba(255, 255, 255, .60);
+
+  font-size: .78rem;
+}
+
+
+/* =========================================================
+   LEARNING CYCLE
+   ========================================================= */
+
+.cycle-card {
+  position: relative;
+
+  text-align: center;
+
+  padding: 1.7rem;
+
+  min-height: 205px;
+}
+
+.cycle-number {
+  position: absolute;
+
+  top: 16px;
+  right: 18px;
+
+  color:
+    rgba(15, 42, 68, .07);
+
+  font-size: 3rem;
+
+  font-weight: 800;
+
+  transition:
+    color .35s ease,
+    transform .45s var(--ease);
+}
+
+.cycle-card:hover .cycle-number {
+  color:
+    rgba(34, 197, 94, .15);
+
+  transform:
+    scale(1.1)
+    rotate(5deg);
+}
+
+.cycle-icon {
+  width: 62px;
+  height: 62px;
+
+  display: grid;
+  place-items: center;
+
+  margin: 0 auto 17px;
+
+  border-radius: 19px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(34, 197, 94, .14),
+      rgba(74, 222, 128, .04)
+    );
+
+  border:
+    1px solid rgba(34, 197, 94, .15);
+
+  color: var(--green);
+
+  font-size: 1.35rem;
+
+  transition:
+    transform .5s var(--ease),
+    box-shadow .4s ease;
+}
+
+.cycle-card:hover .cycle-icon {
+  transform:
+    translateY(-6px)
+    rotate(5deg);
+
+  box-shadow:
+    0 14px 30px rgba(34, 197, 94, .13);
+}
+
+.cycle-title {
+  color: var(--navy);
+
+  font-size: 1rem;
+  font-weight: 800;
+
+  margin-bottom: 7px;
+}
+
+.cycle-text {
+  color: var(--muted);
+
+  font-size: .82rem;
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   CTA
+   ========================================================= */
+
+.cta-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-card {
+  position: relative;
+
+  overflow: hidden;
+
+  padding:
+    clamp(2.2rem, 6vw, 4rem);
+
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(15, 42, 68, .98),
+      rgba(18, 54, 90, .96),
+      rgba(30, 78, 121, .96)
+    );
+
+  box-shadow:
+    0 30px 90px rgba(15, 42, 68, .20);
+}
+
+.cta-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 360px;
+  height: 360px;
+
+  right: -150px;
+  top: -190px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(34, 197, 94, .25),
+      transparent 70%
+    );
+
+  animation:
+    ambientFloat 9s ease-in-out infinite;
+}
+
+.cta-card::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: .12;
+
+  background-image:
+    radial-gradient(
+      rgba(255, 255, 255, .45) 1px,
+      transparent 1px
+    );
+
+  background-size: 25px 25px;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+}
+
+.cta-button {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  overflow: hidden;
+
+  padding:
+    13px 24px;
+
+  border-radius: 14px;
+
+  background:
+    var(--green);
+
+  color: white;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 12px 35px rgba(34, 197, 94, .24);
+
+  transition:
+    transform .4s var(--ease),
+    box-shadow .4s ease,
+    background .3s ease;
+}
+
+.cta-button::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -120%;
+
+  width: 75%;
+  height: 100%;
+
+  transform: skewX(-18deg);
+
+  background:
+    linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, .35),
+      transparent
+    );
+
+  transition:
+    left .7s ease;
+}
+
+.cta-button:hover::before {
+  left: 150%;
+}
+
+.cta-button:hover {
+  transform:
+    translateY(-4px)
+    scale(1.02);
+
+  background:
+    #16A34A;
+
+  box-shadow:
+    0 18px 45px rgba(34, 197, 94, .34);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.site-footer {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    #091D30;
+
+  color:
+    rgba(255, 255, 255, .55);
+}
+
+.site-footer::before {
+  content: "";
+
+  position: absolute;
+
+  width: 380px;
+  height: 380px;
+
+  border-radius: 50%;
+
+  right: -180px;
+  top: -240px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(34, 197, 94, .10),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+.footer-link {
+  transition:
+    color .3s ease,
+    transform .3s var(--ease);
+}
+
+.footer-link:hover {
+  color: var(--green-soft);
+}
+
+
+/* =========================================================
+   REVEAL ANIMATIONS
+   ========================================================= */
+
+.reveal {
+  opacity: 0;
+
+  transform:
+    translateY(42px)
+    scale(.985);
+
+  filter:
+    blur(5px);
+
+  transition:
+    opacity .9s ease,
+    transform .9s var(--ease),
+    filter .9s ease;
+}
+
+.reveal-active {
+  opacity: 1;
+
+  transform:
+    translateY(0)
+    scale(1);
+
+  filter:
+    blur(0);
+}
+
+
+/* ---------- REVEAL DIRECTIONS ---------- */
+
+.reveal-left {
+  opacity: 0;
+
+  transform:
+    translateX(-55px);
+
+  filter: blur(5px);
+
+  transition:
+    opacity .9s ease,
+    transform .9s var(--ease),
+    filter .9s ease;
+}
+
+.reveal-left.reveal-active {
+  opacity: 1;
+
+  transform:
+    translateX(0);
+
+  filter: blur(0);
+}
+
+
+.reveal-right {
+  opacity: 0;
+
+  transform:
+    translateX(55px);
+
+  filter: blur(5px);
+
+  transition:
+    opacity .9s ease,
+    transform .9s var(--ease),
+    filter .9s ease;
+}
+
+.reveal-right.reveal-active {
+  opacity: 1;
+
+  transform:
+    translateX(0);
+
+  filter: blur(0);
+}
+
+
+.reveal-scale {
+  opacity: 0;
+
+  transform:
+    scale(.88);
+
+  filter: blur(4px);
+
+  transition:
+    opacity .9s ease,
+    transform .9s var(--ease),
+    filter .9s ease;
+}
+
+.reveal-scale.reveal-active {
+  opacity: 1;
+
+  transform:
+    scale(1);
+
+  filter: blur(0);
+}
+
+
+/* =========================================================
+   STAGGERED CHILDREN
+   ========================================================= */
+
+.stagger-children > * {
+  opacity: 0;
+
+  transform:
+    translateY(28px);
+
+  transition:
+    opacity .75s ease,
+    transform .75s var(--ease);
+}
+
+.stagger-children.reveal-active > *:nth-child(1) {
+  transition-delay: .05s;
+}
+
+.stagger-children.reveal-active > *:nth-child(2) {
+  transition-delay: .14s;
+}
+
+.stagger-children.reveal-active > *:nth-child(3) {
+  transition-delay: .23s;
+}
+
+.stagger-children.reveal-active > *:nth-child(4) {
+  transition-delay: .32s;
+}
+
+.stagger-children.reveal-active > *:nth-child(5) {
+  transition-delay: .41s;
+}
+
+.stagger-children.reveal-active > *:nth-child(6) {
+  transition-delay: .50s;
+}
+
+.stagger-children.reveal-active > * {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+/* =========================================================
+   PARALLAX
+   ========================================================= */
+
+[data-parallax] {
+  will-change: transform;
+}
+
+
+/* =========================================================
+   3D TILT
+   ========================================================= */
+
+[data-tilt] {
+  transform-style: preserve-3d;
+
+  will-change:
+    transform;
+}
+
+
+/* =========================================================
+   SCROLL PROGRESS
+   ========================================================= */
+
+.scroll-progress {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 0%;
+  height: 3px;
+
+  z-index: 9999;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--green),
+      var(--green-soft)
+    );
+
+  box-shadow:
+    0 0 15px rgba(34, 197, 94, .45);
+
+  transform-origin: left;
+}
+
+
+/* =========================================================
+   GLOBAL TRANSITIONS
+   ========================================================= */
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+  .hero-floating-card {
+    right: 4%;
+    bottom: 12%;
+    transform: scale(.9);
+  }
+
+}
+
+
+@media (max-width: 768px) {
+
+  .hero {
+    min-height: 600px;
+  }
+
+  .hero-floating-card {
+    display: none;
+  }
+
+  .hero-title {
+    letter-spacing: -.045em;
+  }
+
+  .educator-top {
+    align-items: flex-start;
+  }
+
+  .educator-card {
+    padding: 1.65rem;
+  }
+
+  .educator-avatar {
+    width: 88px;
+    height: 88px;
+  }
+
+  .experience-number {
+    font-size: 5rem;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .hero {
+    min-height: 570px;
+  }
+
+  .hero-eyebrow {
+    font-size: .72rem;
+  }
+
+  .educator-top {
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+  }
+
+  .educator-info {
+    width: 100%;
+  }
+
+  .educator-card-footer {
+    gap: 12px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  [data-parallax],
+  [data-tilt] {
+    transform: none !important;
+  }
+
+}
+
+</style>
 </head>
 
-<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
 
-<!-- BACKGROUND GLOW -->
-<div class="fixed pointer-events-none w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-<div class="fixed pointer-events-none w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+<body class="font-inter text-gray-800">
 
-<!-- ================= NAVBAR ================= -->
-<header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 border-b">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<!-- =======================================================
+     SCROLL PROGRESS
+     ======================================================= -->
 
-    <h1 class="text-2xl font-extrabold text-primary tracking-tight">
-      Mentora Edge
-    </h1>
+<div class="scroll-progress" id="scrollProgress"></div>
 
-    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-accent transition">Home</a>
-      <a href="courses.html" class="hover:text-accent transition">Courses</a>
-      <a href="educators.html" class="text-accent font-semibold">Educators</a>
-      <a href="contact.html" class="hover:text-accent transition">Contact</a>
 
-      <a href="login.html"
-        class="px-4 py-2 rounded-lg border border-primary text-primary
-               hover:bg-primary hover:text-white transition">
-        Login
+<!-- =======================================================
+     AMBIENT BACKGROUND
+     ======================================================= -->
+
+<div class="ambient-glow green"></div>
+<div class="ambient-glow blue"></div>
+
+
+<!-- =======================================================
+     NAVBAR
+     ======================================================= -->
+
+<header id="siteHeader" class="site-header fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+    <div class="h-[76px] flex items-center justify-between">
+
+      <!-- BRAND -->
+      <a href="index.html" class="flex items-center gap-3 group" aria-label="Mentora Edge Home">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primarySoft flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+          <img src="Assets/Images/mentora-edge-logo.png" alt="Mentora Edge Logo" class="w-8 h-8 object-contain" />
+        </div>
+        <div>
+          <div class="text-lg sm:text-xl font-extrabold tracking-tight text-primary">Mentora Edge</div>
+          <div class="hidden sm:block text-[10px] uppercase tracking-[0.18em] text-gray-500">Shaping Minds · Sharpening Futures</div>
+        </div>
       </a>
-    </nav>
 
-    <button id="menuBtn" class="md:hidden text-2xl text-primary">☰</button>
+      <!-- DESKTOP NAV -->
+      <nav class="hidden xl:flex items-center gap-6 text-sm font-semibold" aria-label="Primary Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="programs.html" class="nav-link">Programs</a>
+        <a href="offline.html" class="nav-link">Offline Coaching</a>
+        <a href="online-tution.html" class="nav-link">Online Tuition</a>
+        <a href="educators.html" class="nav-link active" aria-current="page">Educators</a>
+        <a href="learning-platform.html" class="nav-link">Learning Platform</a>
+        <a href="resources.html" class="nav-link">Resources</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="login.html" class="px-4 py-2 rounded-xl border border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">Login</a>
+        <a href="enquiry.html" class="px-5 py-2.5 rounded-xl bg-accent text-white shadow-lg shadow-green-500/20 hover:bg-green-600 hover:-translate-y-0.5 transition-all duration-300">Book an Enquiry</a>
+      </nav>
+
+      <!-- MOBILE BUTTON -->
+      <button
+        id="menuBtn"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        class="xl:hidden w-11 h-11 rounded-xl bg-primary/5 text-primary border border-primary/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all duration-300">
+        <span id="menuIcon" class="text-xl">☰</span>
+      </button>
+    </div>
   </div>
 
   <!-- MOBILE MENU -->
-  <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow-sm">
-    <nav class="flex flex-col px-6 py-5 space-y-4 text-sm font-medium">
-      <a href="index.html">Home</a>
-      <a href="courses.html">Courses</a>
-      <a href="educators.html" class="text-accent font-semibold">Educators</a>
-      <a href="contact.html">Contact</a>
-      <a href="login.html" class="text-primary font-semibold">Login</a>
+  <div id="mobileMenu" class="hidden xl:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-xl">
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-2" aria-label="Mobile Navigation">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="programs.html" class="mobile-nav-link">Programs</a>
+      <a href="offline.html" class="mobile-nav-link">Offline Coaching</a>
+      <a href="online-tution.html" class="mobile-nav-link">Online Personal Tuition</a>
+      <a href="educators.html" class="mobile-nav-link text-primary font-bold bg-green-50/70" aria-current="page">Educators</a>
+      <a href="learning-platform.html" class="mobile-nav-link">Learning Platform</a>
+      <a href="resources.html" class="mobile-nav-link">Resources</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="login.html" class="mobile-nav-link text-primary font-bold">Login</a>
+      <a href="enquiry.html" class="mt-3 bg-accent text-white text-center px-5 py-3 rounded-xl font-semibold shadow-lg">Book an Enquiry</a>
     </nav>
   </div>
 </header>
 
-<!-- ================= HERO ================= -->
-<section class="relative py-28 text-center overflow-hidden bg-gradient-to-br from-primary via-[#12365A] to-[#1E4E79] text-white">
 
-  <div class="absolute w-96 h-96 bg-green-400 opacity-20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-  <div class="absolute w-96 h-96 bg-blue-500 opacity-20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+<!-- =======================================================
+     HERO
+     ======================================================= -->
 
-  <div class="relative z-10 max-w-5xl mx-auto px-6 reveal">
+<section class="hero">
 
-    <h2 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-      Learn from the <span class="text-accent">Best Educators</span>
-    </h2>
+  <!-- GRID -->
 
-    <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
-      Experience. Clarity. Real academic transformation.
-    </p>
+  <div class="hero-grid"></div>
 
-  </div>
-</section>
 
-<!-- ================= EDUCATORS ================= -->
-<section class="py-24">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+  <!-- GLOWS -->
 
-    <!-- SUBIR -->
-    <div class="glass-card reveal text-center group">
+  <div class="hero-glow green"></div>
+  <div class="hero-glow blue"></div>
 
-      <img src="Assets/Images/subir-munshi.jpeg"
-        class="w-28 h-28 rounded-full mx-auto object-cover shadow-lg mb-4
-               group-hover:scale-105 transition duration-300"/>
 
-      <h3 class="text-xl font-bold text-primary">Subir Munshi</h3>
+  <!-- ORBS -->
 
-      <p class="text-accent font-medium mb-4">
-        Co-Founder & Social Science Educator
-      </p>
+  <div class="decor-orb orb-one"
+       data-parallax="0.12"></div>
 
-      <p class="text-gray-600 text-sm leading-relaxed">
-        With over <strong>25 years of experience</strong> as Principal and Educator,
-        he builds strong conceptual clarity, discipline, and academic confidence.
+  <div class="decor-orb orb-two"
+       data-parallax="-0.10"></div>
+
+
+  <!-- HERO CONTENT -->
+
+  <div class="hero-content
+              max-w-6xl mx-auto
+              px-6 py-28
+              text-center
+              w-full">
+
+    <div class="reveal-scale">
+
+      <div class="hero-eyebrow mx-auto mb-7">
+
+        <span class="hero-eyebrow-dot"></span>
+
+        Experienced Educators • Mentora Edge
+
+      </div>
+
+    </div>
+
+
+    <div class="reveal">
+
+      <h1 class="hero-title
+                 font-extrabold
+                 max-w-5xl
+                 mx-auto">
+
+        Learn from
+        <span class="highlight">
+          Experienced Educators
+        </span>
+
+      </h1>
+
+    </div>
+
+
+    <div class="reveal">
+
+      <p class="hero-description
+                text-lg md:text-xl
+                max-w-2xl
+                mx-auto
+                mt-8">
+
+        Experience. Clarity. Real academic transformation.
+
       </p>
 
     </div>
 
-    <!-- RANITA -->
-    <div class="glass-card reveal text-center group">
+  </div>
 
-      <img src="Assets/Images/ranita-munshi.jpeg"
-        class="w-28 h-28 rounded-full mx-auto object-cover shadow-lg mb-4
-               group-hover:scale-105 transition duration-300"/>
 
-      <h3 class="text-xl font-bold text-primary">Ranita Munshi</h3>
+  <!-- FLOATING CARD -->
 
-      <p class="text-accent font-medium mb-4">
-        Co-Founder & English Educator
-      </p>
+  <div
+    class="hero-floating-card"
+    data-parallax="-0.15">
 
-      <p class="text-gray-600 text-sm leading-relaxed">
-        A student-friendly educator with 25+ years of experience,
-        making English learning clear, engaging, and effective.
+    <div class="floating-card-icon">
+      ✦
+    </div>
+
+    <div class="text-sm font-bold text-white">
+      Learn with Experience
+    </div>
+
+    <div class="text-xs text-white/55 mt-2 leading-relaxed">
+      Personalised academic guidance
+      built around every student.
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =======================================================
+     EDUCATORS
+     ======================================================= -->
+
+<section class="educators-section
+                py-24 lg:py-32">
+
+  <div class="educators-background-grid"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative">
+
+
+    <!-- SECTION HEADING -->
+
+    <div class="max-w-3xl mx-auto text-center mb-16 reveal">
+
+      <div class="section-eyebrow justify-center mb-5">
+        OUR EDUCATORS
+      </div>
+
+      <h2 class="section-title font-extrabold">
+        The people behind
+        <span class="text-accent">
+          Mentora Edge
+        </span>
+      </h2>
+
+      <p class="section-description mt-6">
+        Experienced educators focused on conceptual clarity,
+        personalised attention, discipline, and confident learning.
       </p>
 
     </div>
 
+
+    <!-- EDUCATOR GRID -->
+
+    <div class="grid md:grid-cols-2 gap-8 lg:gap-10
+                stagger-children reveal">
+
+
+      <!-- =================================================
+           SUBIR MUNSHI
+           ================================================= -->
+
+      <article
+        class="glass-card educator-card"
+        data-tilt>
+
+        <div class="educator-top">
+
+          <div class="educator-avatar-wrap">
+
+            <div class="educator-avatar-ring"></div>
+
+            <img
+              src="Assets/Images/subir-munshi.jpeg"
+              alt="Subir Munshi, Social Science Educator at Mentora Edge"
+              class="educator-avatar"
+              loading="lazy"
+            />
+
+            <span class="educator-status"></span>
+
+          </div>
+
+
+          <div class="educator-info">
+
+            <h3 class="educator-name">
+              Subir Munshi
+            </h3>
+
+            <p class="educator-role">
+              Co-Founder & Social Science Educator
+            </p>
+
+            <span class="experience-badge">
+              25+ Years of Experience
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <p class="educator-description">
+
+          With over
+          <strong>25 years of experience</strong>
+          as Principal and Educator,
+          he builds strong conceptual clarity,
+          discipline, and academic confidence.
+
+        </p>
+
+
+        <div class="educator-card-footer">
+
+          <div class="educator-subject">
+
+            <span class="subject-dot"></span>
+
+            Social Science
+
+          </div>
+
+          <div class="educator-arrow">
+            →
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- =================================================
+           RANITA MUNSHI
+           ================================================= -->
+
+      <article
+        class="glass-card educator-card"
+        data-tilt>
+
+        <div class="educator-top">
+
+          <div class="educator-avatar-wrap">
+
+            <div class="educator-avatar-ring"></div>
+
+            <img
+              src="Assets/Images/ranita-munshi.jpeg"
+              alt="Ranita Munshi, English Educator at Mentora Edge"
+              class="educator-avatar"
+              loading="lazy"
+            />
+
+            <span class="educator-status"></span>
+
+          </div>
+
+
+          <div class="educator-info">
+
+            <h3 class="educator-name">
+              Ranita Munshi
+            </h3>
+
+            <p class="educator-role">
+              Co-Founder & English Educator
+            </p>
+
+            <span class="experience-badge">
+              25+ Years of Experience
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <p class="educator-description">
+
+          A student-friendly educator with
+          <strong>25+ years of experience</strong>,
+          making English learning clear,
+          engaging, and effective.
+
+        </p>
+
+
+        <div class="educator-card-footer">
+
+          <div class="educator-subject">
+
+            <span class="subject-dot"></span>
+
+            English
+
+          </div>
+
+          <div class="educator-arrow">
+            →
+          </div>
+
+        </div>
+
+      </article>
+
+
+    </div>
+
   </div>
-</section>
-
-<!-- ================= CTA ================= -->
-<section class="py-20 text-center px-6 reveal">
-
-  <h3 class="text-3xl font-bold text-primary mb-4">
-    Learn from Experience.
-    <span class="text-accent">Grow with Confidence.</span>
-  </h3>
-
-  <p class="text-gray-500 mb-6 max-w-2xl mx-auto">
-    Join Mentora Edge and elevate your academic journey.
-  </p>
-
-  <a href="courses.html"
-    class="inline-block bg-accent text-white px-8 py-3 rounded-xl font-semibold
-           hover:bg-green-600 transition shadow-lg shadow-green-500/20 hover:scale-105">
-    Explore Courses
-  </a>
 
 </section>
 
-<!-- ================= FOOTER ================= -->
-<footer class="bg-gray-900 text-gray-400 py-10 text-center">
-  <p>© 2025 Mentora Edge. All Rights Reserved.</p>
-  <p class="text-sm mt-2">
-    Shaping Minds, Sharpening Futures ·
-    <a href="terms.html" class="text-green-400">Terms</a> ·
-    <a href="privacy.html" class="text-green-400">Privacy</a>
-  </p>
+
+<!-- =======================================================
+     TEACHING PHILOSOPHY
+     ======================================================= -->
+
+<section class="py-24 lg:py-28 relative overflow-hidden">
+
+  <div
+    class="absolute
+           w-96 h-96
+           rounded-full
+           bg-green-400/10
+           blur-3xl
+           -left-48
+           top-20"
+    data-parallax="0.10">
+  </div>
+
+
+  <div class="max-w-7xl mx-auto px-6">
+
+
+    <!-- HEADING -->
+
+    <div class="max-w-3xl mb-14 reveal">
+
+      <div class="section-eyebrow mb-5">
+        TEACHING APPROACH
+      </div>
+
+      <h2 class="section-title font-extrabold">
+        Education built around
+        <span class="text-accent">
+          understanding
+        </span>
+      </h2>
+
+      <p class="section-description mt-5">
+        At Mentora Edge, experienced teaching is combined
+        with structured learning and individual attention
+        to create a focused academic environment.
+      </p>
+
+    </div>
+
+
+    <!-- PHILOSOPHY GRID -->
+
+    <div
+      class="grid sm:grid-cols-2
+             lg:grid-cols-4
+             gap-6
+             stagger-children reveal">
+
+
+      <!-- CARD 1 -->
+
+      <div
+        class="glass-card philosophy-card"
+        data-tilt>
+
+        <div class="philosophy-icon">
+          ◈
+        </div>
+
+        <h3 class="philosophy-title">
+          Conceptual Clarity
+        </h3>
+
+        <p class="philosophy-text">
+          Build a clear understanding of concepts
+          rather than relying only on memorisation.
+        </p>
+
+      </div>
+
+
+      <!-- CARD 2 -->
+
+      <div
+        class="glass-card philosophy-card"
+        data-tilt>
+
+        <div class="philosophy-icon">
+          ◎
+        </div>
+
+        <h3 class="philosophy-title">
+          Personalised Attention
+        </h3>
+
+        <p class="philosophy-text">
+          Teaching is designed to recognise
+          individual learning needs and progress.
+        </p>
+
+      </div>
+
+
+      <!-- CARD 3 -->
+
+      <div
+        class="glass-card philosophy-card"
+        data-tilt>
+
+        <div class="philosophy-icon">
+          ◫
+        </div>
+
+        <h3 class="philosophy-title">
+          Regular Practice
+        </h3>
+
+        <p class="philosophy-text">
+          Structured practice helps students
+          reinforce concepts and build confidence.
+        </p>
+
+      </div>
+
+
+      <!-- CARD 4 -->
+
+      <div
+        class="glass-card philosophy-card"
+        data-tilt>
+
+        <div class="philosophy-icon">
+          ✓
+        </div>
+
+        <h3 class="philosophy-title">
+          Assessment & Feedback
+        </h3>
+
+        <p class="philosophy-text">
+          Periodic assessment helps identify
+          areas that require further attention.
+        </p>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =======================================================
+     EXPERIENCE SHOWCASE
+     ======================================================= -->
+
+<section class="experience-section py-24 lg:py-28">
+
+  <div class="experience-glow"></div>
+
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="experience-content
+                grid lg:grid-cols-2
+                gap-14
+                items-center">
+
+
+      <!-- LEFT -->
+
+      <div class="reveal-left">
+
+        <div class="section-eyebrow
+                    text-green-300 mb-6">
+
+          EXPERIENCE
+
+        </div>
+
+        <h2 class="text-4xl md:text-5xl
+                   font-extrabold
+                   leading-tight">
+
+          Decades of teaching
+          <span class="text-green-300">
+            experience.
+          </span>
+
+        </h2>
+
+        <p class="mt-6
+                  text-white/65
+                  leading-relaxed
+                  max-w-xl">
+
+          Mentora Edge is built around experienced
+          educators who bring years of classroom
+          and academic experience into the learning process.
+
+        </p>
+
+      </div>
+
+
+      <!-- RIGHT -->
+
+      <div class="reveal-right">
+
+        <div
+          class="glass-section
+                 rounded-[32px]
+                 p-8 md:p-10
+                 bg-white/5
+                 border-white/10">
+
+          <div class="grid sm:grid-cols-2 gap-5">
+
+            <div class="mini-stat">
+
+              <div class="mini-stat-value">
+                25+
+              </div>
+
+              <div class="mini-stat-label">
+                Years of educator experience
+              </div>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+              <div class="mini-stat-value">
+                2
+              </div>
+
+              <div class="mini-stat-label">
+                Core academic educators
+              </div>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+              <div class="mini-stat-value">
+                VI–XII
+              </div>
+
+              <div class="mini-stat-label">
+                Academic levels served
+              </div>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+              <div class="mini-stat-value">
+                01
+              </div>
+
+              <div class="mini-stat-label">
+                Learning philosophy
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =======================================================
+     LEARNING CYCLE
+     ======================================================= -->
+
+<section class="py-24 lg:py-32">
+
+  <div class="max-w-7xl mx-auto px-6">
+
+
+    <div class="max-w-3xl mx-auto
+                text-center
+                mb-16
+                reveal">
+
+      <div class="section-eyebrow justify-center mb-5">
+        LEARNING CYCLE
+      </div>
+
+      <h2 class="section-title font-extrabold">
+        A structured path from
+        <span class="text-accent">
+          learning to improvement
+        </span>
+      </h2>
+
+      <p class="section-description mt-5">
+        The learning process at Mentora Edge follows
+        a continuous cycle designed to strengthen
+        understanding and academic progress.
+      </p>
+
+    </div>
+
+
+    <div
+      class="grid sm:grid-cols-2
+             lg:grid-cols-5
+             gap-5
+             stagger-children reveal">
+
+
+      <!-- 01 -->
+
+      <div
+        class="glass-card cycle-card"
+        data-tilt>
+
+        <span class="cycle-number">
+          01
+        </span>
+
+        <div class="cycle-icon">
+          ↗
+        </div>
+
+        <h3 class="cycle-title">
+          Learn
+        </h3>
+
+        <p class="cycle-text">
+          Understand the concepts clearly.
+        </p>
+
+      </div>
+
+
+      <!-- 02 -->
+
+      <div
+        class="glass-card cycle-card"
+        data-tilt>
+
+        <span class="cycle-number">
+          02
+        </span>
+
+        <div class="cycle-icon">
+          ✎
+        </div>
+
+        <h3 class="cycle-title">
+          Practice
+        </h3>
+
+        <p class="cycle-text">
+          Reinforce learning through practice.
+        </p>
+
+      </div>
+
+
+      <!-- 03 -->
+
+      <div
+        class="glass-card cycle-card"
+        data-tilt>
+
+        <span class="cycle-number">
+          03
+        </span>
+
+        <div class="cycle-icon">
+          ◫
+        </div>
+
+        <h3 class="cycle-title">
+          Assess
+        </h3>
+
+        <p class="cycle-text">
+          Check understanding through assessment.
+        </p>
+
+      </div>
+
+
+      <!-- 04 -->
+
+      <div
+        class="glass-card cycle-card"
+        data-tilt>
+
+        <span class="cycle-number">
+          04
+        </span>
+
+        <div class="cycle-icon">
+          ◌
+        </div>
+
+        <h3 class="cycle-title">
+          Analyse
+        </h3>
+
+        <p class="cycle-text">
+          Identify areas requiring attention.
+        </p>
+
+      </div>
+
+
+      <!-- 05 -->
+
+      <div
+        class="glass-card cycle-card"
+        data-tilt>
+
+        <span class="cycle-number">
+          05
+        </span>
+
+        <div class="cycle-icon">
+          ↑
+        </div>
+
+        <h3 class="cycle-title">
+          Improve
+        </h3>
+
+        <p class="cycle-text">
+          Strengthen learning through feedback.
+        </p>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =======================================================
+     CTA
+     ======================================================= -->
+
+<section class="cta-section py-20 lg:py-28 px-6">
+
+  <div class="max-w-6xl mx-auto">
+
+    <div class="cta-card reveal-scale">
+
+      <div class="cta-content text-center">
+
+        <div class="section-eyebrow
+                    justify-center
+                    text-green-300
+                    mb-6">
+
+          LEARN WITH EXPERIENCE
+
+        </div>
+
+        <h2
+          class="text-3xl md:text-5xl
+                 font-extrabold
+                 text-white
+                 leading-tight">
+
+          Learn from Experience.
+          <span class="text-green-300">
+            Grow with Confidence.
+          </span>
+
+        </h2>
+
+        <p
+          class="max-w-2xl
+                 mx-auto
+                 mt-6
+                 text-white/65
+                 leading-relaxed">
+
+          Join Mentora Edge and elevate your
+          academic journey with structured
+          learning and experienced educators.
+
+        </p>
+
+
+        <div class="mt-9">
+
+          <a
+            href="programs.html"
+            class="cta-button">
+
+            Explore Programs
+
+            <span>
+              →
+            </span>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =======================================================
+     FOOTER
+     ======================================================= -->
+
+<footer class="site-footer py-12">
+
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div
+      class="flex flex-col
+             md:flex-row
+             justify-between
+             items-center
+             gap-5">
+
+      <div>
+
+        <a
+          href="index.html"
+          class="text-xl
+                 font-extrabold
+                 text-white">
+
+          Mentora Edge
+
+        </a>
+
+        <p class="text-sm mt-2">
+          Shaping Minds, Sharpening Futures
+        </p>
+
+      </div>
+
+
+      <div
+        class="flex items-center
+               gap-5
+               text-sm">
+
+        <a
+          href="terms.html"
+          class="footer-link">
+
+          Terms
+
+        </a>
+
+        <a
+          href="privacy.html"
+          class="footer-link">
+
+          Privacy
+
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="mt-9 pt-6
+             border-t
+             border-white/10
+             text-center
+             text-sm">
+
+      © 2025 Mentora Edge.
+      All Rights Reserved.
+
+    </div>
+
+  </div>
+
 </footer>
 
-<!-- ================= SCRIPTS ================= -->
+
+<!-- =======================================================
+     JAVASCRIPT
+     ======================================================= -->
+
 <script>
-menuBtn.onclick = () => mobileMenu.classList.toggle("hidden");
 
-const reveals = document.querySelectorAll(".reveal");
+/* =========================================================
+   ELEMENT REFERENCES
+   ========================================================= */
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("reveal-active");
+const menuBtn =
+  document.getElementById("menuBtn");
+
+const mobileMenu =
+  document.getElementById("mobileMenu");
+
+const siteHeader =
+  document.getElementById("siteHeader");
+
+const scrollProgress =
+  document.getElementById("scrollProgress");
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+if (menuBtn && mobileMenu) {
+
+  menuBtn.addEventListener("click", () => {
+
+    const isHidden =
+      mobileMenu.classList.contains("hidden");
+
+    mobileMenu.classList.toggle("hidden");
+
+    menuBtn.setAttribute(
+      "aria-expanded",
+      String(isHidden)
+    );
+
+    const menuIcon =
+      document.getElementById("menuIcon");
+
+    if (menuIcon) {
+      menuIcon.textContent =
+        isHidden ? "✕" : "☰";
+    } else {
+      menuBtn.textContent =
+        isHidden ? "✕" : "☰";
     }
+
   });
+
+
+  /* Close mobile menu after navigation */
+
+  mobileMenu
+    .querySelectorAll("a")
+    .forEach(link => {
+
+      link.addEventListener("click", () => {
+
+        mobileMenu.classList.add("hidden");
+
+        menuBtn.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        const menuIcon =
+          document.getElementById("menuIcon");
+
+        if (menuIcon) {
+          menuIcon.textContent = "☰";
+        } else {
+          menuBtn.textContent = "☰";
+        }
+
+      });
+
+    });
+
+}
+
+
+/* =========================================================
+   HEADER SCROLL STATE
+   ========================================================= */
+
+function updateHeader() {
+
+  if (!siteHeader) return;
+
+  if (window.scrollY > 30) {
+
+    siteHeader.classList.add("scrolled");
+
+  } else {
+
+    siteHeader.classList.remove("scrolled");
+
+  }
+
+}
+
+
+/* =========================================================
+   SCROLL PROGRESS
+   ========================================================= */
+
+function updateScrollProgress() {
+
+  if (!scrollProgress) return;
+
+  const scrollTop =
+    window.scrollY;
+
+  const documentHeight =
+    document.documentElement.scrollHeight -
+    window.innerHeight;
+
+  const progress =
+    documentHeight > 0
+      ? (scrollTop / documentHeight) * 100
+      : 0;
+
+  scrollProgress.style.width =
+    `${progress}%`;
+
+}
+
+
+/* =========================================================
+   COMBINED SCROLL HANDLER
+   ========================================================= */
+
+let scrollTicking = false;
+
+function handleScroll() {
+
+  if (!scrollTicking) {
+
+    window.requestAnimationFrame(() => {
+
+      updateHeader();
+      updateScrollProgress();
+
+      scrollTicking = false;
+
+    });
+
+    scrollTicking = true;
+
+  }
+
+}
+
+window.addEventListener(
+  "scroll",
+  handleScroll,
+  { passive: true }
+);
+
+updateHeader();
+updateScrollProgress();
+
+
+/* =========================================================
+   REVEAL OBSERVER
+   ========================================================= */
+
+const reveals =
+  document.querySelectorAll(
+    ".reveal, .reveal-left, .reveal-right, .reveal-scale"
+  );
+
+
+const revealObserver =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+          entry.target.classList.add(
+            "reveal-active"
+          );
+
+          revealObserver.unobserve(
+            entry.target
+          );
+
+        }
+
+      });
+
+    },
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -50px 0px"
+    }
+  );
+
+
+reveals.forEach(element => {
+
+  revealObserver.observe(element);
+
 });
 
-reveals.forEach(el => observer.observe(el));
+
+/* =========================================================
+   PARALLAX
+   ========================================================= */
+
+const parallaxElements =
+  document.querySelectorAll(
+    "[data-parallax]"
+  );
+
+
+let parallaxTicking = false;
+
+
+function updateParallax() {
+
+  if (parallaxTicking) return;
+
+  parallaxTicking = true;
+
+  window.requestAnimationFrame(() => {
+
+    const viewportCenter =
+      window.innerHeight / 2;
+
+    parallaxElements.forEach(element => {
+
+      const rect =
+        element.getBoundingClientRect();
+
+      const speed =
+        parseFloat(
+          element.dataset.parallax
+        ) || 0;
+
+      const elementCenter =
+        rect.top + rect.height / 2;
+
+      const distance =
+        elementCenter - viewportCenter;
+
+      const movement =
+        distance * speed;
+
+      element.style.transform =
+        `translate3d(0, ${movement}px, 0)`;
+
+    });
+
+    parallaxTicking = false;
+
+  });
+
+}
+
+
+if (parallaxElements.length) {
+
+  window.addEventListener(
+    "scroll",
+    updateParallax,
+    { passive: true }
+  );
+
+  window.addEventListener(
+    "resize",
+    updateParallax
+  );
+
+  updateParallax();
+
+}
+
+
+/* =========================================================
+   3D POINTER TILT
+   ========================================================= */
+
+const tiltElements =
+  document.querySelectorAll(
+    "[data-tilt]"
+  );
+
+
+tiltElements.forEach(card => {
+
+  let rect;
+
+  card.addEventListener(
+    "pointerenter",
+    () => {
+
+      rect =
+        card.getBoundingClientRect();
+
+    }
+  );
+
+
+  card.addEventListener(
+    "pointermove",
+    event => {
+
+      if (
+        window.innerWidth < 768 ||
+        window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches
+      ) {
+        return;
+      }
+
+      if (!rect) {
+
+        rect =
+          card.getBoundingClientRect();
+
+      }
+
+      const x =
+        event.clientX - rect.left;
+
+      const y =
+        event.clientY - rect.top;
+
+      const centerX =
+        rect.width / 2;
+
+      const centerY =
+        rect.height / 2;
+
+      const rotateX =
+        ((y - centerY) / centerY) * -3.5;
+
+      const rotateY =
+        ((x - centerX) / centerX) * 3.5;
+
+      card.style.transform =
+        `perspective(1000px)
+         rotateX(${rotateX}deg)
+         rotateY(${rotateY}deg)
+         translateY(-10px)`;
+
+    }
+  );
+
+
+  card.addEventListener(
+    "pointerleave",
+    () => {
+
+      card.style.transform = "";
+
+      rect = null;
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   IMAGE LOAD FADE
+   ========================================================= */
+
+document
+  .querySelectorAll("img")
+  .forEach(image => {
+
+    image.style.transition =
+      "opacity .7s ease, transform .7s ease";
+
+    if (image.complete) {
+
+      image.style.opacity = "1";
+
+    } else {
+
+      image.style.opacity = "0";
+
+      image.addEventListener(
+        "load",
+        () => {
+
+          image.style.opacity = "1";
+
+        },
+        { once: true }
+      );
+
+    }
+
+  });
+
+
+/* =========================================================
+   MAGNETIC CTA
+   ========================================================= */
+
+const ctaButtons =
+  document.querySelectorAll(
+    ".cta-button, .login-btn"
+  );
+
+
+ctaButtons.forEach(button => {
+
+  button.addEventListener(
+    "pointermove",
+    event => {
+
+      if (
+        window.innerWidth < 768 ||
+        window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches
+      ) {
+        return;
+      }
+
+      const rect =
+        button.getBoundingClientRect();
+
+      const x =
+        event.clientX -
+        (rect.left + rect.width / 2);
+
+      const y =
+        event.clientY -
+        (rect.top + rect.height / 2);
+
+      button.style.transform =
+        `translate(${x * .08}px, ${y * .08}px)`;
+
+    }
+  );
+
+
+  button.addEventListener(
+    "pointerleave",
+    () => {
+
+      button.style.transform = "";
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   ACTIVE NAVIGATION FEEDBACK
+   ========================================================= */
+
+const currentPage =
+  window.location.pathname
+    .split("/")
+    .pop() || "index.html";
+
+
+document
+  .querySelectorAll(".nav-link")
+  .forEach(link => {
+
+    const href =
+      link.getAttribute("href");
+
+    if (
+      href === currentPage &&
+      !link.classList.contains("active")
+    ) {
+
+      link.classList.add("active");
+
+    }
+
+  });
+
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    document.body.classList.add(
+      "page-loaded"
+    );
+
+    updateParallax();
+
+  }
+);
+
 </script>
-
-<!-- ================= STYLES ================= -->
-<style>
-.glass-card {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(14px);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  transition: 0.3s;
-}
-.glass-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s ease;
-}
-* {
-  transition: background-color 0.4s ease,
-              color 0.4s ease,
-              border-color 0.4s ease,
-              box-shadow 0.4s ease;
-}
-.reveal-active {
-  opacity: 1;
-  transform: translateY(0);
-}
-</style>
 
 </body>
 </html>

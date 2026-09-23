@@ -2,143 +2,875 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Terms & Conditions | Mentora Edge</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- SEO -->
-  <meta name="description" content="Terms and Conditions of Mentora Edge Coaching Institute. Read all rules, policies, fee structure, discipline guidelines, and student responsibilities." />
+  <title>Terms & Conditions | Mentora Edge</title>
+  <meta
+    name="description"
+    content="Read the Terms & Conditions of Mentora Edge, including admission, fees, attendance, discipline, study materials, student responsibilities, and institute policies."
+  />
   <meta name="robots" content="index, follow" />
+  <meta name="author" content="Mentora Edge" />
+  <link rel="canonical" href="https://mentoraedge.online/terms.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Terms & Conditions | Mentora Edge" />
+  <meta
+    property="og:description"
+    content="Terms and Conditions governing the use of Mentora Edge coaching and educational services."
+  />
+  <meta property="og:url" content="https://mentoraedge.online/terms.html" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="Assets/Images/mentora-edge-logo.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: "#0F2A44",
+            mentoraGreen: "#22C55E",
+            softGreen: "#4ADE80"
+          },
+          boxShadow: {
+            glass: "0 24px 70px rgba(15, 42, 68, 0.12)"
+          }
+        }
+      }
+    };
+  </script>
 
   <style>
+    :root {
+      --navy: #0F2A44;
+      --green: #22C55E;
+      --soft-green: #4ADE80;
+      --white: #ffffff;
+      --surface: #f8fafc;
+      --text: #172033;
+      --muted: #64748b;
+      --border: rgba(15, 42, 68, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(74, 222, 128, 0.13), transparent 30%),
+        radial-gradient(circle at 90% 5%, rgba(15, 42, 68, 0.12), transparent 30%),
+        linear-gradient(180deg, #f8fafc 0%, #eef5f1 48%, #f8fafc 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    .fade-in {
-      animation: fadeIn 0.8s ease-in-out;
+
+    a {
+      text-decoration: none;
     }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .nav-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 14px 28px;
+    }
+
+    .nav-link {
+      position: relative;
+      color: #475569;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: color 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--navy);
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -7px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--green);
+      transition: width 0.25s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.70);
+      box-shadow: 0 24px 70px rgba(15, 42, 68, 0.10);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      pointer-events: none;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+
+    .orb-one {
+      width: 260px;
+      height: 260px;
+      top: 40px;
+      left: -100px;
+      background: rgba(34, 197, 94, 0.13);
+    }
+
+    .orb-two {
+      width: 320px;
+      height: 320px;
+      right: -130px;
+      top: 10px;
+      background: rgba(15, 42, 68, 0.11);
+      animation-delay: -3s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
       }
+      50% {
+        transform: translate3d(0, 18px, 0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      animation: reveal 0.7s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.08s; }
+    .delay-2 { animation-delay: 0.16s; }
+    .delay-3 { animation-delay: 0.24s; }
+
+    @keyframes reveal {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
+    .section-card {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 14px 40px rgba(15, 42, 68, 0.055);
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 48px rgba(15, 42, 68, 0.09);
+      border-color: rgba(34, 197, 94, 0.20);
+    }
+
+    .section-number {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), rgba(74, 222, 128, 0.06));
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .policy-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 13px;
+    }
+
+    .policy-list li {
+      position: relative;
+      padding: 15px 16px 15px 43px;
+      border-radius: 16px;
+      background: rgba(248, 250, 252, 0.82);
+      border: 1px solid rgba(15, 42, 68, 0.065);
+      color: #475569;
+      line-height: 1.75;
+      font-size: 0.93rem;
+    }
+
+    .policy-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 16px;
+      top: 15px;
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .important {
+      border-color: rgba(34, 197, 94, 0.20) !important;
+      background: linear-gradient(
+        135deg,
+        rgba(34, 197, 94, 0.09),
+        rgba(255, 255, 255, 0.78)
+      ) !important;
+    }
+
+    .fee-highlight {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 12px 15px;
+      border-radius: 14px;
+      background: rgba(15, 42, 68, 0.045);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .mobile-menu {
+      display: none;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-link {
+      display: block;
+      padding: 11px 0;
+      color: #475569;
+      font-size: 0.92rem;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(15, 42, 68, 0.06);
+    }
+
+    .footer-link {
+      color: #94a3b8;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: white;
+    }
+
+    @media (max-width: 1150px) {
+      .desktop-nav {
+        display: none;
+      }
+
+      .mobile-toggle {
+        display: inline-flex !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-wrap {
+        padding: 12px 17px;
+      }
+
+      .brand-logo {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 62px !important;
+        padding-bottom: 46px !important;
+      }
+
+      .section-card {
+        padding: 20px;
+        border-radius: 20px;
+      }
+
+      .policy-list li {
+        padding-left: 38px;
+        font-size: 0.88rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-  <!-- HEADER -->
-  <header class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-lg font-bold text-green-600">Mentora Edge</h1>
-      <a href="index.html" class="text-sm text-green-600 hover:underline">
-        Back to Home
-      </a>
+  <!-- HEADER / MASTER NAVIGATION -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="flex items-center justify-between gap-6">
+
+        <a href="index.html" class="flex items-center gap-3 shrink-0" aria-label="Mentora Edge Home">
+          <img
+            src="Assets/Images/mentora-edge-logo.png"
+            alt="Mentora Edge logo"
+            class="brand-logo"
+          />
+
+          <div class="hidden sm:block">
+            <div class="text-[15px] font-extrabold tracking-tight text-[#0F2A44]">
+              Mentora Edge
+            </div>
+            <div class="text-[9px] font-semibold tracking-[0.14em] uppercase text-slate-400">
+              Shaping Minds · Sharpening Futures
+            </div>
+          </div>
+        </a>
+
+        <nav class="desktop-nav flex items-center gap-5 xl:gap-6" aria-label="Primary navigation">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="programs.html" class="nav-link">Programs</a>
+          <a href="offline.html" class="nav-link">Offline Coaching</a>
+          <a href="online.html" class="nav-link">Online Tuition</a>
+          <a href="educators.html" class="nav-link">Educators</a>
+          <a href="learning-platform.html" class="nav-link">Learning Platform</a>
+          <a href="resources.html" class="nav-link">Resources</a>
+          <a href="about.html" class="nav-link">About</a>
+        </nav>
+
+        <div class="hidden xl:flex items-center gap-3 shrink-0">
+          <a
+            href="login.html"
+            class="rounded-xl px-4 py-2.5 text-xs font-bold text-[#0F2A44] border border-slate-200 bg-white/70 hover:bg-white transition"
+          >
+            Login
+          </a>
+
+          <a
+            href="enquiry.html"
+            class="rounded-xl px-4 py-2.5 text-xs font-bold text-white bg-[#0F2A44] shadow-lg shadow-slate-900/10 hover:-translate-y-0.5 transition"
+          >
+            Book an Enquiry
+          </a>
+        </div>
+
+        <button
+          type="button"
+          id="menuButton"
+          class="mobile-toggle hidden items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-white/70 text-[#0F2A44]"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="mobileMenu" class="mobile-menu mt-3">
+        <a href="index.html" class="mobile-link">Home</a>
+        <a href="programs.html" class="mobile-link">Programs</a>
+        <a href="offline.html" class="mobile-link">Offline Coaching</a>
+        <a href="online.html" class="mobile-link">Online Tuition</a>
+        <a href="educators.html" class="mobile-link">Educators</a>
+        <a href="learning-platform.html" class="mobile-link">Learning Platform</a>
+        <a href="resources.html" class="mobile-link">Resources</a>
+        <a href="about.html" class="mobile-link">About</a>
+        <a href="login.html" class="mobile-link">Login</a>
+        <a href="enquiry.html" class="mobile-link">Book an Enquiry</a>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="max-w-4xl mx-auto px-6 py-12 fade-in">
-    <div class="bg-white rounded-2xl shadow-lg p-8 md:p-10">
+  <!-- HERO -->
+  <section class="hero relative overflow-hidden pt-24 pb-20">
+    <div class="hero-orb orb-one"></div>
+    <div class="hero-orb orb-two"></div>
 
-      <h2 class="text-2xl font-bold text-center text-green-600 mb-2">
+    <div class="relative max-w-5xl mx-auto px-5 sm:px-6 text-center">
+      <div class="reveal inline-flex items-center gap-2 rounded-full border border-green-200/70 bg-white/70 px-4 py-2 text-xs font-bold text-[#0F2A44] shadow-sm backdrop-blur">
+        <span class="h-2 w-2 rounded-full bg-[#22C55E]"></span>
+        Legal · Terms & Conditions
+      </div>
+
+      <h1 class="reveal delay-1 mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0F2A44]">
         Terms & Conditions
-      </h2>
-      <p class="text-center text-sm text-gray-500 mb-8">
-        Last updated: January 2026
+      </h1>
+
+      <p class="reveal delay-2 max-w-2xl mx-auto mt-5 text-sm sm:text-base leading-7 text-slate-600">
+        The policies and responsibilities that apply to students and parents/guardians
+        enrolled with Mentora Edge.
       </p>
 
-      <ul class="space-y-4 text-sm leading-relaxed text-gray-700">
+      <div class="reveal delay-3 mt-6 text-xs font-semibold text-slate-400">
+        Last updated: January 2026
+      </div>
+    </div>
+  </section>
 
-        <li>
-          Admission to Mentora Edge is strictly based on submission of valid and accurate information by the student or guardian.
-        </li>
+  <!-- CONTENT -->
+  <main class="max-w-5xl mx-auto px-5 sm:px-6 pb-20">
 
-        <li>
-          Once enrolled, students may add new courses but cannot withdraw from their existing courses under any circumstances.
-        </li>
+    <div class="glass rounded-[30px] p-5 sm:p-8 lg:p-10">
 
-        <li>
-          All fees once paid are strictly <strong>non-refundable</strong> under any circumstances.
-        </li>
+      <!-- INTRO -->
+      <div class="mb-8 rounded-2xl border border-green-100 bg-gradient-to-br from-green-50/80 to-white/70 p-5 sm:p-6">
+        <p class="text-sm sm:text-[15px] leading-7 text-slate-600">
+          These Terms & Conditions set out the rules, policies, responsibilities,
+          and expectations applicable to students and parents/guardians using
+          Mentora Edge's educational services. By enrolling at Mentora Edge,
+          students and parents/guardians acknowledge that they have read,
+          understood, and agreed to abide by these terms and any official updates
+          communicated by the institute.
+        </p>
+      </div>
 
-        <li>
-          Weekly tests are conducted to assess academic performance. Any form of misconduct, cheating, or unfair means during tests may result in disciplinary action, including suspension or termination.
-        </li>
+      <div class="grid gap-5">
 
-        <li>
-          <strong>
-            Progress reports of weekly tests will be provided and must be shown to parents/guardians and signed by them.
-          </strong>
-        </li>
+        <!-- 01 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">01</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Admission & Information
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Requirements for enrolment and student information.
+              </p>
+            </div>
+          </div>
 
-        <li>
-          <strong>
-            Students must submit electronic gadgets (including smartphones, smartwatches, or similar devices) at the office to maintain classroom discipline.
-          </strong>
-        </li>
+          <ul class="policy-list">
+            <li>
+              Admission to Mentora Edge is strictly based on submission of valid
+              and accurate information by the student or guardian.
+            </li>
+          </ul>
+        </section>
 
-        <li>
-          <strong>
-            In case of loss of submitted belongings, equivalent reimbursement will be made by the institute.
-          </strong>
-        </li>
+        <!-- 02 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">02</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Courses & Withdrawal
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Conditions applicable after enrolment.
+              </p>
+            </div>
+          </div>
 
-        <li>
-          <strong>
-            Students must wear the ID card issued by Mentora Edge every day while attending coaching classes.
-          </strong>
-        </li>
+          <ul class="policy-list">
+            <li>
+              Once enrolled, students may add new courses but cannot withdraw
+              from their existing courses under any circumstances.
+            </li>
+          </ul>
+        </section>
 
-        <li>
-          <strong>
-            Monthly fees must be paid by the 10th of each month.
-          </strong>
-          For genuine reasons, a grace period of <strong>3 days</strong> will be provided.
-          <strong>
-            Delay beyond this period will incur a fine of ₹25 per day.
-          </strong>
-        </li>
+        <!-- 03 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">03</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Fees & Payment
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Fee payment requirements and applicable late charges.
+              </p>
+            </div>
+          </div>
 
-        <li>
-          Students are expected to maintain discipline, punctuality, regular attendance, and respectful conduct towards faculty, staff, and fellow students.
-        </li>
+          <ul class="policy-list">
+            <li class="important">
+              All fees once paid are strictly <strong>non-refundable</strong>
+              under any circumstances.
+            </li>
 
-        <li>
-          Study materials provided by Mentora Edge are strictly for personal academic use and must not be shared, copied, reproduced, or distributed in any form.
-        </li>
+            <li class="important">
+              Monthly fees must be paid by the <strong>10th of each month</strong>.
+              For genuine reasons, a grace period of <strong>3 days</strong>
+              will be provided. Delay beyond this period will incur a fine of
+              <strong>₹25 per day</strong>.
+            </li>
+          </ul>
 
-        <li>
-          Mentora Edge reserves the right to modify schedules, faculty, curriculum, policies, or rules when required. Any changes will be communicated through official announcements.
-        </li>
+          <div class="fee-highlight">
+            <span>Monthly fee deadline: 10th</span>
+            <span class="text-slate-300">•</span>
+            <span>Grace period: 3 days</span>
+            <span class="text-slate-300">•</span>
+            <span>Late fine: ₹25/day</span>
+          </div>
+        </section>
 
-        <li>
-          Student data is stored securely and will not be shared with third parties without consent, except where disclosure is required by law.
-        </li>
+        <!-- 04 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">04</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Tests & Academic Conduct
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Assessment, progress reporting, and academic integrity.
+              </p>
+            </div>
+          </div>
 
-        <li>
-          By enrolling at Mentora Edge, students and parents/guardians acknowledge that they have read, understood, and agreed to abide by all rules, policies, and updates issued by the institute.
-        </li>
+          <ul class="policy-list">
+            <li>
+              Weekly tests are conducted to assess academic performance.
+              Any form of misconduct, cheating, or unfair means during tests
+              may result in disciplinary action, including suspension or
+              termination.
+            </li>
 
-      </ul>
+            <li class="important">
+              <strong>
+                Progress reports of weekly tests will be provided and must be
+                shown to parents/guardians and signed by them.
+              </strong>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 05 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">05</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Electronic Gadgets & Belongings
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Classroom discipline and submitted belongings.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li class="important">
+              <strong>
+                Students must submit electronic gadgets, including
+                smartphones, smartwatches, or similar devices, at the office
+                to maintain classroom discipline.
+              </strong>
+            </li>
+
+            <li class="important">
+              <strong>
+                In case of loss of submitted belongings, equivalent
+                reimbursement will be made by the institute.
+              </strong>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 06 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">06</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Identity Card
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Identification during coaching classes.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li class="important">
+              <strong>
+                Students must wear the ID card issued by Mentora Edge every
+                day while attending coaching classes.
+              </strong>
+            </li>
+          </ul>
+        </section>
+
+        <!-- 07 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">07</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Discipline, Attendance & Conduct
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Expected behaviour within the Mentora Edge learning environment.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              Students are expected to maintain discipline, punctuality,
+              regular attendance, and respectful conduct towards faculty,
+              staff, and fellow students.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 08 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">08</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Study Materials & Intellectual Use
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Conditions for using educational material supplied by the institute.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              Study materials provided by Mentora Edge are strictly for
+              personal academic use and must not be shared, copied,
+              reproduced, or distributed in any form.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 09 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">09</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Changes to Institute Policies
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Updates to schedules, faculty, curriculum, and rules.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              Mentora Edge reserves the right to modify schedules, faculty,
+              curriculum, policies, or rules when required. Any changes will
+              be communicated through official announcements.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 10 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">10</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Student Data
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                The current policy regarding student information.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li>
+              Student data is stored securely and will not be shared with
+              third parties without consent, except where disclosure is
+              required by law.
+            </li>
+          </ul>
+        </section>
+
+        <!-- 11 -->
+        <section class="section-card">
+          <div class="flex items-start gap-4">
+            <div class="section-number">11</div>
+            <div>
+              <h2 class="text-xl font-extrabold text-[#0F2A44]">
+                Acceptance of Terms
+              </h2>
+              <p class="mt-1 text-sm text-slate-500">
+                Agreement by students and parents/guardians.
+              </p>
+            </div>
+          </div>
+
+          <ul class="policy-list">
+            <li class="important">
+              By enrolling at Mentora Edge, students and parents/guardians
+              acknowledge that they have read, understood, and agreed to
+              abide by all rules, policies, and updates issued by the institute.
+            </li>
+          </ul>
+        </section>
+
+      </div>
+
+      <!-- CONTACT / LEGAL NAVIGATION -->
+      <div class="mt-8 rounded-2xl border border-slate-200/80 bg-white/60 p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 class="font-extrabold text-[#0F2A44]">
+              Questions about these terms?
+            </h2>
+            <p class="mt-1 text-sm leading-6 text-slate-500">
+              For enquiries regarding Mentora Edge policies or enrolment,
+              please contact the institute.
+            </p>
+          </div>
+
+          <a
+            href="enquiry.html"
+            class="inline-flex items-center justify-center rounded-xl bg-[#0F2A44] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-slate-900/10 hover:-translate-y-0.5 transition"
+          >
+            Book an Enquiry
+          </a>
+        </div>
+      </div>
+
     </div>
   </main>
 
   <!-- FOOTER -->
-  <footer class="text-center text-sm text-gray-500 py-6">
-    © 2025 Mentora Edge. All rights reserved. ·
-    <a href="privacy.html" class="text-blue-600 hover:underline">Privacy Policy</a>
+  <footer class="bg-[#0F2A44] text-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 py-12">
+
+      <div class="grid gap-10 md:grid-cols-4">
+
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-3">
+            <img
+              src="Assets/Images/mentora-edge-logo.png"
+              alt="Mentora Edge logo"
+              class="w-11 h-11 object-contain rounded-xl bg-white/95 p-1"
+            />
+            <div>
+              <div class="font-extrabold text-lg">Mentora Edge</div>
+              <div class="text-[10px] uppercase tracking-[0.14em] text-slate-300">
+                Shaping Minds · Sharpening Futures
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-5 max-w-md text-sm leading-7 text-slate-300">
+            Premium CBSE education built around every student, with offline
+            coaching in Begusarai and online personal tuition.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-extrabold">Explore</h3>
+          <div class="mt-4 grid gap-2 text-sm">
+            <a href="programs.html" class="footer-link">Programs</a>
+            <a href="offline.html" class="footer-link">Offline Coaching</a>
+            <a href="online.html" class="footer-link">Online Tuition</a>
+            <a href="educators.html" class="footer-link">Educators</a>
+            <a href="resources.html" class="footer-link">Resources</a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-extrabold">Legal & Support</h3>
+          <div class="mt-4 grid gap-2 text-sm">
+            <a href="terms.html" class="footer-link">Terms & Conditions</a>
+            <a href="privacy.html" class="footer-link">Privacy Policy</a>
+            <a href="enquiry.html" class="footer-link">Book an Enquiry</a>
+            <a href="login.html" class="footer-link">Student Login</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-xs text-slate-400">
+        <p>© 2026 Mentora Edge. All rights reserved.</p>
+        <p>Suhird Nagar, Opposite Circuit House, Begusarai, Bihar, India</p>
+      </div>
+
+    </div>
   </footer>
+
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener("click", () => {
+        const isOpen = mobileMenu.classList.toggle("open");
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      mobileMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.remove("open");
+          menuButton.setAttribute("aria-expanded", "false");
+        });
+      });
+    }
+  </script>
 
 </body>
 </html>
