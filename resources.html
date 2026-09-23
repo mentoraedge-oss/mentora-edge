@@ -1857,6 +1857,7 @@
 
         <!-- ================= RESOURCE CARDS ================= -->
         <div class="resource-grid stagger" id="resourceGrid">
+          <div id="cmsLoading" aria-live="polite" style="grid-column:1/-1;display:none;"></div>
 
           <!--
             CMS PLACEHOLDER:
@@ -2532,11 +2533,25 @@
     (async function loadPublishedResources() {
       try {
         const { db } = await import('./js/firebase.js');
-        const { collection, getDocs } = await import(
+        const { collection, getDocs, query, where } = await import(
           'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
         );
 
-        const snapshot = await getDocs(collection(db, 'resources'));
+        /*
+          IMPORTANT:
+          Firestore security rules only allow public reads when
+          resources/{resourceId}.status == "published".
+
+          Therefore the public page must query only published documents.
+          Reading the entire "resources" collection first would be rejected
+          by Firestore rules because the query also asks for unpublished docs.
+        */
+        const publishedQuery = query(
+          collection(db, 'resources'),
+          where('status', '==', 'published')
+        );
+
+        const snapshot = await getDocs(publishedQuery);
 
         const published = [];
         snapshot.forEach(docSnap => {
@@ -2593,7 +2608,11 @@
 
       } catch (error) {
         console.error('Mentora Edge Resource CMS could not load:', error);
-        /* Keep the existing static resource cards visible. */
+        /*
+          Keep the existing static resource cards visible.
+          The most important Firebase failure is logged above so it can be
+          diagnosed without turning the public page into a blank screen.
+        */
         updateResources();
       }
     })();
