@@ -163,6 +163,9 @@ textarea.input{min-height:110px;resize:vertical}
 }
 .content-editor:focus{border-color:rgba(34,197,94,.48);box-shadow:0 0 0 4px rgba(34,197,94,.08)}
 .content-editor h2,.content-editor h3{color:var(--navy)}
+.file-status{margin-top:6px;color:#7a8a9b;font-size:8px;line-height:1.5}
+.file-status a{color:#16883f;font-weight:850}
+.upload-note{margin-top:5px;color:#8492a1;font-size:8px;line-height:1.5}
 .content-editor img{max-width:100%;border-radius:12px}
 .toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid rgba(15,42,68,.08);border-bottom:0;border-radius:13px 13px 0 0;background:rgba(248,250,252,.75)}
 .tool-btn{border:0;border-radius:8px;padding:7px 9px;background:rgba(15,42,68,.05);color:var(--navy);font-size:9px;font-weight:900}
@@ -418,7 +421,18 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
                 <div class="field"><label class="label">Chapter / Topic</label><input id="resourceChapter" class="input" placeholder="Chapter or topic name"></div>
                 <div class="field full"><label class="label">Short Description</label><textarea id="resourceDescription" class="input" placeholder="Brief description shown on resource cards and previews."></textarea></div>
                 <div class="field"><label class="label">Thumbnail Image</label><input id="resourceThumbnail" class="input-file" type="file" accept="image/*"></div>
-                <div class="field"><label class="label">Resource File / PDF</label><input id="resourceFile" class="input-file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,image/*"></div>
+                <div class="field">
+                  <label class="label">Upload Resource PDF</label>
+                  <input id="resourceFile" class="input-file" type="file" accept=".pdf,application/pdf">
+                  <div class="upload-note">Upload the downloadable PDF version of the notes.</div>
+                  <div id="resourceFileStatus" class="file-status">No PDF uploaded for this resource.</div>
+                </div>
+                <div class="field">
+                  <label class="label">Upload HTML Notes</label>
+                  <input id="resourceHtmlFile" class="input-file" type="file" accept=".html,text/html">
+                  <div class="upload-note">Upload the web-readable HTML notes version.</div>
+                  <div id="resourceHtmlFileStatus" class="file-status">No HTML notes uploaded for this resource.</div>
+                </div>
                 <div class="field full">
                   <label class="label">Resource Content</label>
                   <div class="content-wrap">
@@ -580,7 +594,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
           <div class="section-head"><div><h2 class="section-title"><span class="section-icon">⚙</span>Admin Settings</h2><p class="section-description">Reference settings for the current Mentora Edge administration setup.</p></div></div>
           <div class="grid-2">
             <div class="notice info"><strong>Firebase:</strong> Authentication, Firestore and Storage are connected through <strong>js/firebase.js</strong>.</div>
-            <div class="notice info"><strong>Resource collection:</strong> <strong>resources</strong> is the proposed CMS collection for structured resources.</div>
+            <div class="notice info"><strong>Resource collection:</strong> <strong>resources</strong> stores structured resource records, downloadable PDFs and web-readable HTML notes.</div>
             <div class="notice success"><strong>Legacy materials:</strong> The existing <strong>materials</strong> collection remains untouched for the student dashboard.</div>
             <div class="notice warning"><strong>SEO rendering:</strong> The stored SEO data needs to be consumed by the public resource detail page to become live per-resource HTML metadata.</div>
           </div>
@@ -943,6 +957,9 @@ function resetResourceEditor(){
   $("resourceDescription").value="";
   $("resourceThumbnail").value="";
   $("resourceFile").value="";
+  $("resourceHtmlFile").value="";
+  $("resourceFileStatus").textContent="No PDF uploaded for this resource.";
+  $("resourceHtmlFileStatus").textContent="No HTML notes uploaded for this resource.";
   $("resourceContent").innerHTML="";
   $("resourcePublished").checked=false;
   $("deleteResourceBtn").style.display="none";
@@ -975,6 +992,16 @@ $("resourceThumbnail").addEventListener("change",()=>{
   reader.readAsDataURL(file);
 });
 
+$("resourceFile").addEventListener("change",()=>{
+  const file=$("resourceFile").files[0];
+  $("resourceFileStatus").textContent=file?`Selected PDF: ${file.name}`:"No PDF uploaded for this resource.";
+});
+
+$("resourceHtmlFile").addEventListener("change",()=>{
+  const file=$("resourceHtmlFile").files[0];
+  $("resourceHtmlFileStatus").textContent=file?`Selected HTML: ${file.name}`:"No HTML notes uploaded for this resource.";
+});
+
 async function uploadOptionalFile(file,folder){
   if(!file)return "";
   const storageRef=ref(storage,`${folder}/${Date.now()}_${file.name}`);
@@ -996,11 +1023,14 @@ async function saveResource(status){
   try{
     let thumbnailURL="";
     let fileURL="";
+    let htmlURL="";
     const thumbFile=$("resourceThumbnail").files[0];
     const resourceFile=$("resourceFile").files[0];
+    const resourceHtmlFile=$("resourceHtmlFile").files[0];
 
     if(thumbFile)thumbnailURL=await uploadOptionalFile(thumbFile,"resources/thumbnails");
     if(resourceFile)fileURL=await uploadOptionalFile(resourceFile,"resources/files");
+    if(resourceHtmlFile)htmlURL=await uploadOptionalFile(resourceHtmlFile,"resources/html");
 
     const slug=$("resourceSlug").value.trim()||slugify(title);
     const existing=currentResourceId?await getDoc(doc(db,"resources",currentResourceId)):null;
@@ -1018,6 +1048,9 @@ async function saveResource(status){
       status,
       thumbnail:thumbnailURL||old.thumbnail||"",
       fileURL:fileURL||old.fileURL||"",
+      fileName:resourceFile?.name||old.fileName||"",
+      htmlURL:htmlURL||old.htmlURL||"",
+      htmlFileName:resourceHtmlFile?.name||old.htmlFileName||"",
       author:currentUser?.email||old.author||"admin",
       seoTitle:old.seoTitle||title,
       metaDescription:old.metaDescription||$("resourceDescription").value.trim(),
@@ -1140,6 +1173,13 @@ $("resourcesTable").addEventListener("click",async e=>{
     $("resourcePublished").checked=r.status==="published";
     $("resourceThumbnail").value="";
     $("resourceFile").value="";
+    $("resourceHtmlFile").value="";
+    $("resourceFileStatus").innerHTML=r.fileURL
+      ? `Current PDF: <a href="${escapeHTML(r.fileURL)}" target="_blank" rel="noopener">${escapeHTML(r.fileName||"Open PDF")}</a>`
+      : "No PDF uploaded for this resource.";
+    $("resourceHtmlFileStatus").innerHTML=r.htmlURL
+      ? `Current HTML: <a href="${escapeHTML(r.htmlURL)}" target="_blank" rel="noopener">${escapeHTML(r.htmlFileName||"Open HTML")}</a>`
+      : "No HTML notes uploaded for this resource.";
     $("deleteResourceBtn").style.display="inline-block";
     if(r.thumbnail)$("previewThumb").innerHTML=`<img src="${escapeHTML(r.thumbnail)}" alt="${escapeHTML(r.title||"")}">`;
     else $("previewThumb").textContent="📚";
