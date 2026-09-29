@@ -17,12 +17,12 @@
 
   <meta
     name="description"
-    content="Learn about Mentora Edge, a premium CBSE coaching institute offering personalised offline coaching in Begusarai and online personal tuition for Classes VI–XII."
+    content="Learn about Mentora Edge, a premium CBSE coaching institute offering personalised offline coaching in Begusarai and online personal tuition for Classes IX–XII."
   >
 
   <meta
     name="keywords"
-    content="Mentora Edge, CBSE coaching institute, CBSE coaching Begusarai, online CBSE tuition, Classes VI XII, CBSE personal tuition"
+    content="Mentora Edge, CBSE coaching institute, CBSE coaching Begusarai, online CBSE tuition, Classes IX XII, CBSE personal tuition"
   >
 
   <link rel="canonical" href="https://mentoraedge.online/about.html">
@@ -89,7 +89,7 @@
         </a>
 
         <nav class="nav-links" aria-label="Primary navigation">
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="index.html">Home</a>
           <a class="nav-link" href="programs.html">Programs</a>
           <a class="nav-link" href="offline.html">Offline Coaching</a>
           <a class="nav-link" href="online-tution.html">Online Tuition</a>
@@ -115,7 +115,7 @@
       </div>
 
       <div class="mobile-menu" id="mobileMenu">
-        <a href="index.html">
+        <a href="index.html">Home</a>
         <a href="programs.html">Programs</a>
         <a href="offline.html">Offline Coaching</a>
         <a href="online-tution.html">Online Tuition</a>
@@ -269,7 +269,7 @@
       </p>
 
       <p class="text-gray-600 leading-relaxed mb-5">
-        Built around the CBSE curriculum for Classes VI–XII, Mentora
+        Built around the CBSE curriculum for Classes IX–XII, Mentora
         Edge brings together experienced educators, organised courses,
         periodic assessments and digital learning support into one
         connected academic experience.
@@ -984,11 +984,12 @@
 
         <div class="flex items-center gap-5">
 
-          <div
-            class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-[#1E4E79] flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+          <img
+            src="Assets/Images/ranita-munshi.jpeg"
+            alt="Ranita Munshi, English Educator at Mentora Edge"
+            class="w-20 h-20 rounded-2xl object-cover shadow-lg"
+            loading="lazy"
           >
-            RM
-          </div>
 
           <div>
 
@@ -1032,11 +1033,12 @@
 
         <div class="flex items-center gap-5">
 
-          <div
-            class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-[#1E4E79] flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+          <img
+            src="Assets/Images/subir-munshi.jpeg"
+            alt="Subir Munshi, Social Science Educator at Mentora Edge"
+            class="w-20 h-20 rounded-2xl object-cover shadow-lg"
+            loading="lazy"
           >
-            SM
-          </div>
 
           <div>
 
@@ -1312,7 +1314,7 @@
 
           <p>
             Shaping Minds, Sharpening Futures. Structured CBSE learning
-            for Classes VI–XII through offline coaching, online personal
+            for Classes IX–XII through offline coaching, online personal
             tuition and digital learning support.
           </p>
 
@@ -1389,9 +1391,29 @@ if (menuBtn && mobileMenu) {
   });
 }
 
+const parallaxElements = Array.from(document.querySelectorAll(".parallax"), element => ({
+  element,
+  speed: parseFloat(element.dataset.speed) || 0.2
+}));
+const heroContent = document.querySelector(".hero-content");
+let scrollFrame = 0;
+
 const onNavScroll = () => {
-  if (!siteHeader) return;
-  siteHeader.classList.toggle("scrolled", window.scrollY > 25);
+  if (scrollFrame) return;
+  scrollFrame = window.requestAnimationFrame(() => {
+    const scrollY = window.scrollY;
+    if (siteHeader) siteHeader.classList.toggle("scrolled", scrollY > 25);
+
+    parallaxElements.forEach(({ element, speed }) => {
+      element.style.transform = `translate3d(0, ${scrollY * speed}px, 0)`;
+    });
+
+    if (heroContent && scrollY < 500) {
+      heroContent.style.transform = `scale(${1 + scrollY * 0.00015})`;
+    }
+
+    scrollFrame = 0;
+  });
 };
 
 window.addEventListener("scroll", onNavScroll, { passive: true });
@@ -1433,66 +1455,6 @@ reveals.forEach(element => {
 });
 
 
-
-/* ========================================================= */
-/* PARALLAX EFFECT */
-/* ========================================================= */
-
-window.addEventListener(
-  "scroll",
-  () => {
-
-    const scrollY = window.scrollY;
-
-    document
-      .querySelectorAll(".parallax")
-      .forEach(element => {
-
-        const speed =
-          parseFloat(element.dataset.speed) || 0.2;
-
-        element.style.transform =
-          `translateY(${scrollY * speed}px)`;
-
-      });
-
-  },
-  {
-    passive: true
-  }
-);
-
-
-
-/* ========================================================= */
-/* HERO SCROLL SCALE */
-/* ========================================================= */
-
-window.addEventListener(
-  "scroll",
-  () => {
-
-    const hero = document.querySelector(".hero-content");
-
-    if (!hero) return;
-
-    const scrollY = window.scrollY;
-
-    if (scrollY < 500) {
-
-      const scale =
-        1 + scrollY * 0.00015;
-
-      hero.style.transform =
-        `scale(${scale})`;
-
-    }
-
-  },
-  {
-    passive: true
-  }
-);
 
 
 

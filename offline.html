@@ -8,11 +8,11 @@
   <title>CBSE Coaching Institute in Begusarai | Mentora Edge</title>
   <meta
     name="description"
-    content="Mentora Edge offers personalised offline CBSE coaching for Classes VI–XII in Begusarai, Bihar, with structured courses, experienced educators, periodic assessments and digital learning support."
+    content="Mentora Edge offers personalised offline CBSE coaching for Classes IX-XII in Begusarai, Bihar, with structured courses, experienced educators, periodic assessments and digital learning support."
   />
   <meta
     name="keywords"
-    content="CBSE coaching institute in Begusarai, CBSE coaching Begusarai, CBSE tuition Begusarai, offline CBSE coaching, CBSE classes Begusarai, Classes VI XII coaching Begusarai"
+    content="CBSE coaching institute in Begusarai, CBSE coaching Begusarai, CBSE tuition Begusarai, offline CBSE coaching, CBSE classes Begusarai, Classes IX-XII coaching Begusarai"
   />
   <meta name="author" content="Mentora Edge" />
   <meta name="robots" content="index, follow" />
@@ -26,7 +26,7 @@
   />
   <meta
     property="og:description"
-    content="Personalised offline CBSE coaching for Classes VI–XII in Begusarai, Bihar."
+    content="Personalised offline CBSE coaching for Classes IX-XII in Begusarai, Bihar."
   />
   <meta property="og:url" content="https://mentoraedge.online/offline.html" />
   <meta property="og:site_name" content="Mentora Edge" />
@@ -1003,7 +1003,7 @@
               class="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-2xl"
             >
               Personalised offline CBSE coaching for
-              <strong class="text-primary">Classes VI–XII</strong>,
+              <strong class="text-primary">Classes IX-XII</strong>,
               combining structured learning, experienced educators,
               periodic assessments and digital learning support.
             </p>
@@ -1032,7 +1032,7 @@
             >
               <span class="flex items-center gap-2">
                 <span class="text-accent">✓</span>
-                Classes VI–XII
+                Classes IX-XII
               </span>
 
               <span class="flex items-center gap-2">
@@ -1456,13 +1456,13 @@
           <h2
             class="mt-3 text-3xl sm:text-4xl font-extrabold text-primary"
           >
-            Programs for Classes VI–XII
+            Programs for Classes IX-XII
           </h2>
 
           <p
             class="mt-5 text-lg text-slate-600 leading-relaxed"
           >
-            Explore our academic programmes across three learning stages.
+            Explore our academic programmes across two learning stages.
             Current subject offerings and programme fees can be viewed
             on the Programs page.
           </p>
@@ -1471,43 +1471,8 @@
 
 
         <div
-          class="mt-12 grid md:grid-cols-3 gap-6"
+          class="mt-12 grid md:grid-cols-2 gap-6"
         >
-
-          <!-- Middle School -->
-
-          <a
-            href="programs.html#middle-school"
-            class="program-card glass rounded-3xl p-7 reveal reveal-delay-1 group"
-          >
-
-            <div
-              class="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center text-xl shadow-lg"
-            >
-              VI–VIII
-            </div>
-
-            <h3
-              class="mt-6 text-2xl font-extrabold text-primary"
-            >
-              Middle School
-            </h3>
-
-            <p
-              class="mt-3 text-slate-600 leading-7"
-            >
-              Build strong academic foundations through structured
-              learning and concept-focused guidance.
-            </p>
-
-            <div
-              class="mt-6 text-accent font-bold group-hover:translate-x-1 transition"
-            >
-              Explore Classes VI–VIII →
-            </div>
-
-          </a>
-
 
           <!-- Secondary -->
 
@@ -2110,7 +2075,7 @@
               class="mt-4 text-slate-600 leading-7 text-sm"
             >
               Mentora Edge currently offers academic programmes for
-              Classes VI–XII. Available subjects and programme options
+              Classes IX-XII. Available subjects and programme options
               are listed on the Programs page.
             </p>
           </details>
@@ -2327,7 +2292,7 @@
 
           <p>
             Shaping Minds, Sharpening Futures. Structured CBSE learning
-            for Classes VI–XII through offline coaching, online personal
+            for Classes IX-XII through offline coaching, online personal
             tuition and digital learning support.
           </p>
 
@@ -2412,13 +2377,6 @@
          Navbar Scroll State
       --------------------------------------- */
 
-      const updateHeader = () => {
-        if (siteHeader) siteHeader.classList.toggle("scrolled", window.scrollY > 12);
-      };
-      updateHeader();
-      window.addEventListener("scroll", updateHeader, { passive: true });
-
-
       /* ---------------------------------------
          Reveal Animation
       --------------------------------------- */
@@ -2473,39 +2431,26 @@
           ".hero-glow, .hero-glow-blue"
         );
 
-      let ticking = false;
+      let scrollFrame = 0;
+      const updateScrollEffects = () => {
+        const scrollY = window.scrollY;
+        if (siteHeader) siteHeader.classList.toggle("scrolled", scrollY > 12);
 
-      window.addEventListener(
-        "scroll",
-        () => {
+        heroGlows.forEach((glow, index) => {
+          const movement = scrollY * (index === 0 ? 0.025 : -0.018);
+          glow.style.transform = `translate3d(0, ${movement}px, 0)`;
+        });
 
-          if (!ticking) {
+        scrollFrame = 0;
+      };
 
-            window.requestAnimationFrame(() => {
+      const scheduleScrollEffects = () => {
+        if (scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(updateScrollEffects);
+      };
 
-              const scrollY = window.scrollY;
-
-              heroGlows.forEach((glow, index) => {
-
-                const movement =
-                  scrollY *
-                  (index === 0 ? 0.025 : -0.018);
-
-                glow.style.transform =
-                  `translate3d(0, ${movement}px, 0)`;
-
-              });
-
-              ticking = false;
-
-            });
-
-            ticking = true;
-          }
-
-        },
-        { passive: true }
-      );
+      window.addEventListener("scroll", scheduleScrollEffects, { passive: true });
+      updateScrollEffects();
 
     });
   </script>
@@ -2521,7 +2466,7 @@
     "@type": "EducationalOrganization",
     "name": "Mentora Edge",
     "url": "https://mentoraedge.online/",
-    "description": "Mentora Edge offers personalised CBSE education through offline coaching in Begusarai and online personal tuition for Classes VI–XII.",
+    "description": "Mentora Edge offers personalised CBSE education through offline coaching in Begusarai and online personal tuition for Classes IX-XII.",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Suhird Nagar, Opposite Circuit House",

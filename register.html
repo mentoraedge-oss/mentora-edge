@@ -95,9 +95,18 @@
           </label>
         </div>
 
-        <input id="classField" readonly class="input bg-gray-100"/>
-        <input id="subjectField" readonly class="input bg-gray-100"/>
-        <input id="feeField" readonly class="input bg-gray-100"/>
+        <label class="block text-sm font-semibold text-primary" for="classSelect">Class</label>
+        <select id="classSelect" class="input" required></select>
+
+        <label class="block text-sm font-semibold text-primary" for="offeringSelect">Subject or program</label>
+        <select id="offeringSelect" class="input" required></select>
+
+        <label class="block text-sm font-semibold text-primary" for="frequencySelect">Payment frequency</label>
+        <select id="frequencySelect" class="input" required></select>
+
+        <div id="pricingSummary" class="rounded-xl border border-green-100 bg-green-50/70 p-4 text-sm text-gray-700" aria-live="polite">
+          Choose a valid class, subject or program, and payment frequency.
+        </div>
 
         <!-- PAYMENT -->
         <div class="mt-6 p-6 rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 shadow-lg text-center">
@@ -163,60 +172,27 @@
 <!-- FIREBASE LOGIC (UNCHANGED) -->
 <script type="module">
 import { auth, db } from "./js/firebase.js";
+import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, ALL_SUBJECTS_VALUE, formatINR, getAcademicTier, getOfferingOptions, getPaymentFrequencies, getPlanDetails } from "./js/academic-programs.js";
 import { createUserWithEmailAndPassword } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, setDoc, serverTimestamp } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const params = new URLSearchParams(window.location.search);
-const cls = params.get("class");
-const rawSubject = params.get("subject");
-const subject = rawSubject ? rawSubject.replace(/\+/g, " ") : "";
-const fee = params.get("fee");
+const requestedClass = params.get("class") || "";
+const requestedOffering = params.get("offering") || params.get("subject") || "";
+const requestedFrequency = params.get("frequency") || params.get("paymentFrequency") || "";
 
-classField.value = cls;
-subjectField.value = subject;
-feeField.value = `₹${fee}`;
-feeAmount.innerText = fee;
-
-const inputs = document.querySelectorAll("#registerForm input");
-
-function getLearningFormat() {
-  return document.querySelector('input[name="learningFormat"]:checked')?.value || "";
-}
-
-function validateForm() {
-  const valid = [...inputs].every(input =>
-    input.type === "checkbox" ? input.checked :
-    input.type === "radio" ? true :
-    input.value.trim()
-  );
-
-  const formValid = valid && !!getLearningFormat();
-
-  payBtn.disabled = !formValid;
-  payBtn.classList.toggle("opacity-50", !formValid);
-  payBtn.classList.toggle("cursor-not-allowed", !formValid);
-}
-
-inputs.forEach(i => i.addEventListener("input", validateForm));
-
-const upi = `upi://pay?pa=abirmunshi200@okhdfcbank&pn=Mentora Edge&am=${fee}&cu=INR`;
-qrImage.src =
-  `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upi)}`;
-
-let seconds = 180;
-const interval = setInterval(() => {
-  seconds--;
-  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const s = String(seconds % 60).padStart(2, "0");
-  timer.innerText = `Time left: ${m}:${s}`;
-  if (seconds <= 0) {
-    clearInterval(interval);
-    alert("Payment session expired");
-    location.href = "index.html";
-  }
-}, 1000);
+const registerForm = document.getElementById("registerForm");
+const classSelect = document.getElementById("classSelect");
+const offeringSelect = document.getElementById("offeringSelect");
+const frequencySelect = document.getElementById("frequencySelect");
+const pricingSummary = document.getElementById("pricingSummary");
+const payBtn = document.getElementById("payBtn");
+const qrImage = document.getElementById("qrImage");
+const feeAmount = document.getElementById("feeAmount");
+const timer = document.getElementById("timer");
+const successMsg = document.getElementById("successMsg");
 const nameInput = document.getElementById("name");
 const fatherInput = document.getElementById("fatherName");
 const motherInput = document.getElementById("motherName");
@@ -225,59 +201,195 @@ const passwordInput = document.getElementById("password");
 const mobileInput = document.getElementById("mobile");
 const formatInputs = document.querySelectorAll('input[name="learningFormat"]');
 
-formatInputs.forEach(input => input.addEventListener("change", () => {
-  validateForm();
-  const selected = getLearningFormat();
-  const summary = document.getElementById("formatSummary");
-  const text = document.getElementById("formatSummaryText");
-  const icon = document.querySelector(".format-summary-icon");
+function populateSelect(select, values, placeholder, selectedValue = "") {
+  select.innerHTML = "";
+  const prompt = document.createElement("option");
+  prompt.value = "";
+  prompt.textContent = placeholder;
+  select.appendChild(prompt);
+  values.forEach(item => {
+    const option = document.createElement("option");
+    option.value = typeof item === "string" ? item : item.value;
+    option.textContent = typeof item === "string" ? item : item.label;
+    select.appendChild(option);
+  });
+  select.value = values.some(item => (typeof item === "string" ? item : item.value) === selectedValue)
+    ? selectedValue
+    : "";
+}
 
-  if (selected === "offline") {
-    text.textContent = "Offline Coaching • Begusarai";
-    icon.textContent = "🏫";
-    summary.classList.add("active");
-  } else if (selected === "online") {
-    text.textContent = "Online Personal Tuition";
-    icon.textContent = "💻";
-    summary.classList.add("active");
+function currentPlan() {
+  return getPlanDetails(classSelect.value, offeringSelect.value, frequencySelect.value);
+}
+
+function updateQr(amount) {
+  feeAmount.textContent = Number(amount).toLocaleString("en-IN");
+  const upi = "upi://pay?pa=abirmunshi200@okhdfcbank&pn=Mentora%20Edge&am=" +
+    encodeURIComponent(amount) + "&cu=INR";
+  qrImage.src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+    encodeURIComponent(upi);
+  qrImage.alt = "UPI QR code for " + formatINR(amount);
+}
+
+function renderPricing() {
+  const plan = currentPlan();
+  if (!plan) {
+    pricingSummary.textContent = "Select a valid class, subject or program, and payment frequency.";
+    feeAmount.textContent = "";
+    qrImage.removeAttribute("src");
+    return;
   }
+
+  const isCombo = offeringSelect.value === ALL_SUBJECTS_VALUE;
+  const tier = getAcademicTier(classSelect.value);
+  if (isCombo && frequencySelect.value === "quarterly") {
+    pricingSummary.textContent = "Quarterly plan: " +
+      plan.installments.map(formatINR).join(" + ") +
+      ". Total " + formatINR(plan.total) +
+      ". First installment due now: " + formatINR(plan.amountDue) + ".";
+  } else if (isCombo && frequencySelect.value === "annual") {
+    pricingSummary.textContent = "Annual value: " + formatINR(plan.originalAmount) +
+      ". One-time payment discount: " + formatINR(plan.discount) +
+      ". Final annual price: " + formatINR(plan.total) + ".";
+  } else if (isCombo) {
+    pricingSummary.textContent = "All-subject combo: " + formatINR(plan.total) + " per month.";
+  } else if (tier === "senior") {
+    pricingSummary.textContent = "Classes XI-XII: English, annual only, " + formatINR(plan.total) + " per year.";
+  } else {
+    pricingSummary.textContent = offeringSelect.value + ": " + formatINR(plan.total) + " per month.";
+  }
+  updateQr(plan.amountDue);
+}
+
+function updateFrequencies(preferred = "", rejectInvalidRequest = false) {
+  const frequencies = getPaymentFrequencies(classSelect.value, offeringSelect.value);
+  const labels = { monthly: "Monthly", quarterly: "Quarterly", annual: "Annual" };
+  const options = frequencies.map(value => ({ value, label: labels[value] }));
+  populateSelect(frequencySelect, options, "Select payment frequency", preferred);
+
+  if (!frequencySelect.value && options.length && !(rejectInvalidRequest && preferred)) {
+    frequencySelect.value = options[0].value;
+  }
+  renderPricing();
+  validateForm();
+}
+
+function updateOfferings(preferredOffering = "", preferredFrequency = "", initial = false) {
+  const options = getOfferingOptions(classSelect.value);
+  populateSelect(offeringSelect, options, "Select subject or program", preferredOffering);
+  updateFrequencies(preferredFrequency, initial);
+}
+
+function getLearningFormat() {
+  return document.querySelector('input[name="learningFormat"]:checked')?.value || "";
+}
+
+function validateForm() {
+  const valid = registerForm.checkValidity() &&
+    !!getLearningFormat() &&
+    !!getPlanDetails(classSelect.value, offeringSelect.value, frequencySelect.value);
+  payBtn.disabled = !valid;
+  payBtn.classList.toggle("opacity-50", !valid);
+  payBtn.classList.toggle("cursor-not-allowed", !valid);
+  return valid;
+}
+
+populateSelect(classSelect, ACTIVE_CLASSES, "Select class", requestedClass);
+updateOfferings(requestedOffering, requestedFrequency, true);
+
+classSelect.addEventListener("change", () => updateOfferings());
+offeringSelect.addEventListener("change", () => updateFrequencies());
+frequencySelect.addEventListener("change", () => {
+  renderPricing();
+  validateForm();
+});
+registerForm.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", validateForm);
+  input.addEventListener("change", validateForm);
+});
+
+const formatSummary = document.getElementById("formatSummary");
+const formatSummaryText = document.getElementById("formatSummaryText");
+const formatSummaryIcon = document.querySelector(".format-summary-icon");
+formatInputs.forEach(input => input.addEventListener("change", () => {
+  const selected = getLearningFormat();
+  if (formatSummary && formatSummaryText && formatSummaryIcon) {
+    if (selected === "offline") {
+      formatSummaryText.textContent = "Offline Coaching - Begusarai";
+      formatSummaryIcon.textContent = "School";
+      formatSummary.classList.add("active");
+    } else if (selected === "online") {
+      formatSummaryText.textContent = "Online Personal Tuition";
+      formatSummaryIcon.textContent = "Online";
+      formatSummary.classList.add("active");
+    }
+  }
+  validateForm();
 }));
+
+let seconds = 180;
+const interval = setInterval(() => {
+  seconds--;
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const sec = String(seconds % 60).padStart(2, "0");
+  timer.innerText = "Time left: " + m + ":" + sec;
+  if (seconds <= 0) {
+    clearInterval(interval);
+    alert("Payment session expired");
+    location.href = "index.html";
+  }
+}, 1000);
 
 validateForm();
 
 payBtn.onclick = async () => {
+  if (!validateForm()) {
+    alert("Please select a valid class, subject or program, and payment frequency.");
+    return;
+  }
+  const plan = currentPlan();
+  const isCombo = offeringSelect.value === ALL_SUBJECTS_VALUE;
+  const selectedSubject = isCombo
+    ? ACADEMIC_PROGRAMS.secondary.combo.subjects.join(", ")
+    : offeringSelect.value;
+
   try {
-    payBtn.innerText = "Processing…";
+    payBtn.innerText = "Processing...";
     clearInterval(interval);
 
-    const cred = await createUserWithEmailAndPassword(
-      auth,
-      emailInput.value,
-      passwordInput.value
-    );
-
-    await setDoc(doc(db, "users", cred.user.uid), {
+    const cred = await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+    const profile = {
       name: nameInput.value,
       fatherName: fatherInput.value,
       motherName: motherInput.value,
       email: emailInput.value,
       mobile: mobileInput.value,
       learningFormat: getLearningFormat(),
-      class: cls,
-      subject,
+      class: classSelect.value,
+      subject: selectedSubject,
+      programType: isCombo ? ALL_SUBJECTS_VALUE : "individual-subject",
+      paymentFrequency: frequencySelect.value,
+      feeAmount: plan.amountDue,
+      planTotal: plan.total,
+      paymentDueAtRegistration: plan.amountDue,
       role: "student",
       status: "pending",
       createdAt: serverTimestamp()
-    });
+    };
+    if (plan.originalAmount !== undefined) {
+      profile.annualValue = plan.originalAmount;
+      profile.discount = plan.discount;
+    }
+    if (plan.installments) profile.paymentInstallments = plan.installments;
 
-
+    await setDoc(doc(db, "users", cred.user.uid), profile);
     registerForm.classList.add("hidden");
     successMsg.classList.remove("hidden");
     setTimeout(() => location.href = "index.html", 2500);
-
   } catch (err) {
     alert(err.message);
     payBtn.innerText = "Payment Completed";
+    validateForm();
   }
 };
 </script>
@@ -734,7 +846,25 @@ body::before{
 
 <script>
 const nav = document.querySelector('.site-nav');
-window.addEventListener('scroll',()=>nav && nav.classList.toggle('scrolled',window.scrollY>12),{passive:true});
+const orbOne = document.querySelector('.orb-one');
+const orbTwo = document.querySelector('.orb-two');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let scrollFrame = 0;
+const updateScrollEffects = () => {
+  const y = window.scrollY;
+  if (nav) nav.classList.toggle('scrolled', y > 12);
+  if (!reduceMotion) {
+    orbOne?.style.setProperty('transform',`translate3d(${y*.025}px,${y*.045}px,0)`);
+    orbTwo?.style.setProperty('transform',`translate3d(${-y*.018}px,${-y*.035}px,0)`);
+  }
+  scrollFrame = 0;
+};
+const scheduleScrollEffects = () => {
+  if (scrollFrame) return;
+  scrollFrame = requestAnimationFrame(updateScrollEffects);
+};
+window.addEventListener('scroll',scheduleScrollEffects,{passive:true});
+updateScrollEffects();
 
 const revealObserver = new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
@@ -757,12 +887,6 @@ document.querySelectorAll('.tilt').forEach(card=>{
   card.addEventListener('pointerleave',()=>card.style.transform='');
 });
 
-window.addEventListener('scroll',()=>{
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const y=window.scrollY;
-  document.querySelector('.orb-one')?.style.setProperty('transform',`translate3d(${y*.025}px,${y*.045}px,0)`);
-  document.querySelector('.orb-two')?.style.setProperty('transform',`translate3d(${-y*.018}px,${-y*.035}px,0)`);
-},{passive:true});
 </script>
 
 </body>

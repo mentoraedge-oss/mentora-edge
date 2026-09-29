@@ -27,17 +27,17 @@
 />
 
 <title>
-  Online CBSE Personal Tuition for Classes VI–XII | Mentora Edge
+  Online CBSE Personal Tuition for Classes IX-XII | Mentora Edge
 </title>
 
 <meta
   name="description"
-  content="Online personal tuition for CBSE Classes VI–XII with experienced educators, structured learning, periodic assessments and Mentora Edge digital platform access."
+  content="Online personal tuition for CBSE Classes IX-XII with experienced educators, structured learning, periodic assessments and Mentora Edge digital platform access."
 >
 
 <meta
   name="keywords"
-  content="online CBSE tuition, online personal tuition, CBSE classes VI XII, online coaching, Mentora Edge, online tuition Begusarai"
+  content="online CBSE tuition, online personal tuition, CBSE classes IX-XII, online coaching, Mentora Edge, online tuition Begusarai"
 >
 
 <link
@@ -3757,7 +3757,7 @@ body {
               class="hero-pill-dot">
             </span>
 
-            Online Personal Tuition • Classes VI–XII
+            Online Personal Tuition • Classes IX-XII
 
           </div>
 
@@ -5026,7 +5026,7 @@ body {
 
         Online learning for
         <span class="text-accent">
-          Classes VI–XII
+          Classes IX-XII
         </span>
 
       </h2>
@@ -5045,42 +5045,10 @@ body {
 
     <div
       class="grid
-             md:grid-cols-3
+             md:grid-cols-2
              gap-6
              stagger-children
              reveal">
-
-
-      <!-- MIDDLE -->
-
-      <div
-        class="glass-card
-               program-card"
-        data-tilt>
-
-        <div class="program-icon">
-          VI
-        </div>
-
-        <h3 class="program-title">
-          Middle School
-        </h3>
-
-        <p class="program-text">
-          Classes VI–VIII with structured
-          academic learning and subject support.
-        </p>
-
-        <a
-          href="programs.html#middle-school"
-          class="program-link">
-
-          Explore Programme
-          <span>→</span>
-
-        </a>
-
-      </div>
 
 
       <!-- SECONDARY -->
@@ -5512,7 +5480,7 @@ body {
 
           <p>
             Shaping Minds, Sharpening Futures. Structured CBSE learning
-            for Classes VI–XII through offline coaching, online personal
+            for Classes IX-XII through offline coaching, online personal
             tuition and digital learning support.
           </p>
 
@@ -5773,6 +5741,10 @@ const parallaxElements =
   document.querySelectorAll(
     "[data-parallax]"
   );
+const activeParallax = new Set();
+const parallaxSpeeds = new Map(
+  Array.from(parallaxElements, element => [element, parseFloat(element.dataset.parallax) || 0])
+);
 
 
 let parallaxTicking =
@@ -5800,13 +5772,12 @@ function updateParallax() {
       parallaxElements.forEach(
         element => {
 
+          if (!activeParallax.has(element)) return;
+
           const rect =
             element.getBoundingClientRect();
 
-          const speed =
-            parseFloat(
-              element.dataset.parallax
-            ) || 0;
+          const speed = parallaxSpeeds.get(element) || 0;
 
           const elementCenter =
             rect.top +
@@ -5841,6 +5812,16 @@ if (
   parallaxElements.length
 ) {
 
+  const parallaxObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) activeParallax.add(entry.target);
+      else activeParallax.delete(entry.target);
+    });
+    updateParallax();
+  }, { rootMargin: "120px 0px" });
+
+  parallaxElements.forEach(element => parallaxObserver.observe(element));
+
   window.addEventListener(
     "scroll",
     updateParallax,
@@ -5868,6 +5849,8 @@ const tiltElements =
   document.querySelectorAll(
     "[data-tilt]"
   );
+const canTilt = window.matchMedia("(pointer:fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 
 tiltElements.forEach(
@@ -5891,17 +5874,7 @@ tiltElements.forEach(
       "pointermove",
       event => {
 
-        if (
-          window.innerWidth < 768
-        )
-          return;
-
-        if (
-          window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-          ).matches
-        )
-          return;
+        if (!canTilt) return;
 
 
         if (!rect) {
@@ -5985,27 +5958,21 @@ const magneticButtons =
 magneticButtons.forEach(
   button => {
 
+    let rect;
+
+    button.addEventListener("pointerenter", () => {
+      rect = button.getBoundingClientRect();
+    });
+
 
     button.addEventListener(
       "pointermove",
       event => {
 
-        if (
-          window.innerWidth < 768
-        )
-          return;
+        if (!canTilt) return;
 
 
-        if (
-          window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-          ).matches
-        )
-          return;
-
-
-        const rect =
-          button.getBoundingClientRect();
+        if (!rect) rect = button.getBoundingClientRect();
 
 
         const x =
@@ -6042,6 +6009,7 @@ magneticButtons.forEach(
 
         button.style.transform =
           "";
+        rect = null;
 
       }
     );

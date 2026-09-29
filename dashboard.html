@@ -1043,6 +1043,13 @@
           </div>
 
           <div class="info-card">
+            <div class="info-icon">₹</div>
+            <p>Payment Plan</p>
+            <strong id="studentPaymentPlan">Not recorded</strong>
+            <small id="studentFeePlan">Existing fee history is preserved.</small>
+          </div>
+
+          <div class="info-card">
             <div class="info-icon">⏳</div>
             <p>Status</p>
             <strong id="studentStatusText">Loading...</strong>
@@ -1155,8 +1162,13 @@
     const mobileMenu = document.getElementById("mobileMenu");
     const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
 
+    let navFrame = 0;
     const updateNavbar = () => {
-      navbar.classList.toggle("scrolled", window.scrollY > 25);
+      if (navFrame) return;
+      navFrame = requestAnimationFrame(() => {
+        navbar.classList.toggle("scrolled", window.scrollY > 25);
+        navFrame = 0;
+      });
     };
 
     window.addEventListener("scroll", updateNavbar, { passive:true });
@@ -1253,14 +1265,17 @@
 
       const ambientOrbs = document.querySelectorAll(".orb");
 
+      let parallaxFrame = 0;
       window.addEventListener("scroll", () => {
-        const y = window.scrollY;
-
-        ambientOrbs.forEach((orb,index) => {
-          const speed = [0.018,0.012,0.025][index] || .015;
-          orb.style.translate = `0 ${y * speed}px`;
+        if (parallaxFrame) return;
+        parallaxFrame = requestAnimationFrame(() => {
+          const y = window.scrollY;
+          ambientOrbs.forEach((orb,index) => {
+            const speed = [0.018,0.012,0.025][index] || .015;
+            orb.style.translate = `0 ${y * speed}px`;
+          });
+          parallaxFrame = 0;
         });
-
       }, { passive:true });
 
     }
@@ -1297,6 +1312,8 @@
 
     const studentClass = document.getElementById("studentClass");
     const studentSubject = document.getElementById("studentSubject");
+    const studentPaymentPlan = document.getElementById("studentPaymentPlan");
+    const studentFeePlan = document.getElementById("studentFeePlan");
     const studentStatusText = document.getElementById("studentStatusText");
     const studentIdText = document.getElementById("studentIdText");
 
@@ -1545,6 +1562,18 @@
 
         studentSubject.textContent =
           data.subject || "Not Assigned";
+
+        const frequencyLabels = { monthly: "Monthly", quarterly: "Quarterly", annual: "Annual" };
+        studentPaymentPlan.textContent = frequencyLabels[data.paymentFrequency] || "Not recorded";
+        if (data.planTotal !== undefined && Number.isFinite(Number(data.planTotal))) {
+          const total = "₹" + Number(data.planTotal).toLocaleString("en-IN");
+          const due = data.paymentDueAtRegistration !== undefined && Number.isFinite(Number(data.paymentDueAtRegistration))
+            ? " · due at registration ₹" + Number(data.paymentDueAtRegistration).toLocaleString("en-IN")
+            : "";
+          studentFeePlan.textContent = "Plan total " + total + due;
+        } else {
+          studentFeePlan.textContent = "No plan or price stored on this profile.";
+        }
 
         studentStatusText.textContent =
           data.status || "Pending";

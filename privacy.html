@@ -144,8 +144,8 @@
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.70);
       box-shadow: 0 24px 70px rgba(15, 42, 68, 0.10);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .hero-orb {
@@ -292,13 +292,17 @@
       color: white;
     }
 
-    @media (max-width: 1150px) {
+    @media (max-width: 1319px) {
       .desktop-nav {
-        display: none;
+        display: none !important;
       }
 
       .mobile-toggle {
         display: inline-flex !important;
+      }
+
+      .desktop-actions {
+        display: none !important;
       }
     }
 
@@ -325,6 +329,12 @@
       .policy-list li {
         padding-left: 38px;
         font-size: 0.88rem;
+      }
+
+      .section-card,
+      .section-card * {
+        min-width: 0;
+        overflow-wrap: anywhere;
       }
     }
 
@@ -372,14 +382,14 @@
           <a href="index.html" class="nav-link">Home</a>
           <a href="programs.html" class="nav-link">Programs</a>
           <a href="offline.html" class="nav-link">Offline Coaching</a>
-          <a href="online.html" class="nav-link">Online Tuition</a>
+          <a href="online-tution.html" class="nav-link">Online Tuition</a>
           <a href="educators.html" class="nav-link">Educators</a>
           <a href="learning-platform.html" class="nav-link">Learning Platform</a>
           <a href="resources.html" class="nav-link">Resources</a>
           <a href="about.html" class="nav-link">About</a>
         </nav>
 
-        <div class="hidden xl:flex items-center gap-3 shrink-0">
+        <div class="desktop-actions hidden xl:flex items-center gap-3 shrink-0">
           <a
             href="login.html"
             class="rounded-xl px-4 py-2.5 text-xs font-bold text-[#0F2A44] border border-slate-200 bg-white/70 hover:bg-white transition"
@@ -412,7 +422,7 @@
         <a href="index.html" class="mobile-link">Home</a>
         <a href="programs.html" class="mobile-link">Programs</a>
         <a href="offline.html" class="mobile-link">Offline Coaching</a>
-        <a href="online.html" class="mobile-link">Online Tuition</a>
+        <a href="online-tution.html" class="mobile-link">Online Tuition</a>
         <a href="educators.html" class="mobile-link">Educators</a>
         <a href="learning-platform.html" class="mobile-link">Learning Platform</a>
         <a href="resources.html" class="mobile-link">Resources</a>
@@ -753,7 +763,7 @@
           <div class="mt-4 grid gap-2 text-sm">
             <a href="programs.html" class="footer-link">Programs</a>
             <a href="offline.html" class="footer-link">Offline Coaching</a>
-            <a href="online.html" class="footer-link">Online Tuition</a>
+            <a href="online-tution.html" class="footer-link">Online Tuition</a>
             <a href="educators.html" class="footer-link">Educators</a>
             <a href="resources.html" class="footer-link">Resources</a>
           </div>

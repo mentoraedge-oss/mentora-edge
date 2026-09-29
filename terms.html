@@ -146,8 +146,8 @@
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.70);
       box-shadow: 0 24px 70px rgba(15, 42, 68, 0.10);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .hero-orb {
@@ -309,13 +309,17 @@
       color: white;
     }
 
-    @media (max-width: 1150px) {
+    @media (max-width: 1319px) {
       .desktop-nav {
-        display: none;
+        display: none !important;
       }
 
       .mobile-toggle {
         display: inline-flex !important;
+      }
+
+      .desktop-actions {
+        display: none !important;
       }
     }
 
@@ -342,6 +346,12 @@
       .policy-list li {
         padding-left: 38px;
         font-size: 0.88rem;
+      }
+
+      .section-card,
+      .section-card * {
+        min-width: 0;
+        overflow-wrap: anywhere;
       }
     }
 
@@ -396,7 +406,7 @@
           <a href="about.html" class="nav-link">About</a>
         </nav>
 
-        <div class="hidden xl:flex items-center gap-3 shrink-0">
+        <div class="desktop-actions hidden xl:flex items-center gap-3 shrink-0">
           <a
             href="login.html"
             class="rounded-xl px-4 py-2.5 text-xs font-bold text-[#0F2A44] border border-slate-200 bg-white/70 hover:bg-white transition"

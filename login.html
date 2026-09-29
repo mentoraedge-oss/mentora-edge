@@ -740,45 +740,6 @@
       animation:spin .75s linear infinite;
     }
 
-    .biometric-btn{
-      width:100%;
-      min-height:48px;
-      border:1px solid rgba(15,42,68,.09);
-      border-radius:14px;
-      color:var(--navy);
-      background:rgba(255,255,255,.60);
-      box-shadow:0 10px 22px rgba(15,42,68,.06);
-      font-size:11px;
-      font-weight:850;
-      transition:transform .35s var(--ease),box-shadow .35s ease,background .35s ease;
-    }
-
-    .biometric-btn:hover{
-      transform:translateY(-3px);
-      background:rgba(255,255,255,.85);
-      box-shadow:0 15px 30px rgba(15,42,68,.10);
-    }
-
-    .divider{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:2px 0;
-      color:#9aa7b4;
-      font-size:9px;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-    }
-
-    .divider::before,
-    .divider::after{
-      content:"";
-      height:1px;
-      flex:1;
-      background:rgba(15,42,68,.08);
-    }
-
     .register-note{
       text-align:center;
       color:#6f8091;
@@ -806,6 +767,8 @@
       border:1px solid rgba(248,113,113,.27);
       animation:scaleIn .3s ease both;
     }
+
+    .error:not(.visible){display:none}
 
     .success{
       color:#166534;
@@ -1241,16 +1204,6 @@
                   </span>
                 </button>
 
-                <div class="divider">or</div>
-
-                <button
-                  type="button"
-                  id="biometricLoginBtn"
-                  class="biometric-btn"
-                >
-                  🔐 &nbsp; Login with Biometrics
-                </button>
-
                 <p class="register-note">
                   Don’t have an account?
                   <a href="register.html">Register here</a>
@@ -1259,7 +1212,6 @@
                 <div
                   id="error"
                   class="error"
-                  style="display:none;"
                   role="alert"
                   aria-live="polite"
                 ></div>
@@ -1300,8 +1252,13 @@
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
 
+    let navFrame = 0;
     const updateNavbar = () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 25);
+      if (navFrame) return;
+      navFrame = requestAnimationFrame(() => {
+        navbar.classList.toggle('scrolled', window.scrollY > 25);
+        navFrame = 0;
+      });
     };
 
     window.addEventListener('scroll', updateNavbar, { passive:true });
@@ -1341,6 +1298,11 @@
         visible ? 'Show password' : 'Hide password'
       );
     });
+
+    /* Remove credentials and flags left by the retired biometric login flow. */
+    localStorage.removeItem('mentora_saved_password');
+    localStorage.removeItem('mentora_biometric_enabled');
+    localStorage.removeItem('mentora_passkey_created');
 
     /* Remember email locally, without changing the original auth flow */
     const savedEmail = localStorage.getItem('mentora_saved_email');
@@ -1406,86 +1368,13 @@
 
   const forgotBtn = document.getElementById("forgotPasswordBtn");
 
-  const biometricBtn = document.getElementById("biometricLoginBtn");
-
-  // ================= CREATE PASSKEY =================
-
-  async function createPasskey(email) {
-
-    try {
-
-      if (
-        !window.PublicKeyCredential ||
-        !navigator.credentials
-      ) {
-        return;
-      }
-
-      const challenge = new Uint8Array(32);
-
-      crypto.getRandomValues(challenge);
-
-      const userId = new Uint8Array(16);
-
-      crypto.getRandomValues(userId);
-
-      await navigator.credentials.create({
-        publicKey: {
-
-          challenge,
-
-          rp: {
-            name: "Mentora Edge"
-          },
-
-          user: {
-            id: userId,
-            name: email,
-            displayName: email
-          },
-
-          pubKeyCredParams: [
-            {
-              type: "public-key",
-              alg: -7
-            }
-          ],
-
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            residentKey: "preferred",
-            userVerification: "required"
-          },
-
-          timeout: 60000,
-
-          attestation: "none"
-
-        }
-      });
-
-      localStorage.setItem(
-        "mentora_passkey_created",
-        "true"
-      );
-
-      console.log("✅ Passkey created");
-
-    } catch (err) {
-
-      console.log("Passkey skipped:", err);
-
-    }
-
-  }
-
   // ================= NORMAL LOGIN =================
 
   form.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    errorMsg.classList.add("hidden");
+    errorMsg.classList.remove("visible");
 
     loginBtn.disabled = true;
 
@@ -1523,24 +1412,11 @@
 
       const userData = userDoc.data();
 
-      // SAVE LOGIN
+      // Remember the email for the existing "Remember me" option.
       localStorage.setItem(
         "mentora_saved_email",
         email
       );
-
-      localStorage.setItem(
-        "mentora_saved_password",
-        password
-      );
-
-      localStorage.setItem(
-        "mentora_biometric_enabled",
-        "true"
-      );
-
-      // CREATE PASSKEY
-      await createPasskey(email);
 
       if (userData.role === "admin") {
 
@@ -1567,7 +1443,7 @@
           ? "No account found with this email."
           : err.message;
 
-      errorMsg.classList.remove("hidden");
+      errorMsg.classList.add("visible");
 
     }
 
@@ -1585,7 +1461,7 @@
       errorMsg.textContent =
         "Please enter your registered email first.";
 
-      errorMsg.classList.remove("hidden");
+      errorMsg.classList.add("visible");
 
       return;
 
@@ -1601,116 +1477,13 @@
       errorMsg.textContent =
         "Password reset link sent. Please check your email.";
 
-      errorMsg.classList.remove("hidden");
+      errorMsg.classList.add("visible");
 
     } catch (err) {
 
       errorMsg.textContent = err.message;
 
-      errorMsg.classList.remove("hidden");
-
-    }
-
-  });
-
-  // ================= BIOMETRIC LOGIN =================
-
-  biometricBtn.addEventListener("click", async () => {
-
-    try {
-
-      if (
-        !window.PublicKeyCredential ||
-        !navigator.credentials
-      ) {
-
-        alert(
-          "Biometric login is not supported on this device."
-        );
-
-        return;
-
-      }
-
-      const savedEmail =
-        localStorage.getItem("mentora_saved_email");
-
-      const savedPassword =
-        localStorage.getItem("mentora_saved_password");
-
-      if (!savedEmail || !savedPassword) {
-
-        alert(
-          "Please login normally once before using biometrics."
-        );
-
-        return;
-
-      }
-
-      biometricBtn.innerHTML =
-        "🔓 Verifying...";
-
-      const challenge = new Uint8Array(32);
-
-      crypto.getRandomValues(challenge);
-
-      // REAL BIOMETRIC PROMPT
-      await navigator.credentials.get({
-        publicKey: {
-
-          challenge,
-
-          timeout: 60000,
-
-          userVerification: "required"
-
-        }
-      });
-
-      // LOGIN AFTER BIOMETRICS
-      const userCredential =
-        await signInWithEmailAndPassword(
-          auth,
-          savedEmail,
-          savedPassword
-        );
-
-      const user = userCredential.user;
-
-      const userDoc =
-        await getDoc(doc(db, "users", user.uid));
-
-      const userData = userDoc.data();
-
-      biometricBtn.innerHTML =
-        "✅ Access Granted";
-
-      setTimeout(() => {
-
-        if (userData.role === "admin") {
-
-          window.location.href = "admin.html";
-
-        } else {
-
-          window.location.href = "dashboard.html";
-
-        }
-
-      }, 1000);
-
-    } catch (err) {
-
-      console.log(err);
-
-      biometricBtn.innerHTML =
-        "🔐 Login with Biometrics";
-
-      errorMsg.textContent =
-        "Biometric authentication cancelled or failed.";
-
-      errorMsg.classList.remove("hidden");
+      errorMsg.classList.add("visible");
 
     }
 

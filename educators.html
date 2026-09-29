@@ -3012,7 +3012,7 @@ button {
             <div class="mini-stat">
 
               <div class="mini-stat-value">
-                VI–XII
+                IX–XII
               </div>
 
               <div class="mini-stat-label">
@@ -3317,7 +3317,7 @@ button {
 
           <p>
             Shaping Minds, Sharpening Futures. Structured CBSE learning
-            for Classes VI–XII through offline coaching, online personal
+            for Classes IX–XII through offline coaching, online personal
             tuition and digital learning support.
           </p>
 
@@ -3558,72 +3558,41 @@ reveals.forEach(element => {
    PARALLAX
    ========================================================= */
 
-const parallaxElements =
-  document.querySelectorAll(
-    "[data-parallax]"
-  );
-
-
-let parallaxTicking = false;
-
+const parallaxElements = Array.from(
+  document.querySelectorAll("[data-parallax]"),
+  element => ({ element, speed: parseFloat(element.dataset.parallax) || 0 })
+);
+const visibleParallax = new Set();
+let parallaxFrame = 0;
 
 function updateParallax() {
+  if (parallaxFrame || !visibleParallax.size) return;
 
-  if (parallaxTicking) return;
-
-  parallaxTicking = true;
-
-  window.requestAnimationFrame(() => {
-
-    const viewportCenter =
-      window.innerHeight / 2;
-
-    parallaxElements.forEach(element => {
-
-      const rect =
-        element.getBoundingClientRect();
-
-      const speed =
-        parseFloat(
-          element.dataset.parallax
-        ) || 0;
-
-      const elementCenter =
-        rect.top + rect.height / 2;
-
-      const distance =
-        elementCenter - viewportCenter;
-
-      const movement =
-        distance * speed;
-
-      element.style.transform =
-        `translate3d(0, ${movement}px, 0)`;
-
+  parallaxFrame = window.requestAnimationFrame(() => {
+    const viewportCenter = window.innerHeight / 2;
+    visibleParallax.forEach(({ element, speed }) => {
+      const rect = element.getBoundingClientRect();
+      const movement = (rect.top + rect.height / 2 - viewportCenter) * speed;
+      element.style.transform = `translate3d(0, ${movement}px, 0)`;
     });
-
-    parallaxTicking = false;
-
+    parallaxFrame = 0;
   });
-
 }
 
-
 if (parallaxElements.length) {
+  const parallaxObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const item = parallaxElements.find(candidate => candidate.element === entry.target);
+      if (!item) return;
+      if (entry.isIntersecting) visibleParallax.add(item);
+      else visibleParallax.delete(item);
+    });
+    updateParallax();
+  }, { rootMargin: "120px 0px" });
 
-  window.addEventListener(
-    "scroll",
-    updateParallax,
-    { passive: true }
-  );
-
-  window.addEventListener(
-    "resize",
-    updateParallax
-  );
-
-  updateParallax();
-
+  parallaxElements.forEach(({ element }) => parallaxObserver.observe(element));
+  window.addEventListener("scroll", updateParallax, { passive: true });
+  window.addEventListener("resize", updateParallax, { passive: true });
 }
 
 
@@ -3635,6 +3604,8 @@ const tiltElements =
   document.querySelectorAll(
     "[data-tilt]"
   );
+const canTilt = window.matchMedia("(pointer:fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 
 tiltElements.forEach(card => {
@@ -3656,14 +3627,7 @@ tiltElements.forEach(card => {
     "pointermove",
     event => {
 
-      if (
-        window.innerWidth < 768 ||
-        window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches
-      ) {
-        return;
-      }
+      if (!canTilt) return;
 
       if (!rect) {
 
@@ -3764,14 +3728,7 @@ ctaButtons.forEach(button => {
     "pointermove",
     event => {
 
-      if (
-        window.innerWidth < 768 ||
-        window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches
-      ) {
-        return;
-      }
+      if (!canTilt) return;
 
       const rect =
         button.getBoundingClientRect();

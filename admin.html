@@ -409,10 +409,10 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
                 <div class="field"><label class="label">Class *</label>
                   <select id="resourceClass" class="input">
                     <option value="">Select class</option>
-                    <option>VI</option><option>VII</option><option>VIII</option><option>IX</option><option>X</option><option>XI</option><option>XII</option>
+                    <option value="IX">IX</option><option value="X">X</option><option value="XI">XI</option><option value="XII">XII</option>
                   </select>
                 </div>
-                <div class="field"><label class="label">Subject *</label><input id="resourceSubject" class="input" placeholder="English / Social Science / Science / Mathematics"></div>
+                <div class="field"><label class="label">Subject *</label><select id="resourceSubject" class="input"><option value="">Select class first</option></select></div>
                 <div class="field"><label class="label">Resource Type *</label>
                   <select id="resourceType" class="input">
                     <option value="">Select type</option><option>Notes</option><option>Worksheet</option><option>Revision Material</option><option>MCQs</option><option>Question Paper</option><option>Practice Set</option><option>Video</option><option>Assessment</option><option>PDF</option>
@@ -489,7 +489,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
           <div class="search-row">
             <input id="resourceSearch" class="input" placeholder="Search title, chapter, subject or slug">
             <select id="resourceStatusFilter" class="input"><option value="">All status</option><option value="published">Published</option><option value="draft">Draft</option></select>
-            <select id="resourceClassFilter" class="input"><option value="">All classes</option><option>VI</option><option>VII</option><option>VIII</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select>
+            <select id="resourceClassFilter" class="input"><option value="">All classes</option><option value="VI">VI (legacy records)</option><option value="VII">VII (legacy records)</option><option value="VIII">VIII (legacy records)</option><option>IX</option><option>X</option><option>XI</option><option>XII</option></select>
           </div>
           <div style="height:10px"></div>
           <div class="table-wrap">
@@ -563,7 +563,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
           <div class="section-head"><div><h2 class="section-title"><span class="section-icon">📄</span>Study Material Upload</h2><p class="section-description">This preserves the existing student-dashboard materials collection and upload flow.</p></div></div>
           <div class="form-grid">
             <div class="field"><label class="label">Class</label>
-              <select id="materialClass" class="input"><option value="">Class</option><option value="VI">VI</option><option value="VII">VII</option><option value="VIII">VIII</option><option value="IX">IX</option><option value="X">X</option><option value="XI">XI</option><option value="XII">XII</option></select>
+              <select id="materialClass" class="input"><option value="">Class</option><option value="IX">IX</option><option value="X">X</option><option value="XI">XI</option><option value="XII">XII</option></select>
             </div>
             <div class="field"><label class="label">Material Title</label><input id="materialTitle" class="input" placeholder="Material title"></div>
             <div class="field full"><label class="label">File</label><input id="materialFile" type="file" class="input-file"></div>
@@ -659,6 +659,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
 
 <script type="module">
 import { auth, db } from "./js/firebase.js";
+import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, getAcademicTier } from "./js/academic-programs.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   collection,getDocs,doc,getDoc,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,
@@ -671,6 +672,31 @@ import {
 const storage=getStorage();
 
 const $=id=>document.getElementById(id);
+function populateActiveClassSelect(select,prompt){
+  select.innerHTML="";
+  const first=document.createElement("option");first.value="";first.textContent=prompt;select.appendChild(first);
+  ACTIVE_CLASSES.forEach(className=>{const option=document.createElement("option");option.value=className;option.textContent=className;select.appendChild(option);});
+}
+populateActiveClassSelect($("resourceClass"),"Select class");
+populateActiveClassSelect($("materialClass"),"Class");
+
+function populateResourceSubjects(className,preferred=""){
+  const select=$("resourceSubject");
+  select.innerHTML="";
+  const prompt=document.createElement("option");prompt.value="";prompt.textContent=className?"Select subject":"Select class first";select.appendChild(prompt);
+  const tier=getAcademicTier(className);
+  const subjects=tier?Object.keys(ACADEMIC_PROGRAMS[tier].subjects):[];
+  subjects.forEach(subject=>{const option=document.createElement("option");option.value=subject;option.textContent=subject;select.appendChild(option);});
+  if(preferred&&!subjects.includes(preferred)){
+    const archived=document.createElement("option");archived.value=preferred;archived.textContent=preferred+" (existing record)";select.appendChild(archived);
+  }
+  select.value=preferred;
+}
+
+$("resourceClass").addEventListener("change",()=>{
+  populateResourceSubjects($("resourceClass").value);
+  updatePreview();
+});
 const toast=(message,type="")=>{
   const el=$("toast"); el.textContent=message; el.className="toast show "+type;
   clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>el.className="toast",3200);
@@ -951,7 +977,7 @@ function resetResourceEditor(){
   $("resourceTitle").value="";
   $("resourceSlug").value="";
   $("resourceClass").value="";
-  $("resourceSubject").value="";
+  populateResourceSubjects("","");
   $("resourceType").value="";
   $("resourceChapter").value="";
   $("resourceDescription").value="";
@@ -1012,10 +1038,17 @@ async function uploadOptionalFile(file,folder){
 async function saveResource(status){
   const title=$("resourceTitle").value.trim();
   const classValue=$("resourceClass").value;
-  const subject=$("resourceSubject").value.trim();
+  const subject=$("resourceSubject").value;
   const type=$("resourceType").value;
   if(!title||!classValue||!subject||!type){
     toast("Title, class, subject and resource type are required.","error");return;
+  }
+  const tier=getAcademicTier(classValue);
+  const activeSubjects=tier?Object.keys(ACADEMIC_PROGRAMS[tier].subjects):[];
+  const previousResource=resourcesCache.find(resource=>resource.id===currentResourceId);
+  const unchangedExistingValue=previousResource&&previousResource.class===classValue&&previousResource.subject===subject;
+  if(!activeSubjects.includes(subject)&&!unchangedExistingValue){
+    toast("Choose a subject offered for the selected class.","error");return;
   }
 
   const btn=status==="published"?$("savePublishBtn"):$("saveDraftBtn");
@@ -1164,8 +1197,15 @@ $("resourcesTable").addEventListener("click",async e=>{
     currentResourceId=id;
     $("resourceTitle").value=r.title||"";
     $("resourceSlug").value=r.slug||slugify(r.title);
+    const classSelect=$("resourceClass");
+    if(r.class&&!Array.from(classSelect.options).some(option=>option.value===r.class)){
+      const archivedClass=document.createElement("option");
+      archivedClass.value=r.class;
+      archivedClass.textContent=r.class+" (existing record)";
+      classSelect.appendChild(archivedClass);
+    }
     $("resourceClass").value=r.class||"";
-    $("resourceSubject").value=r.subject||"";
+    populateResourceSubjects(r.class||"",r.subject||"");
     $("resourceType").value=r.type||"";
     $("resourceChapter").value=r.chapter||"";
     $("resourceDescription").value=r.description||"";

@@ -12,8 +12,8 @@
 
   <!-- SEO -->
   <title>Book an Enquiry | Mentora Edge</title>
-  <meta name="description" content="Book an enquiry with Mentora Edge for CBSE Classes VI-XII, offline coaching in Begusarai and online personal tuition.">
-  <meta name="keywords" content="Mentora Edge enquiry, CBSE coaching Begusarai, online CBSE tuition, Classes VI XII">
+  <meta name="description" content="Book an enquiry with Mentora Edge for CBSE Classes IX-XII, offline coaching in Begusarai and online personal tuition.">
+  <meta name="keywords" content="Mentora Edge enquiry, CBSE coaching Begusarai, online CBSE tuition, Classes IX-XII">
   <meta property="og:title" content="Book an Enquiry | Mentora Edge">
   <meta property="og:description" content="Connect with Mentora Edge about programs, offline coaching, online personal tuition and admissions.">
   <meta property="og:type" content="website">
@@ -1745,7 +1745,7 @@
 
           <div class="floating-ui float-one">
             <small>PROGRAMS</small>
-            <strong>Classes VI–XII</strong>
+            <strong>Classes IX-XII</strong>
           </div>
 
           <div class="floating-ui float-two">
@@ -1826,13 +1826,6 @@
                 <label for="classLevel">Class</label>
                 <select id="classLevel" name="classLevel" required>
                   <option value="" selected disabled>Select class</option>
-                  <option>Class VI</option>
-                  <option>Class VII</option>
-                  <option>Class VIII</option>
-                  <option>Class IX</option>
-                  <option>Class X</option>
-                  <option>Class XI</option>
-                  <option>Class XII</option>
                 </select>
               </div>
 
@@ -1850,10 +1843,6 @@
                 <label for="subject">Subject</label>
                 <select id="subject" name="subject">
                   <option value="" selected>Select subject</option>
-                  <option>English</option>
-                  <option>Social Science</option>
-                  <option>English + Social Science</option>
-                  <option>General Academic Enquiry</option>
                 </select>
               </div>
 
@@ -2090,7 +2079,7 @@
             <summary>Which classes does Mentora Edge cover?</summary>
             <p>
               Mentora Edge currently structures its programs around
-              Classes VI–XII.
+              Classes IX-XII.
             </p>
           </details>
 
@@ -2114,8 +2103,9 @@
           <details class="reveal">
             <summary>Which subjects are currently listed in the programs?</summary>
             <p>
-              The current program structure includes English and Social
-              Science, with combination options where applicable.
+              Classes IX-X offer English, Social Science, Science and Maths,
+              with monthly individual prices and monthly, quarterly or annual
+              combo plans. Classes XI-XII offer English with annual payment only.
             </p>
           </details>
 
@@ -2187,7 +2177,7 @@
 
           <p>
             Shaping Minds, Sharpening Futures. Structured CBSE learning
-            for Classes VI–XII through offline coaching, online personal
+            for Classes IX-XII through offline coaching, online personal
             tuition and digital learning support.
           </p>
 
@@ -2227,10 +2217,21 @@
     const navbar = document.getElementById('siteHeader');
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
+    const ambientOrbs = Array.from(document.querySelectorAll('.orb'));
 
     /* Navbar scroll state */
+    let scrollFrame = 0;
     const onScroll = () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 25);
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        navbar.classList.toggle('scrolled', y > 25);
+        ambientOrbs.forEach((orb,i) => {
+          const speed = [0.025,0.018,0.035][i] || 0.02;
+          orb.style.translate = `0 ${y * speed}px`;
+        });
+        scrollFrame = 0;
+      });
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -2284,18 +2285,6 @@
         .forEach(el => observer.observe(el));
 
       /* Ambient parallax */
-      window.addEventListener(
-        'scroll',
-        () => {
-          const y = window.scrollY;
-
-          document.querySelectorAll('.orb').forEach((orb, i) => {
-            const speed = [0.025, 0.018, 0.035][i] || 0.02;
-            orb.style.translate = `0 ${y * speed}px`;
-          });
-        },
-        { passive: true }
-      );
 
     } else {
 
@@ -2318,7 +2307,7 @@
       const parentName = formData.get('parentName') || '';
       const classLevel = formData.get('classLevel') || '';
       const learningMode = formData.get('learningMode') || '';
-      const subject = formData.get('subject') || 'Not specified';
+      const subject = enquiryForm.querySelector('#subject').selectedOptions[0]?.textContent || 'Not specified';
       const phone = formData.get('phone') || '';
       const email = formData.get('email') || 'Not provided';
       const preferredContact = formData.get('preferredContact') || 'Not specified';
@@ -2354,6 +2343,48 @@
 
       window.location.href = mailto;
     });
+  </script>
+
+  <script type="module">
+    import { ACTIVE_CLASSES, ALL_SUBJECTS_VALUE, getOfferingOptions } from "./js/academic-programs.js";
+
+    const classSelect = document.getElementById("classLevel");
+    const subjectSelect = document.getElementById("subject");
+    const generalValue = "General Academic Enquiry";
+
+    classSelect.innerHTML = '<option value="" selected disabled>Select class</option>' +
+      ACTIVE_CLASSES.map(className => '<option value="' + className + '">Class ' + className + '</option>').join("");
+
+    function updateSubjects() {
+      const previous = subjectSelect.value;
+      const className = classSelect.value;
+      let offerings = [];
+      if (className === "IX" || className === "X") {
+        offerings = getOfferingOptions(className);
+      } else if (className === "XI" || className === "XII") {
+        offerings = getOfferingOptions(className);
+      } else {
+        offerings = [...getOfferingOptions("IX"), ...getOfferingOptions("XI")];
+      }
+      const unique = Array.from(new Map(offerings.map(item => [item.value, item])).values());
+      subjectSelect.innerHTML = '<option value="">Select subject</option>';
+      unique.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.value;
+        option.textContent = item.value === ALL_SUBJECTS_VALUE ? item.label : item.label;
+        subjectSelect.appendChild(option);
+      });
+      const general = document.createElement("option");
+      general.value = generalValue;
+      general.textContent = generalValue;
+      subjectSelect.appendChild(general);
+      if (Array.from(subjectSelect.options).some(option => option.value === previous)) {
+        subjectSelect.value = previous;
+      }
+    }
+
+    classSelect.addEventListener("change", updateSubjects);
+    updateSubjects();
   </script>
 
 </body>

@@ -23,8 +23,7 @@
       </h2>
 
       <p class="text-sm text-gray-500 text-center mb-6">
-        Mentora Edge | Classes VIII – X
-      </p>
+        Mentora Edge | Classes IX-XII</p>
 
       <form id="signupForm" class="space-y-4">
 
@@ -34,23 +33,27 @@
         <input type="email" id="email" placeholder="Email Address" required
           class="w-full border px-4 py-3 rounded">
 
-        <input type="password" id="password" placeholder="Password (min 6 characters)" required
+        <input type="password" id="password" placeholder="Password (min 6 characters)" minlength="6" required
           class="w-full border px-4 py-3 rounded">
 
         <select id="class" required
           class="w-full border px-4 py-3 rounded bg-white">
           <option value="">Select Class</option>
-          <option value="VIII">Class VIII</option>
-          <option value="IX">Class IX</option>
-          <option value="X">Class X</option>
         </select>
 
         <select id="subject" required
           class="w-full border px-4 py-3 rounded bg-white">
           <option value="">Select Subject</option>
-          <option value="English">English</option>
-          <option value="Social Science">Social Science</option>
         </select>
+
+        <select id="paymentFrequency" required
+          class="w-full border px-4 py-3 rounded bg-white">
+          <option value="">Select Payment Frequency</option>
+        </select>
+
+        <p id="feeSummary" class="rounded-lg bg-green-50 p-3 text-sm text-gray-700" aria-live="polite">
+          Select a valid class, subject or program, and payment frequency.
+        </p>
 
         <button type="submit"
           class="w-full bg-primary text-white py-3 rounded hover:bg-blue-700">
@@ -74,47 +77,133 @@
     import { auth, db } from "./js/firebase.js";
     import { createUserWithEmailAndPassword } from
       "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, setDoc } from
+    import { doc, setDoc, serverTimestamp } from
       "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      ACADEMIC_PROGRAMS,
+      ACTIVE_CLASSES,
+      ALL_SUBJECTS_VALUE,
+      formatINR,
+      getAcademicTier,
+      getOfferingOptions,
+      getPaymentFrequencies,
+      getPlanDetails
+    } from "./js/academic-programs.js";
 
     const form = document.getElementById("signupForm");
     const errorMsg = document.getElementById("error");
+    const classSelect = document.getElementById("class");
+    const subjectSelect = document.getElementById("subject");
+    const frequencySelect = document.getElementById("paymentFrequency");
+    const feeSummary = document.getElementById("feeSummary");
+
+    function fillSelect(select, items, placeholder) {
+      select.innerHTML = "";
+      const prompt = document.createElement("option");
+      prompt.value = "";
+      prompt.textContent = placeholder;
+      select.appendChild(prompt);
+      items.forEach(item => {
+        const option = document.createElement("option");
+        option.value = typeof item === "string" ? item : item.value;
+        option.textContent = typeof item === "string" ? item : item.label;
+        select.appendChild(option);
+      });
+    }
+
+    fillSelect(classSelect, ACTIVE_CLASSES.map(value => ({ value, label: "Class " + value })), "Select Class");
+
+    function updateSummary() {
+      const plan = getPlanDetails(classSelect.value, subjectSelect.value, frequencySelect.value);
+      if (!plan) {
+        feeSummary.textContent = "Select a valid class, subject or program, and payment frequency.";
+        return null;
+      }
+      const combo = subjectSelect.value === ALL_SUBJECTS_VALUE;
+      if (combo && frequencySelect.value === "quarterly") {
+        feeSummary.textContent = "Quarterly: " + plan.installments.map(formatINR).join(" + ") +
+          ". Total " + formatINR(plan.total) + "; first installment due now " + formatINR(plan.amountDue) + ".";
+      } else if (combo && frequencySelect.value === "annual") {
+        feeSummary.textContent = "Annual value " + formatINR(plan.originalAmount) +
+          "; discount " + formatINR(plan.discount) + "; final price " + formatINR(plan.total) + ".";
+      } else if (combo) {
+        feeSummary.textContent = "All-subject combo: " + formatINR(plan.total) + " per month.";
+      } else if (getAcademicTier(classSelect.value) === "senior") {
+        feeSummary.textContent = "English, annual only: " + formatINR(plan.total) + " per year.";
+      } else {
+        feeSummary.textContent = subjectSelect.value + ": " + formatINR(plan.total) + " per month.";
+      }
+      return plan;
+    }
+
+    function refreshFrequencies() {
+      const frequencies = getPaymentFrequencies(classSelect.value, subjectSelect.value);
+      const labels = { monthly: "Monthly", quarterly: "Quarterly", annual: "Annual" };
+      fillSelect(frequencySelect, frequencies.map(value => ({ value, label: labels[value] })), "Select Payment Frequency");
+      if (frequencies.length) frequencySelect.value = frequencies[0];
+      updateSummary();
+    }
+
+    classSelect.addEventListener("change", () => {
+      fillSelect(subjectSelect, getOfferingOptions(classSelect.value), "Select Subject or Program");
+      refreshFrequencies();
+    });
+    subjectSelect.addEventListener("change", refreshFrequencies);
+    frequencySelect.addEventListener("change", updateSummary);
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      errorMsg.classList.add("hidden");
+      const plan = updateSummary();
+      if (!form.checkValidity() || !plan) {
+        form.reportValidity();
+        errorMsg.textContent = "Choose a valid class, subject or program, and payment frequency.";
+        errorMsg.classList.remove("hidden");
+        return;
+      }
 
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
-      const studentClass = document.getElementById("class").value;
-      const subject = document.getElementById("subject").value;
+      const studentClass = classSelect.value;
+      const offering = subjectSelect.value;
+      const isCombo = offering === ALL_SUBJECTS_VALUE;
+      const subject = isCombo
+        ? ACADEMIC_PROGRAMS.secondary.combo.subjects.join(", ")
+        : offering;
 
       try {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth, email, password
-        );
-
-        const user = userCredential.user;
-
-        await setDoc(doc(db, "users", user.uid), {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const profile = {
           name,
           email,
           class: studentClass,
           subject,
+          programType: isCombo ? ALL_SUBJECTS_VALUE : "individual-subject",
+          paymentFrequency: frequencySelect.value,
+          feeAmount: plan.amountDue,
+          planTotal: plan.total,
+          paymentDueAtRegistration: plan.amountDue,
           role: "student",
           status: "pending",
-          createdAt: new Date()
-        });
+          createdAt: serverTimestamp()
+        };
+        if (plan.originalAmount !== undefined) {
+          profile.annualValue = plan.originalAmount;
+          profile.discount = plan.discount;
+        }
+        if (plan.installments) profile.paymentInstallments = plan.installments;
+        await setDoc(doc(db, "users", userCredential.user.uid), profile);
 
         alert("Account created successfully! Please login.");
         window.location.href = "login.html";
-
       } catch (error) {
         errorMsg.textContent = error.message;
         errorMsg.classList.remove("hidden");
       }
     });
   </script>
+
 
 </body>
 </html>

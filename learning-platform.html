@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Learning Platform | Mentora Edge</title>
-  <meta name="description" content="Explore the Mentora Edge digital learning platform for Classes VI–XII, with structured learning resources, periodic assessments and digital access alongside offline and online learning.">
-  <meta name="keywords" content="Mentora Edge learning platform, CBSE digital learning, Classes VI XII, online learning, Begusarai">
+  <meta name="description" content="Explore the Mentora Edge digital learning platform for Classes IX-XII, with structured learning resources, periodic assessments and digital access alongside offline and online learning.">
+  <meta name="keywords" content="Mentora Edge learning platform, CBSE digital learning, Classes IX-XII, online learning, Begusarai">
   <meta name="theme-color" content="#0F2A44">
   <link rel="canonical" href="learning-platform.html">
   <meta property="og:title" content="Learning Platform | Mentora Edge">
@@ -281,7 +281,7 @@
     .platform-point h4{font-size:14px;color:var(--navy)}.platform-point p{font-size:11px;line-height:1.55;color:var(--muted);margin-top:3px}
 
     /* Programs */
-    .program-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+    .program-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:48px}
     .program-card{padding:30px;min-height:295px}
     .program-number{font-size:12px;font-weight:900;color:#75a087;letter-spacing:.1em}.program-card h3{font-size:25px;color:var(--navy);letter-spacing:-.04em;margin-top:14px}.program-card p{font-size:13px;line-height:1.7;color:var(--muted);margin-top:9px}
     .program-points{display:grid;gap:7px;margin-top:20px}.program-points span{font-size:11px;color:#52677a}.program-points b{color:#16a34a;margin-right:6px}
@@ -636,32 +636,24 @@
       <div class="container">
         <div class="reveal">
           <span class="eyebrow">Programs</span>
-          <h2 class="section-title">Built around Classes VI–XII.</h2>
+          <h2 class="section-title">Built around Classes IX-XII.</h2>
           <p class="section-description">Explore the academic groups currently offered by Mentora Edge and see how the digital platform fits into each learning experience.</p>
         </div>
 
         <div class="program-grid stagger">
           <article class="program-card glass glass-card">
-            <span class="program-number">01 / VI–VIII</span>
-            <h3>Middle School</h3>
-            <p>A structured foundation for students building strong academic habits and subject understanding.</p>
-            <div class="program-points"><span><b>✓</b> English</span><span><b>✓</b> Social Science</span><span><b>✓</b> Digital platform access</span></div>
-            <a class="program-link" href="programs.html#middle-school">View program <span>→</span></a>
-          </article>
-
-          <article class="program-card glass glass-card">
-            <span class="program-number">02 / IX–X</span>
+            <span class="program-number">01 / IX–X</span>
             <h3>Secondary</h3>
             <p>Structured learning and assessment support for students in the important secondary years.</p>
-            <div class="program-points"><span><b>✓</b> English</span><span><b>✓</b> Social Science</span><span><b>✓</b> Digital platform access</span></div>
+            <div class="program-points"><span>English</span><span>Social Science</span><span>Science</span><span>Maths</span></div>
             <a class="program-link" href="programs.html#secondary-school">View program <span>→</span></a>
           </article>
 
           <article class="program-card glass glass-card">
-            <span class="program-number">03 / XI–XII</span>
+            <span class="program-number">02 / XI–XII</span>
             <h3>Senior Secondary</h3>
             <p>Focused academic support for senior secondary students with structured course access.</p>
-            <div class="program-points"><span><b>✓</b> English</span><span><b>✓</b> Social Science</span><span><b>✓</b> Digital platform access</span></div>
+            <div class="program-points"><span>English</span><span>Annual only</span></div>
             <a class="program-link" href="programs.html#senior-secondary">View program <span>→</span></a>
           </article>
         </div>
@@ -722,7 +714,7 @@
           </details>
           <details class="reveal">
             <summary>Which classes are covered?</summary>
-            <p>Mentora Edge currently structures its programs around Classes VI–XII, across Middle School, Secondary and Senior Secondary levels.</p>
+            <p>Mentora Edge currently structures its programs around Classes IX-XII across secondary and senior secondary levels.</p>
           </details>
           <details class="reveal">
             <summary>How can I enrol?</summary>
@@ -757,7 +749,7 @@
         </a>
         <p>
           Shaping Minds, Sharpening Futures. Structured CBSE learning
-          for Classes VI–XII through offline coaching, online personal
+          for Classes IX-XII through offline coaching, online personal
           tuition and digital learning support.
         </p>
       </div>
@@ -791,8 +783,13 @@
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
 
+    let navFrame = 0;
     const onScroll = () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 25);
+      if (navFrame) return;
+      navFrame = requestAnimationFrame(() => {
+        navbar.classList.toggle('scrolled', window.scrollY > 25);
+        navFrame = 0;
+      });
     };
     window.addEventListener('scroll', onScroll, {passive:true});
     onScroll();
@@ -825,11 +822,17 @@
 
       document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.stagger').forEach(el => observer.observe(el));
 
+      const ambientOrbs = Array.from(document.querySelectorAll('.orb'));
+      let parallaxFrame = 0;
       window.addEventListener('scroll', () => {
-        const y = window.scrollY;
-        document.querySelectorAll('.orb').forEach((orb, i) => {
+        if (parallaxFrame) return;
+        parallaxFrame = requestAnimationFrame(() => {
+          const y = window.scrollY;
+          ambientOrbs.forEach((orb, i) => {
           const speed = [0.025,0.018,0.035][i] || 0.02;
           orb.style.translate = `0 ${y * speed}px`;
+          });
+          parallaxFrame = 0;
         });
       }, {passive:true});
     } else {
