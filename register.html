@@ -28,27 +28,29 @@
   </script>
 </head>
 
-<body class="bg-[#F8FAFC] font-inter text-gray-800 overflow-x-hidden">
+<body class="bg-[#F8FAFC] font-inter text-gray-800">
 
 <!-- NAVBAR -->
 <header class="bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-extrabold text-primary">Mentora Edge</h1>
-    <a href="programs.html" class="text-accent font-medium hover:underline">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center gap-2">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-primary">Mentora Edge</h1>
+    <a href="programs.html" class="text-sm sm:text-base text-accent font-medium text-right hover:underline">
       ← Back to Programs
     </a>
   </div>
 </header>
 
 <!-- HERO BACKGROUND -->
-<div class="absolute w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
-<div class="absolute w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+<div class="registration-background" aria-hidden="true">
+  <div class="absolute w-96 h-96 bg-green-400/20 blur-3xl rounded-full top-[-80px] left-[-80px]"></div>
+  <div class="absolute w-96 h-96 bg-blue-500/20 blur-3xl rounded-full bottom-[-80px] right-[-80px]"></div>
+</div>
 
 <!-- FORM -->
 <section class="py-20 relative z-10">
-  <div class="max-w-xl mx-auto px-6">
+  <div class="w-full max-w-xl mx-auto px-4 sm:px-6">
 
-    <div class="bg-white/70 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/30 animate-fadeIn">
+    <div class="registration-card bg-white/70 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/30 animate-fadeIn">
 
       <h2 class="text-3xl font-extrabold text-center mb-2 text-primary">
         Student Registration
@@ -109,7 +111,7 @@
         </div>
 
         <!-- PAYMENT -->
-        <div class="mt-6 p-6 rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 shadow-lg text-center">
+        <div class="registration-payment mt-6 p-6 rounded-2xl bg-white/60 backdrop-blur-md border border-white/30 shadow-lg text-center">
 
           <p class="font-semibold mb-3 text-primary">Scan & Pay</p>
 
@@ -411,6 +413,14 @@ body{
     radial-gradient(circle at 90% 85%, rgba(15,42,68,.10), transparent 32%),
     linear-gradient(135deg,#f8fafc 0%,#eef5f2 48%,#f8fafc 100%);
 }
+.registration-background{
+  position:fixed;
+  inset:0;
+  overflow:clip;
+  contain:paint;
+  pointer-events:none;
+  z-index:0;
+}
 body::before{
   content:"";
   position:fixed;
@@ -570,6 +580,15 @@ body::before{
   overflow:hidden;
   border-radius:32px;
   padding:34px;
+}
+.registration-card{
+  width:100%;
+  min-width:0;
+}
+.registration-card .input,
+.registration-payment{
+  min-width:0;
+  max-width:100%;
 }
 .form-card::before{
   content:"";
@@ -821,6 +840,8 @@ body::before{
 @media (max-width:640px){
   .hero-wrap{padding:48px 14px 65px}
   .intro-card,.form-card{padding:22px;border-radius:25px}
+  .registration-card{padding:22px;border-radius:25px}
+  .registration-payment{padding:18px}
   .hero-title{font-size:2.55rem}
   .field-grid{grid-template-columns:1fr}
   .field-wrap.full,.section-label{grid-column:auto}

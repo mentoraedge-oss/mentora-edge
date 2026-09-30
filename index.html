@@ -2300,11 +2300,16 @@
       });
     }
 
+    const heroVisual = document.querySelector(".hero-visual");
     let navFrame = 0;
     const onNavScroll = () => {
       if (navFrame) return;
       navFrame = window.requestAnimationFrame(() => {
-        if (siteHeader) siteHeader.classList.toggle("scrolled", window.scrollY > 25);
+        const scrollY = window.scrollY;
+        if (siteHeader) siteHeader.classList.toggle("scrolled", scrollY > 25);
+        if (heroVisual && scrollY < 800) {
+          heroVisual.style.transform = `translateY(${scrollY * 0.08}px)`;
+        }
         navFrame = 0;
       });
     };
@@ -2354,43 +2359,6 @@
 
     reveals.forEach(element => {
       revealObserver.observe(element);
-    });
-
-
-    /* =========================================================
-       HERO PARALLAX
-    ========================================================== */
-
-    const heroVisual =
-      document.querySelector(".hero-visual");
-
-    let ticking = false;
-
-    window.addEventListener("scroll", () => {
-
-      if (!heroVisual) return;
-
-      if (!ticking) {
-
-        window.requestAnimationFrame(() => {
-
-          const scrollY = window.scrollY;
-
-          if (scrollY < 800) {
-
-            heroVisual.style.transform =
-              `translateY(${scrollY * 0.08}px)`;
-
-          }
-
-          ticking = false;
-
-        });
-
-        ticking = true;
-
-      }
-
     });
 
 
