@@ -1,0 +1,13 @@
+// Merge this match block into the existing Firestore rules before deploying.
+// Also update any broader wildcard allow rule so it does not grant client access
+// to any of these payroll internals; Firestore combines matching allows with OR.
+// The admin-checked callable functions are the only intended client access path.
+match /salarySlips/{salarySlipId} {
+  allow read, write: if false;
+}
+match /salarySlipCounters/{periodId} {
+  allow read, write: if false;
+}
+match /payrollRateLimits/{limitId} {
+  allow read, write: if false;
+}

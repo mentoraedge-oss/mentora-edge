@@ -167,6 +167,11 @@ textarea.input{min-height:110px;resize:vertical}
 .file-status a{color:#16883f;font-weight:850}
 .upload-note{margin-top:5px;color:#8492a1;font-size:8px;line-height:1.5}
 .content-editor img{max-width:100%;border-radius:12px}
+.payroll-note{padding:12px 14px;border-radius:13px;background:rgba(15,42,68,.045);color:#64748b;font-size:10px;line-height:1.6}
+.payroll-total{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(15,42,68,.08),rgba(34,197,94,.1));color:var(--navy);font-weight:900}
+.payroll-total output{font-size:19px}
+.payroll-status{min-height:18px;margin-top:10px;color:#64748b;font-size:10px}
+.payroll-history-table{min-width:700px}
 .toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid rgba(15,42,68,.08);border-bottom:0;border-radius:13px 13px 0 0;background:rgba(248,250,252,.75)}
 .tool-btn{border:0;border-radius:8px;padding:7px 9px;background:rgba(15,42,68,.05);color:var(--navy);font-size:9px;font-weight:900}
 .tool-btn:hover{background:rgba(34,197,94,.13)}
@@ -325,6 +330,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
       <button class="side-btn" data-tab="announcements"><span class="side-icon">📢</span>Announcements</button>
       <button class="side-btn" data-tab="materials"><span class="side-icon">📄</span>Study Materials</button>
       <button class="side-btn" data-tab="fees"><span class="side-icon">₹</span>Fees</button>
+      <button class="side-btn" data-tab="payroll"><span class="side-icon">▤</span>Payroll / Salary Slips</button>
       <button class="side-btn" data-tab="settings"><span class="side-icon">⚙</span>Settings</button>
       <div class="sidebar-note"><strong>CMS architecture</strong><br>Resources are stored separately from the existing student-dashboard <strong>materials</strong> collection so the current student portal keeps working.</div>
     </aside>
@@ -588,6 +594,41 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
         </section>
       </div>
 
+      <!-- PAYROLL -->
+      <div class="tab-panel" id="tab-payroll">
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">₹</span>Generate Salary Slip</h2><p class="section-description">Create a branded A4 salary slip, preview it, then download or email it securely.</p></div></div>
+          <form id="payrollForm" novalidate>
+            <div class="form-grid three">
+              <div class="field"><label class="label" for="payPeriod">Pay Period</label><input class="input" id="payPeriod" required placeholder="05/04/2027" autocomplete="off"></div>
+              <div class="field"><label class="label" for="payEmployeeId">Employee ID</label><input class="input" id="payEmployeeId" required placeholder="ME-001"></div>
+              <div class="field"><label class="label" for="payPosition">Position</label><input class="input" id="payPosition" required placeholder="Educator"></div>
+              <div class="field"><label class="label" for="payEmployeeName">Employee Name</label><input class="input" id="payEmployeeName" required placeholder="Employee name"></div>
+              <div class="field"><label class="label" for="payEmployeeEmail">Employee Email</label><input class="input" id="payEmployeeEmail" type="email" required placeholder="employee@example.com" autocomplete="email"></div>
+              <div class="field"><label class="label" for="payAccountNumber">Account Number <span style="font-weight:500">(optional; only last 4 digits are retained)</span></label><input class="input" id="payAccountNumber" inputmode="numeric" maxlength="34" autocomplete="off"></div>
+              <div class="field"><label class="label" for="payBasic">Basic Pay (INR)</label><input class="input" id="payBasic" type="number" min="0" step="0.01" required placeholder="25000"></div>
+              <div class="field"><label class="label" for="payAllowance">Allowance (INR or NA)</label><input class="input" id="payAllowance" type="text" inputmode="decimal" value="NA"></div>
+              <div class="field"><label class="label" for="payOvertime">Overtime Pay (INR or NA)</label><input class="input" id="payOvertime" type="text" inputmode="decimal" value="NA"></div>
+              <div class="field"><label class="label" for="payBonus">Bonus (INR or NA)</label><input class="input" id="payBonus" type="text" inputmode="decimal" value="NA"></div>
+              <div class="field full"><label class="label" for="payReference">Reference Number</label><input class="input" id="payReference" readonly placeholder="Assigned securely when the slip is prepared"></div>
+            </div>
+            <div class="payroll-total" style="margin-top:14px"><span>Total Earnings</span><output id="payTotal">₹0.00</output></div>
+            <p class="payroll-note" style="margin:14px 0 0">Allowance, overtime and bonus accept an amount or “NA”. NA is included as zero in the total and shown as NA on the PDF.</p>
+            <div class="actions">
+              <button class="btn btn-secondary" id="previewPayslipBtn" type="button">Preview Payslip</button>
+              <button class="btn btn-blue" id="downloadPayslipBtn" type="button">Download PDF</button>
+              <button class="btn btn-primary" id="sendPayslipBtn" type="submit">Send Payslip</button>
+              <button class="btn btn-secondary" id="newPayslipBtn" type="button" disabled>New Salary Slip</button>
+            </div>
+            <div id="payrollStatus" class="payroll-status" role="status" aria-live="polite"></div>
+          </form>
+        </section>
+        <section class="glass-card">
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">▤</span>Salary History</h2><p class="section-description">Recent slips recorded in the protected salarySlips collection.</p></div><button class="btn btn-secondary" id="refreshPayrollHistoryBtn" type="button">Refresh</button></div>
+          <div class="table-wrap"><table class="payroll-history-table"><thead><tr><th>Employee</th><th>Pay Period</th><th>Total</th><th>Status</th><th>Created</th></tr></thead><tbody id="payrollHistoryTable"><tr><td colspan="5" class="empty">Loading salary history…</td></tr></tbody></table></div>
+        </section>
+      </div>
+
       <!-- SETTINGS -->
       <div class="tab-panel" id="tab-settings">
         <section class="glass-card">
@@ -658,7 +699,8 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
 </script>
 
 <script type="module">
-import { auth, db } from "./js/firebase.js";
+import { app, auth, db } from "./js/firebase.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, getAcademicTier } from "./js/academic-programs.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
@@ -670,6 +712,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const storage=getStorage();
+const functions=getFunctions(app,"asia-south1");
+const prepareSalarySlipCall=httpsCallable(functions,"prepareSalarySlip");
+const sendSalarySlipCall=httpsCallable(functions,"sendSalarySlip");
+const listSalarySlipsCall=httpsCallable(functions,"listSalarySlips");
 
 const $=id=>document.getElementById(id);
 function populateActiveClassSelect(select,prompt){
@@ -732,7 +778,8 @@ onAuthStateChanged(auth,async user=>{
       loadFeeStudents(),
       loadResources(),
       loadAnnouncements(),
-      loadMaterials()
+      loadMaterials(),
+      loadSalaryHistory()
     ]);
     updateMetrics();
     loadSeoResourceOptions();
@@ -1331,6 +1378,132 @@ $("saveSeoBtn").addEventListener("click",async()=>{
     toast("SEO settings saved.","success");
   }catch(error){console.error(error);toast("SEO save failed: "+(error.message||"Unknown error"),"error");}
 });
+
+/* ---------------- PAYROLL ---------------- */
+const moneyFormatter=new Intl.NumberFormat("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const payrollMoney=value=>`INR ${moneyFormatter.format(value)}`;
+const PAYROLL_REQUEST_KEY="mentora_payroll_send_request_id";
+const PAYROLL_UNCERTAIN_KEY="mentora_payroll_send_uncertain";
+function createPayrollRequestId(){return crypto.randomUUID().toLowerCase();}
+function payrollRequestStorageKey(){return `${PAYROLL_REQUEST_KEY}_${currentUser?.uid||"unverified"}`;}
+function payrollUncertainStorageKey(){return `${PAYROLL_UNCERTAIN_KEY}_${currentUser?.uid||"unverified"}`;}
+function activePayrollRequestId(){
+  if(!currentUser?.uid)throw new Error("Wait for administrator verification before using payroll.");
+  const owner=currentUser.uid;
+  if(activePayRequestOwner!==owner){
+    activePayRequestOwner=owner;
+    activePayRequestId=localStorage.getItem(payrollRequestStorageKey())||createPayrollRequestId();
+    localStorage.setItem(payrollRequestStorageKey(),activePayRequestId);
+    payrollOutcomeUncertain=localStorage.getItem(payrollUncertainStorageKey())===activePayRequestId;
+    $("newPayslipBtn").disabled=true;
+  }
+  return activePayRequestId;
+}
+let activePayRequestId="";
+let activePayRequestOwner="";
+let payrollOutcomeUncertain=false;
+$("newPayslipBtn").disabled=true;
+function payrollAmount(id,required=false){
+  const raw=$(id).value.trim();
+  if(!required&&/^na$/i.test(raw))return {value:0,display:"NA"};
+  if(!raw)return {error:required?"Please enter the basic pay.":`Enter an amount or NA for ${id.replace("pay","").toLowerCase()}.`};
+  const value=Number(raw);
+  if(!Number.isFinite(value)||value<0)return {error:"Salary amounts must be zero or greater."};
+  return {value,display:value};
+}
+function collectPayrollData(){
+  const labels={payPeriod:"the pay period",payEmployeeId:"the employee ID",payEmployeeName:"the employee name",payPosition:"the position",payEmployeeEmail:"the employee email"};
+  for(const id of Object.keys(labels))if(!$(id).value.trim())return {error:`Please enter ${labels[id]}.`};
+  const email=$("payEmployeeEmail").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return {error:"Please enter a valid email address."};
+  const basic=payrollAmount("payBasic",true);if(basic.error)return basic;
+  const allowance=payrollAmount("payAllowance");if(allowance.error)return allowance;
+  const overtime=payrollAmount("payOvertime");if(overtime.error)return overtime;
+  const bonus=payrollAmount("payBonus");if(bonus.error)return bonus;
+  return {data:{payPeriod:$("payPeriod").value.trim(),employeeId:$("payEmployeeId").value.trim(),employeeName:$("payEmployeeName").value.trim(),position:$("payPosition").value.trim(),employeeEmail:email,basicPay:basic.value,allowance:allowance.value,allowanceDisplay:allowance.display,overtimePay:overtime.value,overtimeDisplay:overtime.display,bonus:bonus.value,bonusDisplay:bonus.display,totalEarnings:basic.value+allowance.value+overtime.value+bonus.value,accountNumber:$("payAccountNumber").value.trim()}};
+}
+function updatePayrollTotal(){
+  const a=payrollAmount("payBasic",true),b=payrollAmount("payAllowance"),c=payrollAmount("payOvertime"),d=payrollAmount("payBonus");
+  $("payTotal").textContent=payrollMoney([a,b,c,d].every(x=>!x.error)?a.value+b.value+c.value+d.value:0);
+}
+["payBasic","payAllowance","payOvertime","payBonus"].forEach(id=>$(id).addEventListener("input",updatePayrollTotal));
+function setPayrollStatus(message,type=""){const el=$("payrollStatus");el.textContent=message;el.style.color=type==="error"?"#b91c1c":type==="success"?"#16883f":"";}
+function payrollStatusMessage(status){
+  if(status==="sent")return "This salary slip has already been sent.";
+  if(status==="sending")return "This send request is already in progress. It will not be sent a second time.";
+  if(status==="unknown")return "The mail result is uncertain. Check the mail provider before starting another request.";
+  if(status==="failed")return "The mail server rejected the recipient. Check the address; retry this same request or start a corrected slip.";
+  return "Server PDF prepared. The draft and monthly reference are saved.";
+}
+function updatePayrollOperationState(status){
+  activePayrollRequestId();
+  payrollOutcomeUncertain=status==="sending"||status==="unknown";
+  if(payrollOutcomeUncertain)localStorage.setItem(payrollUncertainStorageKey(),activePayRequestId);
+  else if(localStorage.getItem(payrollUncertainStorageKey())===activePayRequestId)localStorage.removeItem(payrollUncertainStorageKey());
+  $("newPayslipBtn").disabled=payrollOutcomeUncertain;
+}
+function pdfBlobFromBase64(value){const bytes=Uint8Array.from(atob(value),character=>character.charCodeAt(0));return new Blob([bytes],{type:"application/pdf"});}
+async function prepareCanonicalPdf(){
+  const result=collectPayrollData();if(result.error){setPayrollStatus(result.error,"error");return null;}
+  try{activePayrollRequestId();}catch(error){setPayrollStatus(error.message,"error");return null;}
+  if(payrollOutcomeUncertain){setPayrollStatus("This request may already have reached the mail server. Reconcile it before changing its data or starting another send.","error");return null;}
+  try{
+    const response=await prepareSalarySlipCall({requestId:activePayrollRequestId(),salary:result.data});
+    const data=response.data;$("payReference").value=data.referenceNumber;updatePayrollOperationState(data.status);
+    setPayrollStatus(payrollStatusMessage(data.status),data.status==="sent"?"success":"");
+    return {blob:pdfBlobFromBase64(data.pdfBase64),filename:data.filename,status:data.status};
+  }catch(error){console.error("Payslip preparation failed",error.code||"callable-error");setPayrollStatus(error.message||"Could not prepare the server-generated salary slip.","error");return null;}
+}
+$("previewPayslipBtn").addEventListener("click",async()=>{
+  const preview=window.open("about:blank","_blank");
+  if(!preview){setPayrollStatus("Allow pop-ups to preview the salary slip.","error");return;}
+  const result=await prepareCanonicalPdf();if(!result){preview.close();return;}
+  const url=URL.createObjectURL(result.blob);preview.location.href=url;setTimeout(()=>URL.revokeObjectURL(url),60000);
+});
+$("downloadPayslipBtn").addEventListener("click",async()=>{
+  const result=await prepareCanonicalPdf();if(!result)return;
+  const url=URL.createObjectURL(result.blob),link=document.createElement("a");link.href=url;link.download=result.filename;link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
+});
+$("newPayslipBtn").addEventListener("click",()=>{
+  try{activePayrollRequestId();}catch(error){setPayrollStatus(error.message,"error");return;}
+  if(payrollOutcomeUncertain){setPayrollStatus("Reconcile the prior send in the mail provider before starting another request.","error");return;}
+  $("payrollForm").reset();$("payReference").value="";$("payAllowance").value="NA";$("payOvertime").value="NA";$("payBonus").value="NA";updatePayrollTotal();
+  activePayRequestId=createPayrollRequestId();localStorage.setItem(payrollRequestStorageKey(),activePayRequestId);$("newPayslipBtn").disabled=true;setPayrollStatus("");
+});
+$("payrollForm").addEventListener("submit",async event=>{
+  event.preventDefault();const button=$("sendPayslipBtn");button.disabled=true;setPayrollStatus("Generating PDF and sending securely…");
+  try{
+    const result=collectPayrollData();if(result.error){setPayrollStatus(result.error,"error");return;}
+    activePayrollRequestId();
+    const response=await sendSalarySlipCall({requestId:activePayrollRequestId(),salary:result.data});
+    const data=response.data;$("payReference").value=data.referenceNumber;updatePayrollOperationState(data.status);
+    setPayrollStatus(data.message||payrollStatusMessage(data.status),data.status==="sent"?"success":data.status==="unknown"?"error":"");
+    if(data.status==="sent")toast(`Salary slip sent successfully. Reference ${data.referenceNumber}.`,"success");
+    await loadSalaryHistory();
+  }catch(error){
+    console.error("Salary-slip request failed",error.code||"callable-error");
+    const uncertain=["functions/internal","functions/unavailable","functions/deadline-exceeded","functions/unknown"].includes(error.code);
+    if(uncertain)updatePayrollOperationState("unknown");
+    setPayrollStatus(error.message||"Unable to complete the salary-slip request. Retry using this same operation.","error");
+  }finally{button.disabled=false;}
+});
+async function loadSalaryHistory(){
+  const tbody=$("payrollHistoryTable");if(!tbody)return;
+  try{
+    const result=await listSalarySlipsCall({limit:50});tbody.innerHTML="";
+    const rows=result.data.records||[];
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="5" class="empty">No salary slips have been recorded yet.</td></tr>';return;}
+    rows.forEach(record=>{const tr=document.createElement("tr");
+      const employee=document.createElement("td");employee.className="name-cell";employee.textContent=record.employeeName||"-";
+      const period=document.createElement("td");period.textContent=record.payPeriod||"-";
+      const total=document.createElement("td");total.textContent=payrollMoney(Number(record.totalEarnings)||0);
+      const status=document.createElement("td");status.textContent=record.status||"-";
+      const created=document.createElement("td");created.textContent=record.createdAt?new Date(record.createdAt).toLocaleDateString("en-IN"):"-";
+      [employee,period,total,status,created].forEach(cell=>tr.appendChild(cell));tbody.appendChild(tr);
+    });
+  }catch(error){console.error("Salary history request failed",error.code||"callable-error");tbody.innerHTML='<tr><td colspan="5" class="empty">Salary history could not be loaded. Deploy the payroll functions and review Firebase App Check configuration.</td></tr>';}
+}
+$("refreshPayrollHistoryBtn").addEventListener("click",loadSalaryHistory);
 
 /* ---------------- LOGOUT ---------------- */
 async function logout(){
