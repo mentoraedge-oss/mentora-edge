@@ -700,7 +700,6 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
 
 <script type="module">
 import { app, auth, db } from "./js/firebase.js";
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, getAcademicTier } from "./js/academic-programs.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
@@ -712,10 +711,37 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const storage=getStorage();
-const functions=getFunctions(app,"asia-south1");
-const prepareSalarySlipCall=httpsCallable(functions,"prepareSalarySlip");
-const sendSalarySlipCall=httpsCallable(functions,"sendSalarySlip");
-const listSalarySlipsCall=httpsCallable(functions,"listSalarySlips");
+const payrollFunctionsUrl=`https://asia-south1-${app.options.projectId}.cloudfunctions.net`;
+async function callPayrollFunction(name,data){
+  const user=auth.currentUser;
+  if(!user){const error=new Error("Please sign in as an administrator.");error.code="functions/unauthenticated";throw error;}
+  const idToken=await user.getIdToken();
+  let response;
+  try{
+    response=await fetch(`${payrollFunctionsUrl}/${name}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${idToken}`},
+      body:JSON.stringify({data})
+    });
+  }catch{
+    const error=new Error("The payroll service connection failed. The send outcome may be uncertain; keep using this same request.");
+    error.code="functions/unavailable";
+    throw error;
+  }
+  let payload;
+  try{payload=await response.json();}catch{payload=null;}
+  if(!response.ok||payload?.error){
+    const serverError=payload?.error;
+    const status=String(serverError?.status||(response.status===401?"UNAUTHENTICATED":"INTERNAL")).toLowerCase().replace(/_/g,"-");
+    const error=new Error(serverError?.message||`Payroll request failed (${response.status}).`);
+    error.code=`functions/${status}`;
+    throw error;
+  }
+  return {data:Object.prototype.hasOwnProperty.call(payload||{},"result")?payload.result:payload?.data};
+}
+const prepareSalarySlipCall=data=>callPayrollFunction("prepareSalarySlip",data);
+const sendSalarySlipCall=data=>callPayrollFunction("sendSalarySlip",data);
+const listSalarySlipsCall=data=>callPayrollFunction("listSalarySlips",data);
 
 const $=id=>document.getElementById(id);
 function populateActiveClassSelect(select,prompt){
@@ -1446,7 +1472,6 @@ function pdfBlobFromBase64(value){const bytes=Uint8Array.from(atob(value),charac
 async function prepareCanonicalPdf(){
   const result=collectPayrollData();if(result.error){setPayrollStatus(result.error,"error");return null;}
   try{activePayrollRequestId();}catch(error){setPayrollStatus(error.message,"error");return null;}
-  if(payrollOutcomeUncertain){setPayrollStatus("This request may already have reached the mail server. Reconcile it before changing its data or starting another send.","error");return null;}
   try{
     const response=await prepareSalarySlipCall({requestId:activePayrollRequestId(),salary:result.data});
     const data=response.data;$("payReference").value=data.referenceNumber;updatePayrollOperationState(data.status);

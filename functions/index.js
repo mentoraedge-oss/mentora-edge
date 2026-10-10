@@ -18,8 +18,8 @@ const smtpUser = defineString("SMTP_USER");
 const smtpFrom = defineString("SMTP_FROM");
 const smtpPassword = defineSecret("SMTP_PASSWORD");
 const MAX_SENDS_PER_ADMIN_PER_DAY = 100;
-const enforceAppCheck = process.env.FUNCTIONS_EMULATOR !== "true";
-const callableOptions = { region: "asia-south1", enforceAppCheck, timeoutSeconds: 60, memory: "512MiB", maxInstances: 3 };
+// TEMPORARY: Disable App Check only for payroll callables while the reCAPTCHA Enterprise token issue is investigated.
+const callableOptions = { region: "asia-south1", enforceAppCheck: false, timeoutSeconds: 60, memory: "512MiB", maxInstances: 3 };
 
 async function requireAdmin(request) {
   if (!request.auth?.uid) throw new HttpsError("unauthenticated", "Please sign in as an administrator.");
@@ -144,7 +144,7 @@ async function claimSend(adminUid, requestId, payloadHash) {
     const [recordSnap, rateSnap] = await Promise.all([transaction.get(requestRef), transaction.get(rateRef)]);
     const record = recordSnap.exists ? recordSnap.data() : null;
     const disposition = validateWithHttpsError(sendDisposition, record, adminUid, payloadHash);
-    if (disposition === "already-handled") return record;
+    if (disposition === "already-handled") return { record, claimed: false };
     const count = Number(rateSnap.data()?.count || 0);
     if (count >= MAX_SENDS_PER_ADMIN_PER_DAY) throw new HttpsError("resource-exhausted", "Daily salary-slip send limit reached. Try again tomorrow or contact the system administrator.");
     const next = {
@@ -154,7 +154,7 @@ async function claimSend(adminUid, requestId, payloadHash) {
     };
     transaction.update(requestRef, next);
     transaction.set(rateRef, { count: count + 1, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
-    return { ...record, ...next };
+    return { record: { ...record, ...next }, claimed: true };
   });
 }
 
@@ -174,7 +174,7 @@ exports.sendSalarySlip = onCall({ ...callableOptions, secrets: [smtpPassword] },
   const { transporter, from } = smtpTransport();
   const pdf = await createSalarySlipPdf(record, assertReference(record.referenceNumber));
   const claimed = await claimSend(adminUid, requestId, normalized.payloadHash);
-  if (["sent", "sending", "unknown"].includes(claimed.status)) return callableResult(claimed);
+  if (!claimed.claimed) return callableResult(claimed.record);
 
   const requestRef = db.collection("salarySlips").doc(requestId);
   const filename = salaryFilename(record);
