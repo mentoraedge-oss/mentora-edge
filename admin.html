@@ -617,10 +617,13 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
             <div class="actions">
               <button class="btn btn-secondary" id="previewPayslipBtn" type="button">Preview Payslip</button>
               <button class="btn btn-blue" id="downloadPayslipBtn" type="button">Download PDF</button>
+              <button class="btn btn-secondary" id="connectGmailDraftsBtn" type="button">Connect Gmail for Drafts</button>
+              <button class="btn btn-blue" id="createGmailDraftBtn" type="button">Create Gmail Draft</button>
               <button class="btn btn-primary" id="sendPayslipBtn" type="submit">Send Payslip</button>
               <button class="btn btn-secondary" id="newPayslipBtn" type="button" disabled>New Salary Slip</button>
             </div>
             <div id="payrollStatus" class="payroll-status" role="status" aria-live="polite"></div>
+            <div id="gmailDraftStatus" class="payroll-status" role="status" aria-live="polite"></div>
           </form>
         </section>
         <section class="glass-card">
@@ -724,7 +727,12 @@ async function callPayrollFunction(name,data){
       body:JSON.stringify({data})
     });
   }catch{
-    const error=new Error("The payroll service connection failed. The send outcome may be uncertain; keep using this same request.");
+    const message=name==="createSalarySlipDraft"
+      ?"The Gmail draft outcome may be uncertain. Check Gmail Drafts before retrying this same request."
+      :name==="beginGmailDraftOAuth"
+        ?"Could not reach the Gmail authorization service. No email was sent; try authorization again."
+        :"The payroll service connection failed. The send outcome may be uncertain; keep using this same request.";
+    const error=new Error(message);
     error.code="functions/unavailable";
     throw error;
   }
@@ -742,6 +750,8 @@ async function callPayrollFunction(name,data){
 const prepareSalarySlipCall=data=>callPayrollFunction("prepareSalarySlip",data);
 const sendSalarySlipCall=data=>callPayrollFunction("sendSalarySlip",data);
 const listSalarySlipsCall=data=>callPayrollFunction("listSalarySlips",data);
+const beginGmailDraftOAuthCall=data=>callPayrollFunction("beginGmailDraftOAuth",data);
+const createSalarySlipDraftCall=data=>callPayrollFunction("createSalarySlipDraft",data);
 
 const $=id=>document.getElementById(id);
 function populateActiveClassSelect(select,prompt){
@@ -1484,6 +1494,38 @@ $("previewPayslipBtn").addEventListener("click",async()=>{
   if(!preview){setPayrollStatus("Allow pop-ups to preview the salary slip.","error");return;}
   const result=await prepareCanonicalPdf();if(!result){preview.close();return;}
   const url=URL.createObjectURL(result.blob);preview.location.href=url;setTimeout(()=>URL.revokeObjectURL(url),60000);
+});
+$("connectGmailDraftsBtn").addEventListener("click",async()=>{
+  const popup=window.open("about:blank","_blank");
+  if(!popup){toast("Allow pop-ups to connect Gmail for drafts.","error");return;}
+  popup.opener=null;
+  const button=$("connectGmailDraftsBtn");button.disabled=true;
+  const status=$("gmailDraftStatus");status.textContent="Starting secure Google authorization…";
+  try{
+    const result=await beginGmailDraftOAuthCall({});
+    if(typeof result.data?.authorizationUrl!=="string")throw new Error("Gmail authorization could not be started.");
+    popup.location.replace(result.data.authorizationUrl);
+    status.textContent="Complete Google authorization in the opened tab. This does not send any email.";
+  }catch(error){popup.close();status.textContent=error.message||"Gmail authorization could not be started.";status.style.color="#b91c1c";}
+  finally{button.disabled=false;}
+});
+$("createGmailDraftBtn").addEventListener("click",async()=>{
+  const collected=collectPayrollData();
+  if(collected.error){$("gmailDraftStatus").textContent=collected.error;$("gmailDraftStatus").style.color="#b91c1c";return;}
+  try{activePayrollRequestId();}catch(error){$("gmailDraftStatus").textContent=error.message;$("gmailDraftStatus").style.color="#b91c1c";return;}
+  const button=$("createGmailDraftBtn"), status=$("gmailDraftStatus");button.disabled=true;
+  status.textContent="Generating the canonical PDF and creating a Gmail draft…";status.style.color="";
+  try{
+    const response=await createSalarySlipDraftCall({requestId:activePayrollRequestId(),salary:collected.data});
+    const data=response.data;
+    if(data.status!=="draft_created"||typeof data.draftId!=="string")throw new Error("Gmail did not confirm draft creation. Check Drafts before retrying.");
+    $("payReference").value=data.referenceNumber||"";
+    status.replaceChildren(document.createTextNode(`Draft created, not sent. Reference ${data.referenceNumber}. `));
+    const link=document.createElement("a");link.href=data.gmailUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open Gmail Drafts";status.appendChild(link);
+  }catch(error){
+    console.error("Gmail draft request failed",error.code||"callable-error");
+    status.textContent=error.message||"Gmail draft creation failed. Check Drafts before retrying.";status.style.color="#b91c1c";
+  }finally{button.disabled=false;}
 });
 $("downloadPayslipBtn").addEventListener("click",async()=>{
   const result=await prepareCanonicalPdf();if(!result)return;

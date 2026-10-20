@@ -1,5 +1,7 @@
 functions/node_modules/
+functions-gmail-worker/node_modules/
 functions/.env*
+functions-gmail-worker/.env*
 functions/.secret.local
 .firebase/
 output/

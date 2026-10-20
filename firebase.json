@@ -1,6 +1,14 @@
 {
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs22"
-  }
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs22"
+    },
+    {
+      "source": "functions-gmail-worker",
+      "codebase": "gmail-worker",
+      "runtime": "nodejs22"
+    }
+  ]
 }

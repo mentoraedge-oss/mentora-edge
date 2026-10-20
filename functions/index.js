@@ -2,8 +2,16 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { defineString, defineSecret } = require("firebase-functions/params");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { GoogleAuth, OAuth2Client } = require("google-auth-library");
 const nodemailer = require("nodemailer");
 const { createSalarySlipPdf, salaryFilename } = require("./payroll-pdf");
+const { createSecretManagerClient } = require("./gmail-secret-manager");
+const {
+  assertDraftPayloadCompatible, assertGoogleMailbox, buildGmailAuthorizationUrl,
+  claimDraftDisposition, classifyDraftFailure, consumeOAuthState,
+  generateOAuthState, hashOAuthState, gmailDraftUrl
+} = require("./gmail-draft-core");
+const { claimSalarySlipDraft: claimSalarySlipDraftTransaction, invokePrivateGmailDraftWorker } = require("./gmail-draft-orchestrator");
 const {
   assertReference, assertRequestId, formatReference, nextReferenceSequence, normalizeHistoryLimit,
   normalizeSalary, requireAdminIdentity, sendDisposition, smtpTransportSecurity,
@@ -12,12 +20,25 @@ const {
 
 initializeApp();
 const db = getFirestore();
+// OAuth state is isolated from payroll documents in the default database.
+const oauthStateDb = getFirestore("mentora-oauth-state");
 const smtpHost = defineString("SMTP_HOST");
 const smtpPort = defineString("SMTP_PORT", { default: "587" });
 const smtpUser = defineString("SMTP_USER");
 const smtpFrom = defineString("SMTP_FROM");
 const smtpPassword = defineSecret("SMTP_PASSWORD");
+const gmailOAuthClientId = defineString("GMAIL_OAUTH_CLIENT_ID", { default: "" });
+const gmailOAuthRedirectUri = defineString("GMAIL_OAUTH_REDIRECT_URI", { default: "" });
+const gmailOAuthClientSecretId = defineString("GMAIL_OAUTH_CLIENT_SECRET_ID", { default: "gmail-oauth-client-secret" });
+const gmailOAuthRefreshTokenSecretId = defineString("GMAIL_OAUTH_REFRESH_TOKEN_SECRET_ID", { default: "gmail-oauth-refresh-token" });
+const gmailDraftWorkerUrl = defineString("GMAIL_DRAFT_WORKER_URL", { default: "" });
 const MAX_SENDS_PER_ADMIN_PER_DAY = 100;
+const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+const OAUTH_STATE_COLLECTION = "gmailOAuthStates";
+const DRAFT_REQUEST_COLLECTION = "salarySlipDraftRequests";
+const GMAIL_DRAFT_ORCHESTRATOR_SERVICE_ACCOUNT = "mentora-payroll-orchestrator@mentora-edge-v2.iam.gserviceaccount.com";
+const googleAuth = new GoogleAuth({ scopes: ["https://www.googleapis.com/auth/cloud-platform"] });
+const gmailSecrets = createSecretManagerClient(googleAuth);
 // TEMPORARY: Disable App Check only for payroll callables while the reCAPTCHA Enterprise token issue is investigated.
 const callableOptions = { region: "asia-south1", enforceAppCheck: false, timeoutSeconds: 60, memory: "512MiB", maxInstances: 3 };
 
@@ -73,6 +94,7 @@ async function prepareRecord(adminUid, requestId, normalized) {
     if (existingSnap.exists) {
       const existing = existingSnap.data();
       if (existing.createdBy !== adminUid) throw new HttpsError("permission-denied", "This send request belongs to another administrator.");
+      validateWithHttpsError(assertDraftPayloadCompatible, existing, normalized.payloadHash);
       if (existing.status !== "draft" && existing.payloadHash !== normalized.payloadHash) {
         throw new HttpsError("failed-precondition", "This request has already started. Its salary details cannot be changed; reconcile its send status before starting another request.");
       }
@@ -226,4 +248,221 @@ exports.listSalarySlips = onCall({ ...callableOptions, timeoutSeconds: 30 }, asy
       };
     })
   };
+});
+
+function oauthConfiguration() {
+  const clientId = gmailOAuthClientId.value();
+  const redirectUriValue = gmailOAuthRedirectUri.value();
+  if (!clientId || !redirectUriValue) {
+    throw new HttpsError("failed-precondition", "Gmail OAuth is not configured. Complete the documented Google Cloud setup first.");
+  }
+  let redirectUri;
+  try { redirectUri = new URL(redirectUriValue); } catch {
+    throw new HttpsError("failed-precondition", "The Gmail OAuth callback URL is not configured correctly.");
+  }
+  if (redirectUri.protocol !== "https:" || redirectUri.username || redirectUri.password || redirectUri.search || redirectUri.hash) {
+    throw new HttpsError("failed-precondition", "The Gmail OAuth callback URL must be an HTTPS function URL without query parameters.");
+  }
+  return { clientId, redirectUri: redirectUri.toString() };
+}
+
+function callbackRequestMatches(request, redirectUri) {
+  const expected = new URL(redirectUri);
+  const host = request.get("host");
+  const requestPath = request.path || "/";
+  const forwardedProtocol = request.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const protocol = forwardedProtocol || request.protocol;
+  return protocol === "https" && host === expected.host &&
+    (requestPath === "/" || requestPath === expected.pathname);
+}
+
+function callbackFormParams(request) {
+  if (!request.is("application/x-www-form-urlencoded")) return null;
+  if (request.body && typeof request.body === "object" && !Buffer.isBuffer(request.body)) return request.body;
+  if (Buffer.isBuffer(request.rawBody)) return Object.fromEntries(new URLSearchParams(request.rawBody.toString("utf8")));
+  return null;
+}
+
+exports.beginGmailDraftOAuth = onCall({
+  ...callableOptions,
+  serviceAccount: GMAIL_DRAFT_ORCHESTRATOR_SERVICE_ACCOUNT
+}, async (request) => {
+  const adminUid = await requireAdmin(request);
+  const { clientId, redirectUri } = oauthConfiguration();
+  const rawState = generateOAuthState();
+  const now = Date.now();
+  const stateRef = oauthStateDb.collection(OAUTH_STATE_COLLECTION).doc(hashOAuthState(rawState));
+  try {
+    await stateRef.create({
+      adminUid,
+      redirectUri,
+      createdAt: FieldValue.serverTimestamp(),
+      expiresAt: new Date(now + OAUTH_STATE_TTL_MS),
+      consumedAt: null
+    });
+  } catch (error) {
+    console.error("Gmail OAuth state creation failed", { code: safeFailureCode(error) });
+    throw new HttpsError("internal", "Could not start Gmail authorization. Please try again.");
+  }
+  return { authorizationUrl: buildGmailAuthorizationUrl({ clientId, redirectUri, state: rawState }) };
+});
+
+function htmlCallbackPage(success) {
+  return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'"><title>Mentora Edge Gmail authorization</title><body style="font:16px system-ui,sans-serif;max-width:600px;margin:12vh auto;padding:24px;color:#0f2a44"><h1>${success ? "Authorization complete" : "Authorization could not be completed"}</h1><p>${success ? "Gmail draft access is ready. You may close this window." : "The Gmail authorization was not completed. Return to Mentora Edge and start authorization again, or contact the administrator."}</p></body></html>`;
+}
+
+async function exchangeAuthorizationCode(code, clientId, clientSecret, redirectUri) {
+  const body = new URLSearchParams({
+    code, client_id: clientId, client_secret: clientSecret,
+    redirect_uri: redirectUri, grant_type: "authorization_code"
+  });
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" }, body,
+    redirect: "error",
+    signal: AbortSignal.timeout(15000)
+  });
+  const tokenResponse = await response.json().catch(() => ({}));
+  if (!response.ok || typeof tokenResponse.id_token !== "string" || typeof tokenResponse.refresh_token !== "string") {
+    const error = new Error("Google authorization exchange failed or did not return offline credentials.");
+    error.code = `OAUTH_EXCHANGE_${response.status}`;
+    throw error;
+  }
+  return tokenResponse;
+}
+
+exports.gmailOAuthCallback = require("firebase-functions/v2/https").onRequest({
+  region: "asia-south1",
+  serviceAccount: "mentora-oauth-callback@mentora-edge-v2.iam.gserviceaccount.com",
+  invoker: "public",
+  timeoutSeconds: 60,
+  memory: "256MiB",
+  maxInstances: 2
+}, async (request, response) => {
+  response.set("Cache-Control", "no-store, max-age=0");
+  response.set("X-Content-Type-Options", "nosniff");
+  response.set("Referrer-Policy", "no-referrer");
+  if (request.method !== "POST") {
+    response.status(405).type("html").send(htmlCallbackPage(false));
+    return;
+  }
+  try {
+    const { clientId, redirectUri } = oauthConfiguration();
+    if (!callbackRequestMatches(request, redirectUri)) throw new Error("Callback URL mismatch.");
+    const callbackParams = callbackFormParams(request);
+    if (!callbackParams) throw new Error("Invalid authorization response type.");
+    const rawState = callbackParams.state;
+    if (typeof rawState !== "string") throw new Error("Invalid state.");
+    const stateRecord = await consumeOAuthState(oauthStateDb, rawState, Date.now());
+    if (stateRecord.redirectUri !== redirectUri) throw new Error("Callback URL changed during authorization.");
+    if (callbackParams.error) throw new Error("Authorization was declined.");
+    const code = callbackParams.code;
+    if (typeof code !== "string" || code.length < 1 || code.length > 4096 || /[\r\n\x00]/.test(code)) throw new Error("Invalid authorization response.");
+    const clientSecret = await gmailSecrets.read(gmailOAuthClientSecretId.value());
+    const tokens = await exchangeAuthorizationCode(code, clientId, clientSecret, redirectUri);
+    const verifier = new OAuth2Client(clientId);
+    const ticket = await verifier.verifyIdToken({ idToken: tokens.id_token, audience: clientId });
+    assertGoogleMailbox(ticket.getPayload(), clientId);
+    await gmailSecrets.addVersion(gmailOAuthRefreshTokenSecretId.value(), tokens.refresh_token);
+    response.status(200).type("html").send(htmlCallbackPage(true));
+  } catch (error) {
+    console.error("Gmail OAuth callback failed", { code: safeFailureCode(error) });
+    response.status(400).type("html").send(htmlCallbackPage(false));
+  }
+});
+
+async function claimSalarySlipDraft(adminUid, requestId, payloadHash) {
+  try {
+    return await claimSalarySlipDraftTransaction({
+      db, FieldValue, adminUid, requestId, payloadHash,
+      claimDraftDisposition,
+      assertDraftPayloadCompatible
+    });
+  } catch (error) {
+    const callableCodes = new Set(["invalid-argument", "unauthenticated", "permission-denied", "not-found", "failed-precondition"]);
+    if (callableCodes.has(error?.code)) throw new HttpsError(error.code, error.message);
+    throw error;
+  }
+}
+
+function draftResult(record) {
+  return {
+    status: "draft_created",
+    draftId: record.gmailDraftId,
+    requestId: record.requestId,
+    referenceNumber: assertReference(record.referenceNumber),
+    gmailUrl: gmailDraftUrl()
+  };
+}
+
+async function updateDraftState(requestId, values) {
+  await db.collection(DRAFT_REQUEST_COLLECTION).doc(requestId).update({ ...values, updatedAt: FieldValue.serverTimestamp() });
+}
+
+exports.createSalarySlipDraft = onCall({
+  ...callableOptions,
+  serviceAccount: GMAIL_DRAFT_ORCHESTRATOR_SERVICE_ACCOUNT,
+  timeoutSeconds: 60
+}, async (request) => {
+  const adminUid = await requireAdmin(request);
+  const operation = validateWithHttpsError(validateSalaryOperation, request.data);
+  const requestId = validateWithHttpsError(assertRequestId, operation.requestId);
+  const normalized = validateWithHttpsError(normalizeSalary, operation.salary);
+  await prepareRecord(adminUid, requestId, normalized);
+  const claim = await claimSalarySlipDraft(adminUid, requestId, normalized.payloadHash);
+  if (!claim.created) return draftResult(claim.record);
+
+  const referenceNumber = assertReference(claim.salary.referenceNumber);
+  const filename = salaryFilename(claim.salary).replace(/[^A-Za-z0-9._-]/g, "_");
+  let gmailRequestDispatched = false;
+  try {
+    const pdf = await createSalarySlipPdf(claim.salary, referenceNumber);
+    const workerUrl = gmailDraftWorkerUrl.value();
+    const workerPayload = {
+      requestId,
+      payloadHash: normalized.payloadHash,
+      recipient: claim.salary.employeeEmail,
+      employeeName: claim.salary.employeeName,
+      payPeriod: claim.salary.payPeriod,
+      referenceNumber,
+      filename,
+      pdfBase64: pdf.toString("base64")
+    };
+    const workerResult = await invokePrivateGmailDraftWorker({
+      workerUrl,
+      googleAuth,
+      payload: workerPayload,
+      onDispatched: () => { gmailRequestDispatched = true; }
+    });
+    const gmailDraftId = workerResult.draftId;
+    const completed = {
+      provider: "gmail", requestId, createdBy: adminUid, payloadHash: normalized.payloadHash,
+      referenceNumber, status: "draft_created", retryable: false,
+      attemptCount: claim.record.attemptCount, gmailDraftId,
+      createdAt: claim.record.createdAt, draftCreatedAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp()
+    };
+    try { await updateDraftState(requestId, completed); }
+    catch (error) {
+      // Gmail confirmed creation. Leave the claim non-retryable if persistence fails; never create a second draft automatically.
+      console.error("Gmail draft result persistence failed", { requestId, code: safeFailureCode(error) });
+    }
+    return draftResult(completed);
+  } catch (error) {
+    const { ambiguous, retryable } = classifyDraftFailure(error, gmailRequestDispatched);
+    try {
+      await updateDraftState(requestId, {
+        status: ambiguous ? "unknown" : "failed",
+        retryable,
+        failureCode: safeFailureCode(error),
+        outcomeUnknownAt: ambiguous ? FieldValue.serverTimestamp() : null
+      });
+    } catch (stateError) {
+      console.error("Gmail draft outcome state update failed", { requestId, code: safeFailureCode(stateError) });
+    }
+    console.error("Gmail draft creation failed", { requestId, code: safeFailureCode(error), ambiguous });
+    if (ambiguous) {
+      throw new HttpsError("failed-precondition", "Gmail may have created this draft, but the result could not be confirmed. Check Gmail Drafts and reconcile before retrying.");
+    }
+    throw new HttpsError("failed-precondition", "Gmail could not create the draft. Review the configuration and retry this same request if no draft exists.");
+  }
 });
