@@ -1,0 +1,134 @@
+.edgy-widget,
+.edgy-widget * { box-sizing: border-box; }
+.edgy-widget {
+  --edgy-navy: #0f2a44;
+  --edgy-green: #22c55e;
+  --edgy-ink: #172b3d;
+  --edgy-muted: #627487;
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 1000;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--edgy-ink);
+}
+.edgy-widget button, .edgy-widget input { font: inherit; }
+.edgy-launcher {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 17px 7px 8px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: var(--edgy-navy);
+  color: #fff;
+  box-shadow: 0 8px 28px #0f2a4440;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.edgy-launcher:hover { transform: translateY(-2px); box-shadow: 0 12px 32px #0f2a4455; }
+.edgy-launcher-label { font-size: 14px; font-weight: 700; }
+.edgy-launcher-face, .edgy-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border: 2px solid #a9f2c3;
+  border-radius: 13px 13px 15px 15px;
+  background: linear-gradient(145deg,#fff,#dff8e8);
+  box-shadow: inset 0 -4px 0 #b6e7c5;
+}
+.edgy-launcher-face::before, .edgy-avatar::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  width: 12px;
+  height: 5px;
+  border-radius: 5px 5px 0 0;
+  background: var(--edgy-green);
+}
+.edgy-launcher-face span, .edgy-avatar span {
+  width: 5px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--edgy-navy);
+}
+.edgy-launcher-face i, .edgy-avatar i {
+  position: absolute;
+  bottom: 8px;
+  width: 12px;
+  height: 5px;
+  border-bottom: 2px solid #168648;
+  border-radius: 0 0 12px 12px;
+}
+.edgy-panel {
+  position: absolute;
+  right: 0;
+  bottom: 72px;
+  display: flex;
+  flex-direction: column;
+  width: min(370px, calc(100vw - 32px));
+  height: min(560px, calc(100dvh - 112px));
+  min-height: 340px;
+  overflow: hidden;
+  border: 1px solid #dbe5ec;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 20px 70px #0f2a4433;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(.98);
+  transform-origin: bottom right;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+}
+.edgy-open .edgy-panel { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+.edgy-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--edgy-navy);
+  color: white;
+}
+.edgy-avatar { width: 42px; height: 42px; }
+.edgy-heading { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+.edgy-heading strong { font-size: 16px; }
+.edgy-heading span { color: #d4e3ef; font-size: 12px; }
+.edgy-close, .edgy-send {
+  display: grid;
+  place-items: center;
+  border: 0;
+  cursor: pointer;
+}
+.edgy-close { width: 36px; height: 36px; border-radius: 50%; background: #ffffff1c; color: white; font-size: 25px; line-height: 1; }
+.edgy-messages { flex: 1; overflow: auto; padding: 17px 14px; scroll-behavior: smooth; }
+.edgy-message { width: fit-content; max-width: 92%; margin: 0 0 10px; padding: 11px 13px; border-radius: 15px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.edgy-bot { border: 1px solid #e4ebf0; border-bottom-left-radius: 5px; background: #f4f7f9; color: #26394a; }
+.edgy-visitor { margin-left: auto; border-bottom-right-radius: 5px; background: var(--edgy-navy); color: white; }
+.edgy-links { display: flex; flex-wrap: wrap; gap: 7px; margin: -2px 0 12px; }
+.edgy-links a { padding: 7px 10px; border: 1px solid #b9e8c9; border-radius: 999px; color: #126b38; font-size: 12px; font-weight: 700; text-decoration: none; }
+.edgy-links a:hover { background: #effbf3; }
+.edgy-suggestions { display: flex; flex-wrap: wrap; gap: 7px; margin: 2px 0 12px; }
+.edgy-suggestions button { padding: 8px 10px; border: 1px solid #d8e5eb; border-radius: 999px; background: #fff; color: #294459; font-size: 12px; text-align: left; cursor: pointer; }
+.edgy-suggestions button:hover { border-color: #76d998; background: #f3fcf6; }
+.edgy-form { display: flex; gap: 8px; padding: 11px 13px; border-top: 1px solid #e7edf1; }
+.edgy-form input { width: 0; flex: 1; min-width: 0; padding: 12px 13px; border: 1px solid #dbe5ec; border-radius: 13px; outline: none; color: var(--edgy-ink); font-size: 14px; }
+.edgy-form input:focus { border-color: #22a955; box-shadow: 0 0 0 3px #22c55e2b; }
+.edgy-send { width: 44px; border-radius: 13px; background: var(--edgy-green); color: #fff; font-size: 24px; font-weight: 700; }
+.edgy-send:hover { background: #16a34a; }
+.edgy-note { margin: 0; padding: 0 14px 11px; color: var(--edgy-muted); font-size: 10px; text-align: center; }
+.edgy-widget :focus-visible { outline: 3px solid #7ce39e; outline-offset: 3px; }
+.edgy-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 520px) {
+  .edgy-widget { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); }
+  .edgy-launcher { min-height: 54px; }
+  .edgy-panel { position: fixed; right: max(8px, env(safe-area-inset-right)); bottom: max(76px, calc(env(safe-area-inset-bottom) + 68px)); width: calc(100vw - 16px); height: min(560px, calc(100dvh - 96px - env(safe-area-inset-bottom))); min-height: 300px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .edgy-widget *, .edgy-widget *::before, .edgy-widget *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
