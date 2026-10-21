@@ -736,6 +736,20 @@
       line-height:1.4;
     }
 
+    .fee-action{margin-top:8px;padding:7px 11px;border:0;border-radius:9px;background:#16883f;color:#fff;font-size:9px;font-weight:800;cursor:pointer}
+    .fee-pay-modal{position:fixed;inset:0;z-index:4000;background:rgba(15,42,68,.64);display:grid;place-items:center;overflow-y:auto;padding:18px;box-sizing:border-box}
+    .fee-pay-modal[hidden]{display:none}
+    .fee-pay-card{width:min(100%,420px);margin:auto;padding:clamp(18px,4vw,26px);box-sizing:border-box;border-radius:20px;background:#fff;text-align:center;box-shadow:0 25px 80px rgba(15,42,68,.25)}
+    .fee-pay-card h2{margin:0 0 8px;text-align:center}
+    .fee-pay-card #feePaymentPeriod{margin:0 0 8px;color:var(--navy);font-weight:800;text-align:center}
+    .fee-pay-card #feePaymentAmount{display:block;margin:0;text-align:center;font-size:1.2rem}
+    .fee-pay-card img{display:block;width:min(100%,220px);height:auto;aspect-ratio:1;margin:16px auto;object-fit:contain}
+    .fee-pay-card #feePaymentReference,.fee-pay-card > .fee-date{max-width:36ch;margin:8px auto;color:#667789;font-size:12px;line-height:1.55;text-align:center;overflow-wrap:anywhere}
+    .fee-pay-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+    .fee-pay-actions button{width:100%;min-width:0;min-height:44px;padding:11px 12px;border:0;border-radius:10px;font-weight:800;line-height:1.3;cursor:pointer}
+    #feePaymentCompleted{background:#16883f;color:#fff}#feePaymentCancel{background:#eef2f6;color:#334155}
+    @media(max-width:380px){.fee-pay-modal{padding:12px}.fee-pay-actions{grid-template-columns:1fr}}
+
     .empty-message{
       padding:25px;
       border-radius:15px;
@@ -1117,8 +1131,8 @@
               <div class="section-heading-icon">💰</div>
 
               <div>
-                <h2 class="section-title">Monthly Fees Status</h2>
-                <p class="section-caption">Fee records for 2026</p>
+                <h2 class="section-title">Fee Status</h2>
+                <p class="section-caption" id="feeSessionCaption">Your applicable fee periods</p>
               </div>
             </div>
 
@@ -1128,6 +1142,22 @@
 
         </section>
 
+      </div>
+
+      <div id="feePaymentModal" class="fee-pay-modal" role="dialog" aria-modal="true" aria-labelledby="feePaymentTitle" hidden>
+        <div class="fee-pay-card">
+          <h2 id="feePaymentTitle">Pay Fee</h2>
+          <p id="feePaymentPeriod"></p>
+          <strong id="feePaymentAmount"></strong>
+          <img id="feePaymentQr" alt="UPI payment QR code">
+          <p id="feePaymentReference" class="fee-date"></p>
+          <p class="fee-date">Payment is recorded as pending verification. The QR does not confirm payment automatically.</p>
+          <div class="fee-pay-actions">
+            <button id="feePaymentCompleted" type="button">Payment Completed</button>
+            <button id="feePaymentCancel" type="button">Cancel Payment</button>
+          </div>
+          <p id="feePaymentMessage" role="status" aria-live="polite"></p>
+        </div>
       </div>
 
       <!-- Loading state shown until authentication resolves -->
@@ -1295,11 +1325,15 @@
       getDoc,
       collection,
       getDocs,
+      runTransaction,
+      serverTimestamp,
       query,
       where,
       orderBy,
       limit
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { ACADEMIC_PROGRAMS } from "./js/academic-programs.js";
+    import { academicSession, annualPeriod, canInitiateFeePayment, feePeriodStatus, MONTHS, monthlyAmount, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "./js/fee-management.mjs";
 
     const logoutBtn = document.getElementById("logoutBtn");
     const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
@@ -1337,6 +1371,10 @@
 
     const feesContainer =
       document.getElementById("feesContainer");
+    const feePaymentModal = document.getElementById("feePaymentModal");
+    const feePaymentQr = document.getElementById("feePaymentQr");
+    let activeFeePayment = null;
+    let activeStudentUid = null;
 
     async function logout(){
       try{
@@ -1439,87 +1477,112 @@
       });
     }
 
+    function renderFeePeriod(period){
+      period={...period,status:feePeriodStatus(period,period.paymentRequest,period.requestStatusAvailable!==false||Boolean(period.paymentRequest))};
+      const card=document.createElement("div");card.className="fee-card";
+      const title=document.createElement("p");title.className="fee-month";title.textContent=period.label;
+      const amount=document.createElement("p");amount.textContent=period.amount?`₹${Number(period.amount).toLocaleString("en-IN")}` : "";
+      const status=document.createElement("p");
+      status.className=period.status==="Paid"?"fee-paid":period.status==="Not Applicable"?"fee-date":"fee-unpaid";
+      status.textContent=period.requestStatusAvailable===false&&period.status!=="Paid"&&period.status!=="Not Applicable"?`${period.status} · request status unavailable`:period.status;
+      card.append(title,amount,status);
+      if(period.paidOn){const paidDate=document.createElement("p");paidDate.className="fee-date";paidDate.textContent="Paid "+formatPaidOn(period.paidOn);card.appendChild(paidDate);}
+      if(period.requestStatusAvailable===false&&period.status!=="Paid"&&period.status!=="Not Applicable"){
+        const pending=document.createElement("p");pending.className="fee-date";pending.textContent="Could not check for an active payment request. Please contact the office before retrying.";card.appendChild(pending);
+      }else if(period.status==="Pending Verification"){
+        const pending=document.createElement("p");pending.className="fee-date";pending.textContent="Payment request is awaiting office verification.";card.appendChild(pending);
+      }
+      if(canInitiateFeePayment(period,period.paymentRequest)){
+        const button=document.createElement("button");button.type="button";button.className="fee-action";button.textContent="Pay";
+        button.addEventListener("click",()=>openFeePayment(period));card.appendChild(button);
+      }
+      feesContainer.appendChild(card);
+    }
+
+    function openFeePayment(period){
+      activeFeePayment=period;
+      const reference=`ME-${activeStudentUid}-${period.id}`.slice(0,60);const amount=Number(period.amount);
+      document.getElementById("feePaymentTitle").textContent="Pay Fee";
+      document.getElementById("feePaymentPeriod").textContent=period.label;
+      document.getElementById("feePaymentAmount").textContent=`₹${amount.toLocaleString("en-IN")}`;
+      document.getElementById("feePaymentReference").textContent="Payment reference: "+reference;
+      document.getElementById("feePaymentMessage").textContent="";
+      const upi=`upi://pay?pa=abirmunshi200@okhdfcbank&pn=Mentora%20Edge&am=${encodeURIComponent(amount)}&cu=INR&tr=${encodeURIComponent(reference)}&tn=${encodeURIComponent(period.label)}`;
+      feePaymentQr.src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+encodeURIComponent(upi);
+      feePaymentModal.hidden=false;
+    }
+
+    function closeFeePayment(){feePaymentModal.hidden=true;activeFeePayment=null;feePaymentQr.removeAttribute("src");}
+    document.getElementById("feePaymentCancel").addEventListener("click",closeFeePayment);
+    document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!feePaymentModal.hidden)closeFeePayment();});
+    document.getElementById("feePaymentCompleted").addEventListener("click",async()=>{
+      if(!activeFeePayment||!activeStudentUid)return;
+      const button=document.getElementById("feePaymentCompleted");button.disabled=true;
+      const period=activeFeePayment;const requestRef=doc(db,"users",activeStudentUid,"feePaymentRequests",period.id);
+      try{
+        await runTransaction(db,async transaction=>{
+          const existing=await transaction.get(requestRef);const request=existing.exists()?existing.data():null;
+          if(request?.status==="pending_verification")throw new Error("A payment request for this period is already awaiting verification.");
+          if(request?.status==="verified"||request?.status==="paid")throw new Error("This period already has a verified payment request.");
+          transaction.set(requestRef,{
+            periodId:period.id,periodKey:period.periodKey,periodLabel:period.label,amount:Number(period.amount),
+            paymentFrequency:studentProfile.paymentFrequency,programType:studentProfile.programType||"individual-subject",
+            status:"pending_verification",reference:`ME-${activeStudentUid}-${period.id}`.slice(0,60),createdAt:serverTimestamp()
+          });
+        });
+        document.getElementById("feePaymentMessage").textContent="Payment request submitted. Your fee remains pending verification until the office confirms it.";
+        await loadFees(activeStudentUid);window.setTimeout(closeFeePayment,1800);
+      }catch(error){
+        console.error(error);document.getElementById("feePaymentMessage").textContent=error.message||"Could not submit the payment request. Please contact the office.";
+      }finally{button.disabled=false;}
+    });
+
+    let studentProfile={};
     async function loadFees(uid){
-
-      feesContainer.innerHTML = "";
-
-      const snap = await getDoc(
-        doc(db, "users", uid)
-      );
-
-      if (!snap.exists()){
-        feesContainer.innerHTML = `
-          <div class="empty-message" style="grid-column:1/-1;">
-            Student profile could not be found.
-          </div>
-        `;
+      activeStudentUid=uid;feesContainer.innerHTML="";
+      const snap=await getDoc(doc(db,"users",uid));
+      if(!snap.exists()){
+        feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">Student profile could not be found.</div>';return;
+      }
+      studentProfile=snap.data();const profile=studentProfile;const fees=profile.fees||{};const frequency=profile.paymentFrequency;
+      let requests={},requestStatusAvailable=true;
+      try{
+        const requestSnap=await getDocs(collection(db,"users",uid,"feePaymentRequests"));
+        requestSnap.forEach(request=>{requests[request.id]=request.data();});
+      }catch(requestError){requestStatusAvailable=false;console.warn("Fee payment requests are unavailable under the current Firestore permissions.",requestError);}
+      const dueAmount=Number(profile.paymentDueAtRegistration);
+      if(frequency){
+        const labels={monthly:"Monthly",quarterly:"Quarterly",annual:"Annual"};studentPaymentPlan.textContent=labels[frequency]||"Not recorded";
+        const paymentStatus=registrationPaymentLabel(profile).replace("Registration payment ", "");
+        studentFeePlan.textContent=`Plan total ₹${Number(profile.planTotal||0).toLocaleString("en-IN")}${Number.isFinite(dueAmount)?` · registration amount ${paymentStatus} (₹${dueAmount.toLocaleString("en-IN")})`:""}`;
+      }
+      const now=new Date();
+      const periods=frequency==="monthly"
+        ? monthlyPeriods({year:now.getFullYear(),enrolledAt:profile.createdAt,fees,defaultAmount:monthlyAmount(profile,ACADEMIC_PROGRAMS)})
+        : frequency==="quarterly"
+          ? quarterlyPeriods({date:now,enrolledAt:profile.createdAt,fees,installments:ACADEMIC_PROGRAMS.secondary.combo.quarterlyInstallments})
+          : [];
+      if(frequency==="annual"){
+        const annual=annualPeriod({profile,date:now,fees});
+        annual.paymentRequest=requests[annual.id]||null;
+        annual.requestStatusAvailable=requestStatusAvailable;
+        annual.registrationPaymentPending=(profile.registrationPaymentStatus==="pending_verification"||(!profile.registrationPaymentStatus&&profile.paymentDueAtRegistration!==undefined))&&profile.paymentDueAtRegistration!==undefined;
+        annual.status=feePeriodStatus(annual,annual.paymentRequest,requestStatusAvailable||Boolean(annual.request));
+        document.getElementById("feeSessionCaption").textContent=`${annual.label} · ${annual.status}`;renderFeePeriod(annual);
+        for(const month of MONTHS)renderFeePeriod({label:`${month} (annual display)`,amount:null,applicable:false,status:annual.status});
         return;
       }
-
-      const fees = snap.data().fees?.["2026"];
-
-      if (!fees){
-
-        feesContainer.innerHTML = `
-          <div class="empty-message" style="grid-column:1/-1;">
-            No fee records for 2026.
-          </div>
-        `;
-
-        return;
-      }
-
-      const months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ];
-
-      months.forEach(month => {
-
-        const m = fees[month];
-        const paid = m?.paid === true;
-
-        const card = document.createElement("div");
-        card.className = "fee-card";
-
-        const monthEl = document.createElement("p");
-        monthEl.className = "fee-month";
-        monthEl.textContent = month;
-
-        const statusEl = document.createElement("p");
-        statusEl.className = paid
-          ? "fee-paid"
-          : "fee-unpaid";
-
-        statusEl.textContent =
-          paid ? "Paid ✔" : "Not Paid ✖";
-
-        card.appendChild(monthEl);
-        card.appendChild(statusEl);
-
-        if (paid && m.paidOn){
-
-          const dateEl = document.createElement("p");
-          dateEl.className = "fee-date";
-          dateEl.textContent = formatPaidOn(m.paidOn);
-
-          card.appendChild(dateEl);
-
-        }
-
-        feesContainer.appendChild(card);
-
+      if(!periods.length){feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">No payment plan is recorded on this profile.</div>';return;}
+      periods.forEach(period=>{
+        period.paymentRequest=requests[period.id]||period.request||null;
+        period.requestStatusAvailable=requestStatusAvailable;
+        period.registrationPaymentPending=period.periodKey===profile.paymentDuePeriod&&(profile.registrationPaymentStatus==="pending_verification"||(!profile.registrationPaymentStatus&&profile.paymentDueAtRegistration!==undefined))&&profile.paymentDueAtRegistration!==undefined&&period.status!=="Paid";
+        period.status=feePeriodStatus(period,period.paymentRequest,requestStatusAvailable||Boolean(period.request));
       });
+      const due=periods.filter(period=>period.applicable&&period.status!=="Paid").reduce((sum,period)=>sum+Number(period.amount||0),0);
+      const periodLabel=frequency==="quarterly"?`Academic session ${academicSession(now).key}`:`Calendar year ${now.getFullYear()}`;
+      document.getElementById("feeSessionCaption").textContent=`${periodLabel} · outstanding ₹${due.toLocaleString("en-IN")}`;
+      periods.forEach(renderFeePeriod);
     }
 
     onAuthStateChanged(auth, async (user) => {
@@ -1567,8 +1630,9 @@
         studentPaymentPlan.textContent = frequencyLabels[data.paymentFrequency] || "Not recorded";
         if (data.planTotal !== undefined && Number.isFinite(Number(data.planTotal))) {
           const total = "₹" + Number(data.planTotal).toLocaleString("en-IN");
+          const registrationStatus = registrationPaymentLabel(data).replace("Registration payment ", "");
           const due = data.paymentDueAtRegistration !== undefined && Number.isFinite(Number(data.paymentDueAtRegistration))
-            ? " · due at registration ₹" + Number(data.paymentDueAtRegistration).toLocaleString("en-IN")
+            ? " · registration amount " + registrationStatus + " (₹" + Number(data.paymentDueAtRegistration).toLocaleString("en-IN") + ")"
             : "";
           studentFeePlan.textContent = "Plan total " + total + due;
         } else {

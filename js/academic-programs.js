@@ -6,7 +6,7 @@ const IX_X_SUBJECT_FEES = Object.freeze({
   Maths: 600
 });
 const IX_X_COMBO_MONTHLY = Object.values(IX_X_SUBJECT_FEES).reduce((sum, fee) => sum + fee, 0);
-const IX_X_QUARTERLY_INSTALLMENTS = Object.freeze([7000, 7000, 6000]);
+const IX_X_QUARTERLY_INSTALLMENTS = Object.freeze([5000, 5000, 5000, 5000]);
 const IX_X_ANNUAL_TOTAL = 20000;
 
 export const ACADEMIC_PROGRAMS = Object.freeze({

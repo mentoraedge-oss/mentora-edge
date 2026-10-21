@@ -89,6 +89,7 @@
       getPaymentFrequencies,
       getPlanDetails
     } from "./js/academic-programs.js";
+    import { academicSession, MONTHS } from "./js/fee-management.mjs";
 
     const form = document.getElementById("signupForm");
     const errorMsg = document.getElementById("error");
@@ -171,6 +172,15 @@
       const subject = isCombo
         ? ACADEMIC_PROGRAMS.secondary.combo.subjects.join(", ")
         : offering;
+      const now = new Date();
+      const session = academicSession(now);
+      const month = MONTHS[now.getMonth()];
+      const quarter = now.getMonth() >= 3 ? Math.floor((now.getMonth() - 3) / 3) + 1 : 4;
+      const paymentDuePeriod = frequencySelect.value === "monthly"
+        ? `${now.getFullYear()}-${month}`
+        : frequencySelect.value === "quarterly"
+          ? `${session.key}.Q${quarter}`
+          : `${session.key}.annual`;
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -184,6 +194,8 @@
           feeAmount: plan.amountDue,
           planTotal: plan.total,
           paymentDueAtRegistration: plan.amountDue,
+          paymentDuePeriod,
+          registrationPaymentStatus: "pending_verification",
           role: "student",
           status: "pending",
           createdAt: serverTimestamp()

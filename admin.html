@@ -585,7 +585,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
       <!-- FEES -->
       <div class="tab-panel" id="tab-fees">
         <section class="glass-card">
-          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">₹</span>Monthly Fees Management</h2><p class="section-description">Select a student to view and update their 2026 fee status.</p></div></div>
+          <div class="section-head"><div><h2 class="section-title"><span class="section-icon">₹</span>Fee Management</h2><p class="section-description">Review the student’s saved payment plan, registration payment, and applicable fee periods.</p></div></div>
           <div class="fee-controls">
             <select id="feeStudent" class="input"><option value="">Select Student</option></select>
             <button id="showFeesBtn" class="btn btn-primary" type="button">Show Fee Status</button>
@@ -704,9 +704,10 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
 <script type="module">
 import { app, auth, db } from "./js/firebase.js";
 import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, getAcademicTier } from "./js/academic-programs.js";
+import { academicSession, annualPeriod, feePeriodStatus, monthlyAmount, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "./js/fee-management.mjs";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  collection,getDocs,doc,getDoc,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,
+  collection,getDocs,doc,getDoc,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,runTransaction,
   query,orderBy,limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
@@ -900,7 +901,7 @@ $("studentsTable").addEventListener("click",async e=>{
   const id=btn.dataset.id;
   try{
     if(btn.dataset.action==="approve"){
-      await updateDoc(doc(db,"users",id),{status:"active"});
+      await approveStudent(id);
       toast("Student approved.","success");
     }
     if(btn.dataset.action==="reject"){
@@ -977,6 +978,45 @@ $("uploadMaterialBtn").addEventListener("click",async()=>{
 });
 
 /* ---------------- FEES ---------------- */
+function feeScheduleForApproval(profile, fees = {}) {
+  const next = { ...fees };
+  const enrolledAt = profile.createdAt || new Date();
+  const put = (key, id, amount, applicable) => {
+    const bucket = { ...(next[key] || {}) };
+    if (!bucket[id]) bucket[id] = { amount, status: applicable ? "not_paid" : "not_applicable" };
+    next[key] = bucket;
+  };
+  if (profile.paymentFrequency === "monthly") {
+    const year = new Date().getFullYear();
+    const amount = monthlyAmount(profile, ACADEMIC_PROGRAMS);
+    monthlyPeriods({ year, enrolledAt, fees: next, defaultAmount: amount }).forEach(period =>
+      put(String(year), period.label, period.amount || amount, period.applicable)
+    );
+  } else if (profile.paymentFrequency === "quarterly") {
+    const session = academicSession(new Date());
+    const installments = ACADEMIC_PROGRAMS.secondary.combo.quarterlyInstallments;
+    quarterlyPeriods({ date: new Date(), enrolledAt, fees: next, installments }).forEach((period, index) =>
+      put(session.key, `Q${index + 1}`, period.amount || installments[index], period.applicable)
+    );
+  } else if (profile.paymentFrequency === "annual") {
+    const session = academicSession(new Date());
+    const period = annualPeriod({ profile, date: new Date(), fees: next });
+    put(session.key, "annual", period.amount, true);
+  }
+  return next;
+}
+
+async function approveStudent(id) {
+  const refUser = doc(db, "users", id);
+  await runTransaction(db, async transaction => {
+    const snap = await transaction.get(refUser);
+    if (!snap.exists()) throw new Error("Student profile no longer exists.");
+    const profile = snap.data();
+    if (profile.status === "active") return;
+    transaction.update(refUser, { status: "active", fees: feeScheduleForApproval(profile, profile.fees || {}) });
+  });
+}
+
 async function loadFeeStudents(){
   const select=$("feeStudent");
   select.innerHTML="<option value=''>Select Student</option>";
@@ -993,30 +1033,96 @@ async function showFees(){
   $("feesGrid").innerHTML="";
   try{
     const snap=await getDoc(doc(db,"users",$("feeStudent").value));
-    const fees=snap.data()?.fees?.["2026"]||{};
-    months.forEach(month=>{
-      const paid=fees[month]?.paid===true;
+    const profile=snap.data()||{};const fees=profile.fees||{};
+    let requests={},requestStatusAvailable=true;
+    try{
+      const requestSnap=await getDocs(collection(db,"users",$("feeStudent").value,"feePaymentRequests"));
+      requestSnap.forEach(request=>{requests[request.id]=request.data();});
+    }catch(requestError){requestStatusAvailable=false;console.warn("Payment requests are unavailable under current Firestore permissions.",requestError);}
+    const periods=profile.paymentFrequency==="quarterly"
+      ? quarterlyPeriods({enrolledAt:profile.createdAt,fees,installments:ACADEMIC_PROGRAMS.secondary.combo.quarterlyInstallments})
+      : profile.paymentFrequency==="annual"
+        ? [annualPeriod({profile,fees})]
+        : profile.paymentFrequency==="monthly"
+          ? monthlyPeriods({year:new Date().getFullYear(),enrolledAt:profile.createdAt,fees,defaultAmount:monthlyAmount(profile,ACADEMIC_PROGRAMS)})
+          : [];
+    const registration=document.createElement("div");registration.className="fee-card";
+    const regTitle=document.createElement("div");regTitle.className="fee-month";regTitle.textContent="Registration payment";
+    const regStatus=document.createElement("p");regStatus.textContent=registrationPaymentLabel(profile)+(Number.isFinite(Number(profile.paymentDueAtRegistration))?" · "+formatINR(profile.paymentDueAtRegistration):"");
+    registration.append(regTitle,regStatus);
+    if(profile.registrationPaymentStatus!=="verified"&&profile.paymentDueAtRegistration!==undefined&&profile.paymentDuePeriod){
+      const verify=document.createElement("button");verify.type="button";verify.textContent="Verify registration payment";
+      verify.addEventListener("click",verifyRegistrationPayment);registration.appendChild(verify);
+    }
+    $("feesGrid").appendChild(registration);
+    if(!periods.length){const empty=document.createElement("div");empty.className="fee-card";empty.textContent="No supported payment plan is recorded.";$("feesGrid").appendChild(empty);return;}
+    periods.forEach(period=>{
+      period.requestStatusAvailable=requestStatusAvailable;
+      period.status=feePeriodStatus(period,requests[period.id]||period.request,requestStatusAvailable||Boolean(period.request));
       const card=document.createElement("div");card.className="fee-card";
-      card.innerHTML=`<div class="fee-month">${month}</div>
-        <p style="color:${paid?"#16a34a":"#dc2626"}">${paid?"Paid":"Not Paid"}</p>
-        ${paid?"✔️":`<button data-month="${month}" type="button">Mark Paid</button>`}`;
-      const button=card.querySelector("button");
-      if(button)button.addEventListener("click",()=>markPaid(month));
+      const title=document.createElement("div");title.className="fee-month";title.textContent=period.label;
+      const amount=document.createElement("p");amount.textContent=period.amount?formatINR(period.amount):"Fee amount unavailable";
+      const status=document.createElement("p");status.textContent=period.status;
+      status.style.color=period.status==="Paid"?"#16a34a":period.status==="Pending Verification"?"#b45309":period.status==="Not Applicable"?"#708295":"#dc2626";
+      card.append(title,amount,status);
+      if(requests[period.id]){
+        const requestInfo=document.createElement("p");
+        requestInfo.textContent="Request: "+String(requests[period.id].status||"status unavailable")+" · reference: "+String(requests[period.id].reference||"not provided")+(requests[period.id].createdAt?" · submitted "+formatDate(requests[period.id].createdAt):"");
+        card.appendChild(requestInfo);
+      }
+      if(period.status!=="Paid"&&period.status!=="Not Applicable"&&period.amount>0){
+        const button=document.createElement("button");button.type="button";button.textContent=period.status==="Pending Verification"?"Verify payment":"Mark paid";
+        button.addEventListener("click",()=>markPaid(period));card.appendChild(button);
+      }
       $("feesGrid").appendChild(card);
     });
   }catch(error){console.error(error);toast("Could not load fee status.","error");}
 }
-async function markPaid(month){
+async function markPaid(period){
+  const selectedId=$("feeStudent").value;const refUser=doc(db,"users",selectedId);
+  try{
+    await runTransaction(db,async transaction=>{
+      const snap=await transaction.get(refUser);if(!snap.exists())throw new Error("Student profile no longer exists.");
+      const profile=snap.data();const fees={...(profile.fees||{})};
+      const monthlyPeriod=String(period.periodKey||"").match(/^(\d{4})-([A-Za-z]+)$/);
+      const [bucketKey,periodKey]=monthlyPeriod
+        ? [monthlyPeriod[1],monthlyPeriod[2]]
+        : String(period.periodKey||"").split(/\.(?=[^.]+$)/);
+      if(!bucketKey||!periodKey)throw new Error("Fee period reference is invalid.");
+      const bucket={...(fees[bucketKey]||{})};const existing=bucket[periodKey]||{};
+      if(existing.paid===true||existing.status==="paid")throw new Error("This period is already verified as paid.");
+      bucket[periodKey]={...existing,amount:period.amount,paid:true,status:"paid",paidOn:serverTimestamp()};fees[bucketKey]=bucket;
+      const update={fees};
+      if(profile.paymentDuePeriod===period.periodKey&&profile.registrationPaymentStatus!=="verified"){
+        update.registrationPaymentStatus="verified";update.registrationPaymentVerifiedAt=serverTimestamp();
+      }
+      transaction.update(refUser,update);
+    });
+    const requestRef=doc(db,"users",selectedId,"feePaymentRequests",period.id);
+    try{
+      const requestSnap=await getDoc(requestRef);
+      if(requestSnap.exists()&&requestSnap.data().status==="pending_verification")await updateDoc(requestRef,{status:"verified",verifiedAt:serverTimestamp(),verifiedBy:currentUser.uid});
+    }catch(requestError){console.warn("Fee was verified but its request status could not be updated.",requestError);}
+    await showFees();
+    toast(period.label+" payment verified.","success");
+  }catch(error){console.error(error);toast("Could not update fee.","error");}
+}
+async function verifyRegistrationPayment(){
   const refUser=doc(db,"users",$("feeStudent").value);
   try{
-    const snap=await getDoc(refUser);
-    const fees=snap.data().fees||{};
-    fees["2026"]=fees["2026"]||{};
-    fees["2026"][month]={paid:true,paidOn:serverTimestamp()};
-    await updateDoc(refUser,{fees});
-    await showFees();
-    toast(month+" marked as paid.","success");
-  }catch(error){console.error(error);toast("Could not update fee.","error");}
+    await runTransaction(db,async transaction=>{
+      const snap=await transaction.get(refUser);if(!snap.exists())throw new Error("Student profile no longer exists.");
+      const profile=snap.data();if(profile.registrationPaymentStatus==="verified"||profile.paymentDueAtRegistration===undefined)throw new Error("Registration payment is no longer pending verification.");
+      const fees={...(profile.fees||{})};const duePeriod=String(profile.paymentDuePeriod||"");
+      const match=duePeriod.match(/^(\d{4})-([A-Za-z]+)$/)||duePeriod.match(/^(\d{4}-\d{4})\.(Q[1-4]|annual)$/);
+      if(!match)throw new Error("No saved registration payment period exists; reconcile the period before verifying.");
+      const bucketKey=match[1],periodKey=match[2],bucket={...(fees[bucketKey]||{})},existing=bucket[periodKey]||{};
+      if(existing.paid!==true&&existing.status!=="paid")bucket[periodKey]={...existing,amount:Number(existing.amount)||Number(profile.paymentDueAtRegistration)||0,paid:true,status:"paid",paidOn:serverTimestamp()};
+      fees[bucketKey]=bucket;
+      transaction.update(refUser,{fees,registrationPaymentStatus:"verified",registrationPaymentVerifiedAt:serverTimestamp()});
+    });
+    await showFees();toast("Registration payment verified.","success");
+  }catch(error){console.error(error);toast("Could not verify registration payment.","error");}
 }
 
 /* ---------------- ANNOUNCEMENTS ---------------- */

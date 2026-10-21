@@ -175,6 +175,7 @@
 <script type="module">
 import { auth, db } from "./js/firebase.js";
 import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, ALL_SUBJECTS_VALUE, formatINR, getAcademicTier, getOfferingOptions, getPaymentFrequencies, getPlanDetails } from "./js/academic-programs.js";
+import { academicSession, MONTHS } from "./js/fee-management.mjs";
 import { createUserWithEmailAndPassword } from
   "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, setDoc, serverTimestamp } from
@@ -354,6 +355,15 @@ payBtn.onclick = async () => {
   const selectedSubject = isCombo
     ? ACADEMIC_PROGRAMS.secondary.combo.subjects.join(", ")
     : offeringSelect.value;
+  const now = new Date();
+  const session = academicSession(now);
+  const month = MONTHS[now.getMonth()];
+  const quarter = now.getMonth() >= 3 ? Math.floor((now.getMonth() - 3) / 3) + 1 : 4;
+  const paymentDuePeriod = frequencySelect.value === "monthly"
+    ? `${now.getFullYear()}-${month}`
+    : frequencySelect.value === "quarterly"
+      ? `${session.key}.Q${quarter}`
+      : `${session.key}.annual`;
 
   try {
     payBtn.innerText = "Processing...";
@@ -374,6 +384,8 @@ payBtn.onclick = async () => {
       feeAmount: plan.amountDue,
       planTotal: plan.total,
       paymentDueAtRegistration: plan.amountDue,
+      paymentDuePeriod,
+      registrationPaymentStatus: "pending_verification",
       role: "student",
       status: "pending",
       createdAt: serverTimestamp()

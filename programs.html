@@ -1457,10 +1457,10 @@
           '<p>All four subjects together</p></div><strong>' + formatINR(monthly.total) + ' / month</strong>' +
           '<a href="' + registrationURL("IX", ALL_SUBJECTS_VALUE, "monthly") + '">Choose monthly</a></article>' +
         '<article class="subject-card">' +
-          '<div><span class="popular-label">QUARTERLY PAYMENT OPTION</span><h4 class="mt-3">Three installments</h4>' +
+          '<div><span class="popular-label">QUARTERLY PAYMENT OPTION</span><h4 class="mt-3">Four instalments</h4>' +
           '<p class="installment-list">' + quarterly.installments.map(formatINR).join(" + ") + '</p></div>' +
           '<strong>Total ' + formatINR(quarterly.total) + '</strong>' +
-          '<p class="text-sm text-gray-600 mt-2">For the all-four-subject annual plan.</p>' +
+          '<p class="text-sm text-gray-600 mt-2">For the Classes IX-X all-four-subject combo.</p>' +
           '<a href="' + registrationURL("IX", ALL_SUBJECTS_VALUE, "quarterly") + '">Choose quarterly</a></article>' +
         '<article class="subject-card featured-subject">' +
           '<div><span class="popular-label">ANNUAL</span><h4 class="mt-3">One-time annual payment</h4>' +
@@ -1477,7 +1477,7 @@
             ).join("") +
           '</ul><p>The all-subject combo is ' + formatINR(monthly.total) + ' / month.</p></article>' +
         '<article class="payment-method-card"><span class="popular-label">QUARTERLY</span>' +
-          '<h5>All-four-subject annual plan only</h5><p class="installment-list">' +
+          '<h5>All-four-subject combo only</h5><p class="installment-list">' +
           quarterly.installments.map(formatINR).join(" + ") + '</p><strong>Total: ' +
           formatINR(quarterly.total) + '</strong></article>' +
         '<article class="payment-method-card"><span class="popular-label">ANNUAL</span>' +
@@ -1489,7 +1489,7 @@
       const notes = [
         "Fees are non-refundable and non-transferable.",
         "The " + formatINR(annual.discount) + " discount applies only to the Classes IX-X all-four-subject combo when the full annual amount is paid at once.",
-        "The " + quarterly.installments.map(formatINR).join(", ") + " installments apply only to the " + formatINR(quarterly.total) + " all-four-subject annual plan.",
+        "Quarterly installments apply only to the Classes IX-X all-four-subject combo: " + quarterly.installments.map(formatINR).join(" + ") + " = " + formatINR(quarterly.total) + ".",
         "Monthly fees apply to individual subjects; subjects cannot be interchanged in the combo.",
         "Classes XI-XII accept annual payment only."
       ].map(note => '<li><span aria-hidden="true">✓</span> ' + note + '</li>').join("") +
