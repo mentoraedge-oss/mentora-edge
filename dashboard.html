@@ -1323,6 +1323,7 @@
     import {
       doc,
       getDoc,
+      onSnapshot,
       collection,
       getDocs,
       runTransaction,
@@ -1333,7 +1334,7 @@
       limit
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { ACADEMIC_PROGRAMS } from "./js/academic-programs.js";
-    import { academicSession, annualPeriod, canInitiateFeePayment, feePeriodStatus, MONTHS, monthlyAmount, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "./js/fee-management.mjs";
+    import { academicSession, canInitiateFeePayment, feePeriodStatus, feePeriodsForProfile, MONTHS, paymentFrequencyFor, registrationPaymentLabel } from "./js/fee-management.mjs";
 
     const logoutBtn = document.getElementById("logoutBtn");
     const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
@@ -1375,6 +1376,7 @@
     const feePaymentQr = document.getElementById("feePaymentQr");
     let activeFeePayment = null;
     let activeStudentUid = null;
+    let feeProfileUnsubscribe = null;
 
     async function logout(){
       try{
@@ -1538,13 +1540,17 @@
     });
 
     let studentProfile={};
-    async function loadFees(uid){
+    async function loadFees(uid,profileData=null){
       activeStudentUid=uid;feesContainer.innerHTML="";
-      const snap=await getDoc(doc(db,"users",uid));
-      if(!snap.exists()){
-        feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">Student profile could not be found.</div>';return;
+      let profile=profileData;
+      if(!profile){
+        const snap=await getDoc(doc(db,"users",uid));
+        if(!snap.exists()){
+          feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">Student profile could not be found.</div>';return;
+        }
+        profile=snap.data();
       }
-      studentProfile=snap.data();const profile=studentProfile;const fees=profile.fees||{};const frequency=profile.paymentFrequency;
+      studentProfile=profile;const frequency=paymentFrequencyFor(profile);
       let requests={},requestStatusAvailable=true;
       try{
         const requestSnap=await getDocs(collection(db,"users",uid,"feePaymentRequests"));
@@ -1557,13 +1563,9 @@
         studentFeePlan.textContent=`Plan total ₹${Number(profile.planTotal||0).toLocaleString("en-IN")}${Number.isFinite(dueAmount)?` · registration amount ${paymentStatus} (₹${dueAmount.toLocaleString("en-IN")})`:""}`;
       }
       const now=new Date();
-      const periods=frequency==="monthly"
-        ? monthlyPeriods({year:now.getFullYear(),enrolledAt:profile.createdAt,fees,defaultAmount:monthlyAmount(profile,ACADEMIC_PROGRAMS)})
-        : frequency==="quarterly"
-          ? quarterlyPeriods({date:now,enrolledAt:profile.createdAt,fees,installments:ACADEMIC_PROGRAMS.secondary.combo.quarterlyInstallments})
-          : [];
+      const periods=feePeriodsForProfile(profile,{date:now,programs:ACADEMIC_PROGRAMS});
       if(frequency==="annual"){
-        const annual=annualPeriod({profile,date:now,fees});
+        const annual=periods[0];
         annual.paymentRequest=requests[annual.id]||null;
         annual.requestStatusAvailable=requestStatusAvailable;
         annual.registrationPaymentPending=(profile.registrationPaymentStatus==="pending_verification"||(!profile.registrationPaymentStatus&&profile.paymentDueAtRegistration!==undefined))&&profile.paymentDueAtRegistration!==undefined;
@@ -1586,6 +1588,8 @@
     }
 
     onAuthStateChanged(auth, async (user) => {
+
+      if(feeProfileUnsubscribe){feeProfileUnsubscribe();feeProfileUnsubscribe=null;}
 
       if (!user){
         location.href = "login.html";
@@ -1675,6 +1679,9 @@
             loadMaterials(data.class),
             loadFees(user.uid)
           ]);
+          feeProfileUnsubscribe=onSnapshot(doc(db,"users",user.uid),snapshot=>{
+            if(snapshot.exists())loadFees(user.uid,snapshot.data()).catch(error=>console.error("Could not refresh fee status.",error));
+          },error=>console.error("Live fee status updates are unavailable.",error));
 
         }else{
 

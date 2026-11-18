@@ -704,7 +704,7 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
 <script type="module">
 import { app, auth, db } from "./js/firebase.js";
 import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, getAcademicTier } from "./js/academic-programs.js";
-import { academicSession, annualPeriod, feePeriodStatus, monthlyAmount, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "./js/fee-management.mjs";
+import { academicSession, annualPeriod, feePeriodsForProfile, feePeriodStatus, markFeePeriodPaid, monthlyAmount, monthlyPeriods, paymentFrequencyFor, quarterlyPeriods, registrationPaymentLabel, registrationVerificationUpdate, studentOptionLabel, studentRecordFromDocument } from "./js/fee-management.mjs";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   collection,getDocs,doc,getDoc,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,runTransaction,
@@ -859,7 +859,7 @@ async function loadStudents(){
   studentsCache=[];
   snap.forEach(d=>{
     const u=d.data();
-    if(u.role==="student") studentsCache.push({id:d.id,...u});
+    if(u.role==="student") studentsCache.push(studentRecordFromDocument(d.id,u));
   });
   renderStudents();
   loadFeeStudents();
@@ -1022,7 +1022,7 @@ async function loadFeeStudents(){
   select.innerHTML="<option value=''>Select Student</option>";
   studentsCache.forEach(u=>{
     const option=document.createElement("option");
-    option.value=u.id;option.textContent=u.name||u.email||u.id;
+    option.value=u.id;option.textContent=studentOptionLabel(u,u.id);
     select.appendChild(option);
   });
 }
@@ -1033,20 +1033,19 @@ async function showFees(){
   $("feesGrid").innerHTML="";
   try{
     const snap=await getDoc(doc(db,"users",$("feeStudent").value));
-    const profile=snap.data()||{};const fees=profile.fees||{};
+    if(!snap.exists())throw new Error("The selected student profile was not found.");
+    const profile=snap.data()||{};const frequency=paymentFrequencyFor(profile);
     let requests={},requestStatusAvailable=true;
     try{
       const requestSnap=await getDocs(collection(db,"users",$("feeStudent").value,"feePaymentRequests"));
       requestSnap.forEach(request=>{requests[request.id]=request.data();});
     }catch(requestError){requestStatusAvailable=false;console.warn("Payment requests are unavailable under current Firestore permissions.",requestError);}
-    const periods=profile.paymentFrequency==="quarterly"
-      ? quarterlyPeriods({enrolledAt:profile.createdAt,fees,installments:ACADEMIC_PROGRAMS.secondary.combo.quarterlyInstallments})
-      : profile.paymentFrequency==="annual"
-        ? [annualPeriod({profile,fees})]
-        : profile.paymentFrequency==="monthly"
-          ? monthlyPeriods({year:new Date().getFullYear(),enrolledAt:profile.createdAt,fees,defaultAmount:monthlyAmount(profile,ACADEMIC_PROGRAMS)})
-          : [];
+    const periods=feePeriodsForProfile(profile,{date:new Date(),programs:ACADEMIC_PROGRAMS});
     const registration=document.createElement("div");registration.className="fee-card";
+    const plan=document.createElement("div");plan.className="fee-card";
+    const planTitle=document.createElement("div");planTitle.className="fee-month";planTitle.textContent="Payment plan";
+    const planStatus=document.createElement("p");planStatus.textContent=`${frequency?frequency[0].toUpperCase()+frequency.slice(1):"Plan unavailable"}${profile.planTotal!==undefined?" · total "+formatINR(profile.planTotal):""}${frequency==="monthly"&&profile.feeAmount!==undefined?" · monthly fee "+formatINR(profile.feeAmount):""}`;
+    plan.append(planTitle,planStatus);$("feesGrid").appendChild(plan);
     const regTitle=document.createElement("div");regTitle.className="fee-month";regTitle.textContent="Registration payment";
     const regStatus=document.createElement("p");regStatus.textContent=registrationPaymentLabel(profile)+(Number.isFinite(Number(profile.paymentDueAtRegistration))?" · "+formatINR(profile.paymentDueAtRegistration):"");
     registration.append(regTitle,regStatus);
@@ -1055,7 +1054,7 @@ async function showFees(){
       verify.addEventListener("click",verifyRegistrationPayment);registration.appendChild(verify);
     }
     $("feesGrid").appendChild(registration);
-    if(!periods.length){const empty=document.createElement("div");empty.className="fee-card";empty.textContent="No supported payment plan is recorded.";$("feesGrid").appendChild(empty);return;}
+    if(!periods.length){const empty=document.createElement("div");empty.className="fee-card";empty.textContent=`No supported payment plan is recorded (saved frequency: ${profile.paymentFrequency||"missing"}).`;$("feesGrid").appendChild(empty);return;}
     periods.forEach(period=>{
       period.requestStatusAvailable=requestStatusAvailable;
       period.status=feePeriodStatus(period,requests[period.id]||period.request,requestStatusAvailable||Boolean(period.request));
@@ -1083,20 +1082,8 @@ async function markPaid(period){
   try{
     await runTransaction(db,async transaction=>{
       const snap=await transaction.get(refUser);if(!snap.exists())throw new Error("Student profile no longer exists.");
-      const profile=snap.data();const fees={...(profile.fees||{})};
-      const monthlyPeriod=String(period.periodKey||"").match(/^(\d{4})-([A-Za-z]+)$/);
-      const [bucketKey,periodKey]=monthlyPeriod
-        ? [monthlyPeriod[1],monthlyPeriod[2]]
-        : String(period.periodKey||"").split(/\.(?=[^.]+$)/);
-      if(!bucketKey||!periodKey)throw new Error("Fee period reference is invalid.");
-      const bucket={...(fees[bucketKey]||{})};const existing=bucket[periodKey]||{};
-      if(existing.paid===true||existing.status==="paid")throw new Error("This period is already verified as paid.");
-      bucket[periodKey]={...existing,amount:period.amount,paid:true,status:"paid",paidOn:serverTimestamp()};fees[bucketKey]=bucket;
-      const update={fees};
-      if(profile.paymentDuePeriod===period.periodKey&&profile.registrationPaymentStatus!=="verified"){
-        update.registrationPaymentStatus="verified";update.registrationPaymentVerifiedAt=serverTimestamp();
-      }
-      transaction.update(refUser,update);
+      const profile=snap.data();
+      transaction.update(refUser,{fees:markFeePeriodPaid(profile,period,serverTimestamp())});
     });
     const requestRef=doc(db,"users",selectedId,"feePaymentRequests",period.id);
     try{
@@ -1113,13 +1100,8 @@ async function verifyRegistrationPayment(){
     await runTransaction(db,async transaction=>{
       const snap=await transaction.get(refUser);if(!snap.exists())throw new Error("Student profile no longer exists.");
       const profile=snap.data();if(profile.registrationPaymentStatus==="verified"||profile.paymentDueAtRegistration===undefined)throw new Error("Registration payment is no longer pending verification.");
-      const fees={...(profile.fees||{})};const duePeriod=String(profile.paymentDuePeriod||"");
-      const match=duePeriod.match(/^(\d{4})-([A-Za-z]+)$/)||duePeriod.match(/^(\d{4}-\d{4})\.(Q[1-4]|annual)$/);
-      if(!match)throw new Error("No saved registration payment period exists; reconcile the period before verifying.");
-      const bucketKey=match[1],periodKey=match[2],bucket={...(fees[bucketKey]||{})},existing=bucket[periodKey]||{};
-      if(existing.paid!==true&&existing.status!=="paid")bucket[periodKey]={...existing,amount:Number(existing.amount)||Number(profile.paymentDueAtRegistration)||0,paid:true,status:"paid",paidOn:serverTimestamp()};
-      fees[bucketKey]=bucket;
-      transaction.update(refUser,{fees,registrationPaymentStatus:"verified",registrationPaymentVerifiedAt:serverTimestamp()});
+      if(!profile.paymentDuePeriod)throw new Error("No registration payment period is recorded.");
+      transaction.update(refUser,registrationVerificationUpdate(serverTimestamp()));
     });
     await showFees();toast("Registration payment verified.","success");
   }catch(error){console.error(error);toast("Could not verify registration payment.","error");}

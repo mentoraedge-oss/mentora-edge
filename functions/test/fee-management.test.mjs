@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { academicSession, annualPeriod, canInitiateFeePayment, feePeriodStatus, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "../../js/fee-management.mjs";
+import { academicSession, annualPeriod, canInitiateFeePayment, feePeriodStatus, feePeriodsForProfile, markFeePeriodPaid, monthlyPeriods, paymentFrequencyFor, quarterlyPeriods, registrationPaymentLabel, registrationVerificationUpdate, studentOptionLabel, studentRecordFromDocument } from "../../js/fee-management.mjs";
 
 const date = value => new Date(`${value}T12:00:00`);
 
@@ -117,4 +117,53 @@ test("registration status labels preserve verification, failure, cancellation, a
   assert.equal(registrationPaymentLabel({ registrationPaymentStatus: "failed" }), "Registration payment failed");
   assert.equal(registrationPaymentLabel({ registrationPaymentStatus: "not_paid" }), "Registration payment not paid");
   assert.equal(annualPeriod({ profile: { paymentFrequency: "annual", planTotal: 20000, registrationPaymentStatus: "failed", paymentDueAtRegistration: 500 }, date: date("2026-06-01") }).status, "Not Paid");
+});
+
+test("admin reads the canonical monthly profile and paid periods flow back to the dashboard", () => {
+  const programs = { secondary: { combo: { monthly: 2200, quarterlyInstallments: [5000, 5000, 5000, 5000] }, subjects: { English: 500 } } };
+  const profile = {
+    paymentFrequency: "Monthly", subject: "English", feeAmount: 500, planTotal: 500,
+    paymentDueAtRegistration: 500, paymentDuePeriod: "2026-November",
+    registrationPaymentStatus: "pending_verification", createdAt: date("2026-08-03"),
+    fees: { 2026: {
+      November: { amount: 500, status: "pending_verification" },
+      December: { amount: 500, status: "not_paid" }
+    } }
+  };
+  const plan = feePeriodsForProfile(profile, { date: date("2026-11-17"), programs });
+  assert.equal(paymentFrequencyFor(profile), "monthly");
+  assert.equal(plan.length, 12);
+  const november = plan.find(period => period.label === "November");
+  const december = plan.find(period => period.label === "December");
+  assert.equal(november.amount, 500);
+  assert.equal(november.status, "Pending Verification");
+  assert.equal(december.status, "Not Paid");
+
+  const updatedFees = markFeePeriodPaid(profile, november, new Date("2026-11-17T12:00:00Z"));
+  const updatedProfile = { ...profile, fees: updatedFees };
+  const dashboardPeriods = feePeriodsForProfile(updatedProfile, { date: date("2026-11-17"), programs });
+  assert.equal(dashboardPeriods.find(period => period.label === "November").status, "Paid");
+  assert.equal(dashboardPeriods.find(period => period.label === "December").status, "Not Paid");
+  assert.equal(updatedProfile.registrationPaymentStatus, "pending_verification");
+  assert.equal(updatedProfile.fees[2026].November.paid, true);
+});
+
+test("registration verification update does not touch fee-period records", () => {
+  const profile = { fees: { 2026: { November: { amount: 500, status: "pending_verification" } } }, registrationPaymentStatus: "pending_verification" };
+  const update = registrationVerificationUpdate("verified-at");
+  assert.deepEqual(update, { registrationPaymentStatus: "verified", registrationPaymentVerifiedAt: "verified-at" });
+  const updatedProfile = { ...profile, ...update };
+  assert.deepEqual(updatedProfile.fees, profile.fees);
+  assert.equal(updatedProfile.registrationPaymentStatus, "verified");
+});
+
+test("admin student options distinguish same-name records", () => {
+  assert.equal(studentOptionLabel({ name: "Asha", email: "asha@example.com", studentId: "ME0001" }, "uid-a"), "Asha · asha@example.com · ME0001 · uid-a");
+  assert.notEqual(studentOptionLabel({ name: "Asha", email: "asha@example.com" }, "uid-a"), studentOptionLabel({ name: "Asha", email: "asha2@example.com" }, "uid-b"));
+});
+
+test("admin student cache always keeps the actual Firestore document ID", () => {
+  const record = studentRecordFromDocument("auth-uid-123", { id: "legacy-profile-id", name: "Asha" });
+  assert.equal(record.id, "auth-uid-123");
+  assert.equal(studentOptionLabel(record, record.id), "Asha · auth-uid-123");
 });

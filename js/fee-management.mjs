@@ -49,6 +49,18 @@ export function canInitiateFeePayment(period, request) {
   return period.requestStatusAvailable !== false && period.applicable && Number(period.amount) > 0 && feePeriodStatus(period, request) === "Not Paid";
 }
 
+export function paymentFrequencyFor(profile = {}) {
+  return String(profile.paymentFrequency || "").trim().toLowerCase();
+}
+
+export function studentOptionLabel(profile = {}, uid = "") {
+  return [profile.name || "Student", profile.email, profile.studentId, uid].filter(Boolean).join(" · ");
+}
+
+export function studentRecordFromDocument(documentId, profile = {}) {
+  return { ...profile, id: documentId };
+}
+
 export function monthlyPeriods({ year = new Date().getFullYear(), enrolledAt, fees = {}, defaultAmount = 0, asOf = new Date() } = {}) {
   const enrollment = asDate(enrolledAt);
   const now = asDate(asOf) || new Date();
@@ -121,6 +133,51 @@ export function monthlyAmount(profile, programs) {
   if (profile.programType === "all-subject-combo") return programs.secondary.combo.monthly;
   const subject = String(profile.subject || "").split(",")[0].trim();
   return programs.secondary.subjects[subject] || Number(profile.feeAmount) || 0;
+}
+
+export function feePeriodsForProfile(profile = {}, { date = new Date(), programs } = {}) {
+  const fees = profile.fees || {};
+  const frequency = paymentFrequencyFor(profile);
+  if (frequency === "monthly") {
+    return monthlyPeriods({
+      year: date.getFullYear(), enrolledAt: profile.createdAt, fees,
+      defaultAmount: monthlyAmount(profile, programs), asOf: date
+    });
+  }
+  if (frequency === "quarterly") {
+    return quarterlyPeriods({
+      date, enrolledAt: profile.createdAt, fees,
+      installments: programs.secondary.combo.quarterlyInstallments
+    });
+  }
+  if (frequency === "annual") return [annualPeriod({ profile, date, fees })];
+  return [];
+}
+
+export function markFeePeriodPaid(profile = {}, period = {}, paidOn) {
+  const monthlyPeriod = String(period.periodKey || "").match(/^(\d{4})-([A-Za-z]+)$/);
+  const [bucketKey, periodKey] = monthlyPeriod
+    ? [monthlyPeriod[1], monthlyPeriod[2]]
+    : String(period.periodKey || "").split(/\.(?=[^.]+$)/);
+  if (!bucketKey || !periodKey) throw new Error("Fee period reference is invalid.");
+
+  const fees = { ...(profile.fees || {}) };
+  const bucket = { ...(fees[bucketKey] || {}) };
+  const existing = bucket[periodKey] || {};
+  if (existing.paid === true || existing.status === "paid") throw new Error("This fee period is already paid.");
+  bucket[periodKey] = {
+    ...existing,
+    amount: Number(period.amount) || Number(existing.amount) || 0,
+    paid: true,
+    status: "paid",
+    ...(paidOn === undefined ? {} : { paidOn })
+  };
+  fees[bucketKey] = bucket;
+  return fees;
+}
+
+export function registrationVerificationUpdate(verifiedAt) {
+  return { registrationPaymentStatus: "verified", registrationPaymentVerifiedAt: verifiedAt };
 }
 
 export function registrationPaymentLabel(profile = {}) {
