@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { academicSession, annualPeriod, canInitiateFeePayment, feePeriodStatus, feePeriodsForProfile, markFeePeriodPaid, monthlyPeriods, paymentFrequencyFor, quarterlyPeriods, registrationPaymentLabel, registrationVerificationUpdate, studentOptionLabel, studentRecordFromDocument } from "../../js/fee-management.mjs";
+import { academicSession, annualPeriod, assertFeePaymentRequestCanBeSubmitted, buildFeePaymentRequest, canInitiateFeePayment, classifyFeeProfile, feePeriodStatus, feePeriodsForProfile, markFeePeriodPaid, markFeePeriodUnpaid, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "../../js/fee-management.mjs";
 
 const date = value => new Date(`${value}T12:00:00`);
 
@@ -86,11 +86,171 @@ test("monthly view makes remaining months in the current year payable after enro
   assert.equal(monthlyPeriods({ year: 2027, enrolledAt: date("2026-08-03"), asOf: date("2026-10-21"), defaultAmount: 500 })[10].status, "Not Applicable");
 });
 
-test("annual status stays pending until an explicit verification record exists", () => {
+test("annual fee status remains separate from registration payment verification", () => {
   const profile = { paymentFrequency: "annual", planTotal: 20000, registrationPaymentStatus: "pending_verification" };
-  assert.equal(annualPeriod({ profile, date: date("2026-06-01") }).status, "Pending Verification");
+  assert.equal(annualPeriod({ profile, date: date("2026-06-01") }).status, "Not Paid");
   assert.equal(registrationPaymentLabel(profile), "Registration payment pending verification");
   assert.equal(annualPeriod({ profile, date: date("2026-06-01"), fees: { "2026-2027": { annual: { amount: 20000, paid: true } } } }).status, "Paid");
+});
+
+test("legacy monthly records are identified without inventing registration payments", () => {
+  const profile = {
+    createdAt: date("2025-01-12"),
+    fees: { 2025: { January: { paid: true, paidOn: "2025-01-10" }, February: { paid: false } } }
+  };
+  assert.deepEqual(classifyFeeProfile(profile), { kind: "legacy_monthly", frequency: "monthly", diagnostic: null });
+  const periods = feePeriodsForProfile(profile, { date: date("2025-03-15") });
+  assert.equal(periods.find(period => period.periodKey === "2025-January").status, "Paid");
+  assert.equal(periods.find(period => period.periodKey === "2025-February").status, "Not Paid");
+  assert.equal(periods.find(period => period.periodKey === "2025-January").paidOn, "2025-01-10");
+  assert.equal(periods.every(period => period.paymentEnabled === false), true);
+  assert.equal(registrationPaymentLabel(profile), "Registration payment not recorded");
+});
+
+test("pre-plan registration date keeps an existing student on legacy monthly handling despite stray plan fields", () => {
+  const profile = {
+    createdAt: date("2025-08-01"),
+    paymentFrequency: "quarterly",
+    planTotal: 20000,
+    paymentDueAtRegistration: 5000,
+    registrationPaymentStatus: "pending_verification",
+    fees: { 2025: { August: { paid: true, paidOn: "2025-08-01" } } }
+  };
+  assert.equal(classifyFeeProfile(profile).kind, "legacy_monthly");
+  assert.equal(feePeriodsForProfile(profile, { date: date("2025-09-01") }).every(period => period.paymentEnabled === false), true);
+  assert.equal(profile.paymentFrequency, "quarterly");
+});
+
+test("legacy admin paid and unpaid updates preserve historical fee data and paidOn", () => {
+  const profile = {
+    createdAt: date("2025-01-12"),
+    fees: { 2025: { January: { paid: false, amount: 500, note: "keep" }, February: { paid: true, paidOn: "2025-02-05" } } }
+  };
+  const paidFees = markFeePeriodPaid(profile, { periodKey: "2025-January", amount: 500 }, "server-time");
+  assert.equal(paidFees[2025].January.paid, true);
+  assert.equal(paidFees[2025].January.note, "keep");
+  assert.equal(paidFees[2025].February.paidOn, "2025-02-05");
+  const unpaidFees = markFeePeriodUnpaid({ ...profile, fees: paidFees }, { periodKey: "2025-January" });
+  assert.equal(unpaidFees[2025].January.paid, false);
+  assert.equal(unpaidFees[2025].January.paidOn, "server-time");
+  assert.equal(unpaidFees[2025].February.paidOn, "2025-02-05");
+  assert.throws(() => markFeePeriodUnpaid({ paymentFrequency: "monthly" }, { periodKey: "2025-January" }), /legacy monthly/);
+});
+
+test("student monthly status reads the same legacy map after an admin update", () => {
+  const profile = { fees: { 2025: { March: { paid: false } } } };
+  const fees = markFeePeriodPaid(profile, { periodKey: "2025-March" }, "verified-once");
+  const dashboardPeriods = feePeriodsForProfile({ ...profile, fees }, { date: date("2025-03-15") });
+  assert.equal(dashboardPeriods.find(period => period.periodKey === "2025-March").status, "Paid");
+  assert.equal(dashboardPeriods.find(period => period.periodKey === "2025-March").paidOn, "verified-once");
+  assert.equal(classifyFeeProfile({ ...profile, fees }).kind, "legacy_monthly");
+});
+
+test("saved monthly, quarterly, and annual plan generations use their stored frequency", () => {
+  const monthly = { createdAt: date("2026-10-22"), paymentFrequency: "monthly", planTotal: 500, feeAmount: 500 };
+  const quarterly = { createdAt: date("2026-10-22"), paymentFrequency: "quarterly", planTotal: 20000 };
+  const annual = { createdAt: date("2026-10-22"), paymentFrequency: "annual", planTotal: 20000 };
+  assert.deepEqual([monthly, quarterly, annual].map(item => classifyFeeProfile(item).frequency), ["monthly", "quarterly", "annual"]);
+  assert.equal(feePeriodsForProfile(monthly, { date: date("2026-10-23"), programs: { secondary: { subjects: { English: 500 }, combo: { monthly: 2200 } } } }).length, 12);
+  assert.equal(feePeriodsForProfile(quarterly, { date: date("2026-10-23"), programs: { secondary: { combo: { quarterlyInstallments: [5000, 5000, 5000, 5000] } } } }).length, 4);
+  assert.equal(feePeriodsForProfile(annual, { date: date("2026-10-23") }).length, 1);
+  assert.equal(annualPeriod({ profile: { ...annual, registrationPaymentStatus: "verified" }, date: date("2026-10-23") }).status, "Not Paid");
+});
+
+test("legacy and all new frequencies expose matching periods, amounts, QR request data, and verified status", () => {
+  const asOf = date("2026-11-19");
+  const programs = { secondary: { subjects: { English: 500 }, combo: { monthly: 2200, quarterlyInstallments: [5000, 5000, 5000, 5000] } } };
+  const profiles = [
+    { createdAt: date("2025-01-12"), fees: { 2025: { January: { paid: true, paidOn: "2025-01-10" } } } },
+    { createdAt: date("2026-10-22"), class: "IX", subject: "English", programType: "individual-subject", paymentFrequency: "monthly", feeAmount: 500, planTotal: 500 },
+    { createdAt: date("2026-10-22"), class: "IX", subject: "English, Social Science, Science, Maths", programType: "all-subject-combo", paymentFrequency: "quarterly", planTotal: 20000, paymentInstallments: [5000, 5000, 5000, 5000], fees: { "2026-2027": { Q1: { status: "not_applicable", amount: 5000 }, Q2: { status: "not_applicable", amount: 5000 } } } },
+    { createdAt: date("2026-10-22"), class: "IX", subject: "English, Social Science, Science, Maths", programType: "all-subject-combo", paymentFrequency: "annual", planTotal: 20000 }
+  ];
+  const [legacy, monthly, quarterly, annual] = profiles;
+  const legacyPeriods = feePeriodsForProfile(legacy, { date: asOf, programs });
+  assert.equal(classifyFeeProfile(legacy).kind, "legacy_monthly");
+  assert.equal(legacyPeriods.find(period => period.periodKey === "2025-January").status, "Paid");
+  assert.equal(legacyPeriods.some(period => period.paymentEnabled !== false), false);
+
+  const cases = [
+    { profile: monthly, expectedFrequency: "monthly", expectedAmount: 500, period: p => p.find(item => item.periodKey === "2026-November"), expectedCount: 12 },
+    { profile: quarterly, expectedFrequency: "quarterly", expectedAmount: 5000, period: p => p.find(item => item.periodKey === "2026-2027.Q3"), expectedCount: 4 },
+    { profile: annual, expectedFrequency: "annual", expectedAmount: 20000, period: p => p[0], expectedCount: 1 }
+  ];
+  for (const item of cases) {
+    const adminPeriods = feePeriodsForProfile(item.profile, { date: asOf, programs });
+    const studentPeriods = feePeriodsForProfile(item.profile, { date: asOf, programs });
+    assert.equal(adminPeriods.length, item.expectedCount);
+    assert.deepEqual(studentPeriods, adminPeriods);
+    if (item.expectedFrequency === "quarterly") {
+      assert.deepEqual(adminPeriods.map(candidate => candidate.status), ["Not Applicable", "Not Applicable", "Not Paid", "Not Paid"]);
+      const q4 = adminPeriods.find(candidate => candidate.periodKey === "2026-2027.Q4");
+      const q4Request = buildFeePaymentRequest(item.profile, q4, "ME-test-q4", "server-created-at", "student-uid");
+      assert.equal(q4Request.periodId, "2026-2027-Q4");
+      assert.equal(q4Request.amount, 5000);
+    }
+    const period = item.period(adminPeriods);
+    assert.equal(period.amount, item.expectedAmount);
+    assert.equal(canInitiateFeePayment(period, null), true);
+    assert.equal(feePeriodStatus(period, { status: "pending_verification" }), "Pending Verification");
+    const request = buildFeePaymentRequest(item.profile, period, "ME-test-reference", "server-created-at", "student-uid");
+    assert.equal(request.studentUid, "student-uid");
+    assert.equal(request.periodId, period.id);
+    assert.equal(request.periodKey, period.periodKey);
+    assert.equal(request.academicSession, "2026-2027");
+    assert.equal(request.amount, item.expectedAmount);
+    assert.equal(request.paymentFrequency, item.expectedFrequency);
+    assert.equal(request.status, "pending_verification");
+    assert.equal(Object.hasOwn(request, "paid"), false);
+    const fees = markFeePeriodPaid(item.profile, period, "verified-at");
+    const verifiedPeriods = feePeriodsForProfile({ ...item.profile, fees }, { date: asOf, programs });
+    assert.equal(item.period(verifiedPeriods).status, "Paid");
+    assert.equal(item.period(verifiedPeriods).paidOn, "verified-at");
+    assert.equal(canInitiateFeePayment(item.period(verifiedPeriods), null), false);
+    if (item.expectedFrequency === "quarterly") {
+      assert.deepEqual([fees["2026-2027"].Q1.status, fees["2026-2027"].Q2.status], ["not_applicable", "not_applicable"]);
+      assert.equal(verifiedPeriods.find(candidate => candidate.periodKey === "2026-2027.Q4").status, "Not Paid");
+    }
+  }
+  assert.throws(() => buildFeePaymentRequest(legacy, legacyPeriods[0], "legacy", "now", "legacy-uid"), /supported saved payment plan/);
+});
+
+test("duplicate pending request is rejected while cancelled request may be retried", () => {
+  assert.throws(() => assertFeePaymentRequestCanBeSubmitted({ status: "pending_verification" }), /already awaiting verification/);
+  assert.throws(() => assertFeePaymentRequestCanBeSubmitted({ status: "verified" }), /already has a verified/);
+  assert.equal(assertFeePaymentRequestCanBeSubmitted({ status: "cancelled" }), true);
+  assert.equal(assertFeePaymentRequestCanBeSubmitted(null), true);
+});
+
+test("partial, malformed, and unclassified records produce diagnostics instead of inferred plans", () => {
+  assert.equal(classifyFeeProfile({ createdAt: date("2026-10-22"), planTotal: 500 }).kind, "incomplete");
+  assert.match(classifyFeeProfile({ createdAt: date("2026-10-22"), paymentFrequency: "weekly" }).diagnostic, /invalid/);
+  assert.equal(classifyFeeProfile({}).kind, "unknown");
+  assert.equal(classifyFeeProfile({ fees: { 2025: { January: { paid: true, paidOn: "2025-01-03" } } } }).kind, "legacy_monthly");
+});
+
+test("admin and dashboard keep using the selected users document as the fee source", async () => {
+  const admin = await readFile(new URL("../../admin.html", import.meta.url), "utf8");
+  const dashboard = await readFile(new URL("../../dashboard.html", import.meta.url), "utf8");
+  assert.match(admin, /doc\(db,"users",\$\("feeStudent"\)\.value\)/);
+  assert.match(admin, /option\.value=u\.id/);
+  assert.match(admin, /Document ID: /);
+  assert.match(admin, /New plan · /);
+  assert.match(admin, /import \{ ACADEMIC_PROGRAMS, ACTIVE_CLASSES, formatINR, getAcademicTier \}/);
+  assert.match(admin, /getDoc\(doc\(db,"users",selectedStudentId,"feePaymentRequests",period\.id\)\)/);
+  assert.doesNotMatch(admin, /getDocs\(collection\(db,"users",selectedStudentId,"feePaymentRequests"\)\)/);
+  assert.match(admin, /Fee Management\] \$\{operation\} failed/);
+  assert.match(admin, /Could not \$\{operation\} for student \$\{selectedStudentId\}/);
+  assert.match(admin, /feePeriodsForProfile\(profile/);
+  assert.match(admin, /markFeePeriodPaid\(profile,period,serverTimestamp\(\)\)/);
+  assert.match(admin, /Request: /);
+  assert.match(dashboard, /doc\(db,"users",uid\)/);
+  assert.match(dashboard, /feePeriodsForProfile\(profile/);
+  assert.doesNotMatch(dashboard, /annual display/);
+  assert.match(dashboard, /buildFeePaymentRequest\(/);
+  assert.match(dashboard, /studentProfile,period,[\s\S]*activeStudentUid/);
+  assert.match(dashboard, /Thank you! Your fee payment confirmation has been received\. Your fee status will be updated shortly after verification by the admin\./);
+  assert.doesNotMatch(dashboard, /markFeePeriodPaid/);
 });
 
 test("fee actions match the period and payment-request status", () => {
@@ -117,53 +277,4 @@ test("registration status labels preserve verification, failure, cancellation, a
   assert.equal(registrationPaymentLabel({ registrationPaymentStatus: "failed" }), "Registration payment failed");
   assert.equal(registrationPaymentLabel({ registrationPaymentStatus: "not_paid" }), "Registration payment not paid");
   assert.equal(annualPeriod({ profile: { paymentFrequency: "annual", planTotal: 20000, registrationPaymentStatus: "failed", paymentDueAtRegistration: 500 }, date: date("2026-06-01") }).status, "Not Paid");
-});
-
-test("admin reads the canonical monthly profile and paid periods flow back to the dashboard", () => {
-  const programs = { secondary: { combo: { monthly: 2200, quarterlyInstallments: [5000, 5000, 5000, 5000] }, subjects: { English: 500 } } };
-  const profile = {
-    paymentFrequency: "Monthly", subject: "English", feeAmount: 500, planTotal: 500,
-    paymentDueAtRegistration: 500, paymentDuePeriod: "2026-November",
-    registrationPaymentStatus: "pending_verification", createdAt: date("2026-08-03"),
-    fees: { 2026: {
-      November: { amount: 500, status: "pending_verification" },
-      December: { amount: 500, status: "not_paid" }
-    } }
-  };
-  const plan = feePeriodsForProfile(profile, { date: date("2026-11-17"), programs });
-  assert.equal(paymentFrequencyFor(profile), "monthly");
-  assert.equal(plan.length, 12);
-  const november = plan.find(period => period.label === "November");
-  const december = plan.find(period => period.label === "December");
-  assert.equal(november.amount, 500);
-  assert.equal(november.status, "Pending Verification");
-  assert.equal(december.status, "Not Paid");
-
-  const updatedFees = markFeePeriodPaid(profile, november, new Date("2026-11-17T12:00:00Z"));
-  const updatedProfile = { ...profile, fees: updatedFees };
-  const dashboardPeriods = feePeriodsForProfile(updatedProfile, { date: date("2026-11-17"), programs });
-  assert.equal(dashboardPeriods.find(period => period.label === "November").status, "Paid");
-  assert.equal(dashboardPeriods.find(period => period.label === "December").status, "Not Paid");
-  assert.equal(updatedProfile.registrationPaymentStatus, "pending_verification");
-  assert.equal(updatedProfile.fees[2026].November.paid, true);
-});
-
-test("registration verification update does not touch fee-period records", () => {
-  const profile = { fees: { 2026: { November: { amount: 500, status: "pending_verification" } } }, registrationPaymentStatus: "pending_verification" };
-  const update = registrationVerificationUpdate("verified-at");
-  assert.deepEqual(update, { registrationPaymentStatus: "verified", registrationPaymentVerifiedAt: "verified-at" });
-  const updatedProfile = { ...profile, ...update };
-  assert.deepEqual(updatedProfile.fees, profile.fees);
-  assert.equal(updatedProfile.registrationPaymentStatus, "verified");
-});
-
-test("admin student options distinguish same-name records", () => {
-  assert.equal(studentOptionLabel({ name: "Asha", email: "asha@example.com", studentId: "ME0001" }, "uid-a"), "Asha · asha@example.com · ME0001 · uid-a");
-  assert.notEqual(studentOptionLabel({ name: "Asha", email: "asha@example.com" }, "uid-a"), studentOptionLabel({ name: "Asha", email: "asha2@example.com" }, "uid-b"));
-});
-
-test("admin student cache always keeps the actual Firestore document ID", () => {
-  const record = studentRecordFromDocument("auth-uid-123", { id: "legacy-profile-id", name: "Asha" });
-  assert.equal(record.id, "auth-uid-123");
-  assert.equal(studentOptionLabel(record, record.id), "Asha · auth-uid-123");
 });

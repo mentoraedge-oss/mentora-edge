@@ -10,10 +10,48 @@ export const QUARTERS = Object.freeze([
   Object.freeze({ id: "Q4", label: "Fourth Quarter (January–March)", startMonth: 0, endMonth: 2 })
 ]);
 
+// The saved-plan registration forms first appear in ad88a12 (2026-10-21).
+// Compare timestamps rather than treating every profile without a frequency as legacy.
+const PAYMENT_PLAN_INTRODUCED_AT = new Date("2026-10-21T17:00:52+05:30");
+const PLAN_FIELDS = ["paymentFrequency", "planTotal", "paymentDueAtRegistration", "registrationPaymentStatus", "paymentDuePeriod", "paymentInstallments", "programType"];
+const MONTH_NAMES = new Set(MONTHS);
+
 export function asDate(value) {
   if (!value) return null;
   const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function hasLegacyMonthlyMap(fees = {}) {
+  return Object.entries(fees).some(([year, periods]) =>
+    /^\d{4}$/.test(year) && periods && typeof periods === "object" &&
+    Object.entries(periods).some(([month, record]) => MONTH_NAMES.has(month) && record && typeof record === "object" &&
+      (record.paid === true || record.paid === false || record.paidOn != null) &&
+      record.status === undefined && record.amount === undefined)
+  );
+}
+
+export function classifyFeeProfile(profile = {}) {
+  const frequency = String(profile.paymentFrequency || "").trim().toLowerCase();
+  const date = asDate(profile.createdAt);
+  const planEvidence = PLAN_FIELDS.some(field => profile[field] !== undefined && profile[field] !== null && profile[field] !== "");
+  // Existing pre-plan registrations remain legacy monthly even if later edits left stray plan fields.
+  if (date && date < PAYMENT_PLAN_INTRODUCED_AT) {
+    return { kind: "legacy_monthly", frequency: "monthly", diagnostic: null };
+  }
+  if (["monthly", "quarterly", "annual"].includes(frequency)) {
+    return { kind: "plan", frequency, diagnostic: null };
+  }
+  if (planEvidence) {
+    return { kind: "incomplete", frequency: null, diagnostic: `Payment-plan metadata is incomplete or invalid (saved frequency: ${frequency || "missing"}).` };
+  }
+  if (date && date >= PAYMENT_PLAN_INTRODUCED_AT) {
+    return { kind: "incomplete", frequency: null, diagnostic: "This student was registered after payment plans were introduced, but no supported payment frequency is saved." };
+  }
+  if (hasLegacyMonthlyMap(profile.fees)) {
+    return { kind: "legacy_monthly", frequency: "monthly", diagnostic: null };
+  }
+  return { kind: "unknown", frequency: null, diagnostic: "Fee workflow cannot be classified: registration date and legacy monthly fee records are unavailable." };
 }
 
 export function academicSession(dateValue) {
@@ -49,16 +87,47 @@ export function canInitiateFeePayment(period, request) {
   return period.requestStatusAvailable !== false && period.applicable && Number(period.amount) > 0 && feePeriodStatus(period, request) === "Not Paid";
 }
 
-export function paymentFrequencyFor(profile = {}) {
-  return String(profile.paymentFrequency || "").trim().toLowerCase();
+export function buildFeePaymentRequest(profile = {}, period = {}, reference = "", createdAt = null, studentUid = "") {
+  const classification = classifyFeeProfile(profile);
+  if (classification.kind !== "plan") throw new Error("A supported saved payment plan is required for a fee payment request.");
+  if (!period.applicable || !(Number(period.amount) > 0) || !period.id || !period.periodKey) throw new Error("The fee period is not payable.");
+  if (!String(studentUid).trim()) throw new Error("The signed-in student's UID is required for a fee payment request.");
+  const matchesFrequency = classification.frequency === "monthly"
+    ? /^\d{4}-(?:January|February|March|April|May|June|July|August|September|October|November|December)$/.test(period.periodKey)
+    : classification.frequency === "quarterly"
+      ? /^\d{4}-\d{4}\.Q[1-4]$/.test(period.periodKey)
+      : /^\d{4}-\d{4}\.annual$/.test(period.periodKey);
+  if (!matchesFrequency) throw new Error("The fee period does not match the saved payment frequency.");
+  const expectedPeriodId = classification.frequency === "monthly" ? period.periodKey : period.periodKey.replace(".", "-");
+  if (period.id !== expectedPeriodId) throw new Error("The fee period identifier does not match its period key.");
+  const monthlyMatch = String(period.periodKey).match(/^(\d{4})-(January|February|March|April|May|June|July|August|September|October|November|December)$/);
+  const planSessionMatch = String(period.periodKey).match(/^(\d{4}-\d{4})\.(?:Q[1-4]|annual)$/);
+  const monthIndex = monthlyMatch ? MONTHS.indexOf(monthlyMatch[2]) : -1;
+  const periodSession = planSessionMatch
+    ? planSessionMatch[1]
+    : monthlyMatch
+      ? academicSession(new Date(Number(monthlyMatch[1]), monthIndex, 1)).key
+      : null;
+  if (!periodSession) throw new Error("The fee period academic session is invalid.");
+  return {
+    studentUid: String(studentUid),
+    periodId: period.id,
+    periodKey: period.periodKey,
+    periodLabel: period.label,
+    academicSession: periodSession,
+    amount: Number(period.amount),
+    paymentFrequency: classification.frequency,
+    programType: profile.programType || "individual-subject",
+    status: "pending_verification",
+    reference,
+    createdAt
+  };
 }
 
-export function studentOptionLabel(profile = {}, uid = "") {
-  return [profile.name || "Student", profile.email, profile.studentId, uid].filter(Boolean).join(" · ");
-}
-
-export function studentRecordFromDocument(documentId, profile = {}) {
-  return { ...profile, id: documentId };
+export function assertFeePaymentRequestCanBeSubmitted(existingRequest) {
+  if (existingRequest?.status === "pending_verification") throw new Error("A payment request for this period is already awaiting verification.");
+  if (existingRequest?.status === "verified" || existingRequest?.status === "paid") throw new Error("This period already has a verified payment request.");
+  return true;
 }
 
 export function monthlyPeriods({ year = new Date().getFullYear(), enrolledAt, fees = {}, defaultAmount = 0, asOf = new Date() } = {}) {
@@ -111,12 +180,7 @@ export function annualPeriod({ profile = {}, date = new Date(), fees = {} } = {}
   const session = academicSession(date);
   const record = fees[session.key]?.annual || {};
   const amount = Number(record.amount) || Number(profile.planTotal) || 0;
-  const registrationStatus = String(profile.registrationPaymentStatus || "").toLowerCase();
-  const fallback = registrationStatus === "verified" || registrationStatus === "paid"
-    ? "Paid"
-    : registrationStatus === "pending_verification" || (!registrationStatus && profile.paymentDueAtRegistration !== undefined)
-      ? "Pending Verification"
-      : "Not Paid";
+  const fallback = "Not Paid";
   return {
     id: `${session.key}-annual`,
     periodKey: `${session.key}.annual`,
@@ -136,48 +200,64 @@ export function monthlyAmount(profile, programs) {
 }
 
 export function feePeriodsForProfile(profile = {}, { date = new Date(), programs } = {}) {
+  const classification = classifyFeeProfile(profile);
   const fees = profile.fees || {};
-  const frequency = paymentFrequencyFor(profile);
-  if (frequency === "monthly") {
-    return monthlyPeriods({
-      year: date.getFullYear(), enrolledAt: profile.createdAt, fees,
-      defaultAmount: monthlyAmount(profile, programs), asOf: date
+  if (classification.kind === "legacy_monthly") {
+    const now = asDate(date) || new Date();
+    const enrolledAt = asDate(profile.createdAt);
+    const years = new Set(Object.keys(fees).filter(key => /^\d{4}$/.test(key)));
+    years.add(String(now.getFullYear()));
+    return [...years].sort().flatMap(yearKey => {
+      const year = Number(yearKey);
+      if (year > now.getFullYear()) return [];
+      const records = fees[yearKey] || {};
+      return monthlyPeriods({ year, enrolledAt, fees, defaultAmount: Number(profile.feeAmount) || 0, asOf: now })
+        .filter(period => {
+          const record = records[period.label];
+          return Boolean(record) || (Boolean(enrolledAt) && period.applicable);
+        })
+        .map(period => {
+          const record = records[period.label];
+          const applicable = record?.status === "not_applicable" ? false : true;
+          return { ...period, label: `${period.label} ${year}`, applicable, paymentEnabled: false, status: record?.status === "not_applicable" ? "Not Applicable" : period.status };
+        });
     });
   }
-  if (frequency === "quarterly") {
-    return quarterlyPeriods({
-      date, enrolledAt: profile.createdAt, fees,
-      installments: programs.secondary.combo.quarterlyInstallments
-    });
+  if (classification.kind !== "plan") return [];
+  if (classification.frequency === "monthly") {
+    return monthlyPeriods({ year: (asDate(date) || new Date()).getFullYear(), enrolledAt: profile.createdAt, fees, defaultAmount: monthlyAmount(profile, programs) });
   }
-  if (frequency === "annual") return [annualPeriod({ profile, date, fees })];
-  return [];
+  if (classification.frequency === "quarterly") {
+    return quarterlyPeriods({ date, enrolledAt: profile.createdAt, fees, installments: programs?.secondary?.combo?.quarterlyInstallments || [] });
+  }
+  return [annualPeriod({ profile, date, fees })];
 }
 
 export function markFeePeriodPaid(profile = {}, period = {}, paidOn) {
-  const monthlyPeriod = String(period.periodKey || "").match(/^(\d{4})-([A-Za-z]+)$/);
-  const [bucketKey, periodKey] = monthlyPeriod
-    ? [monthlyPeriod[1], monthlyPeriod[2]]
-    : String(period.periodKey || "").split(/\.(?=[^.]+$)/);
-  if (!bucketKey || !periodKey) throw new Error("Fee period reference is invalid.");
-
+  const match = String(period.periodKey || "").match(/^(\d{4})-([A-Za-z]+)$/) || String(period.periodKey || "").match(/^(\d{4}-\d{4})\.(Q[1-4]|annual)$/);
+  if (!match) throw new Error("Fee period reference is invalid.");
   const fees = { ...(profile.fees || {}) };
-  const bucket = { ...(fees[bucketKey] || {}) };
-  const existing = bucket[periodKey] || {};
-  if (existing.paid === true || existing.status === "paid") throw new Error("This fee period is already paid.");
-  bucket[periodKey] = {
-    ...existing,
-    amount: Number(period.amount) || Number(existing.amount) || 0,
-    paid: true,
-    status: "paid",
-    ...(paidOn === undefined ? {} : { paidOn })
-  };
-  fees[bucketKey] = bucket;
+  const bucket = { ...(fees[match[1]] || {}) };
+  const existing = bucket[match[2]] || {};
+  if (existing.paid === true || existing.status === "paid") throw new Error("This period is already verified as paid.");
+  const legacy = classifyFeeProfile(profile).kind === "legacy_monthly";
+  bucket[match[2]] = legacy
+    ? { ...existing, paid: true, paidOn: existing.paidOn || paidOn }
+    : { ...existing, ...(Number(period.amount) > 0 ? { amount: Number(period.amount) } : {}), paid: true, status: "paid", paidOn: existing.paidOn || paidOn };
+  fees[match[1]] = bucket;
   return fees;
 }
 
-export function registrationVerificationUpdate(verifiedAt) {
-  return { registrationPaymentStatus: "verified", registrationPaymentVerifiedAt: verifiedAt };
+export function markFeePeriodUnpaid(profile = {}, period = {}) {
+  if (classifyFeeProfile(profile).kind !== "legacy_monthly") throw new Error("Only legacy monthly periods can be changed back to unpaid.");
+  const match = String(period.periodKey || "").match(/^(\d{4})-([A-Za-z]+)$/);
+  if (!match) throw new Error("Fee period reference is invalid.");
+  const fees = { ...(profile.fees || {}) };
+  const bucket = { ...(fees[match[1]] || {}) };
+  const existing = bucket[match[2]] || {};
+  bucket[match[2]] = { ...existing, paid: false };
+  fees[match[1]] = bucket;
+  return fees;
 }
 
 export function registrationPaymentLabel(profile = {}) {

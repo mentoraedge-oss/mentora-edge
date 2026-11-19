@@ -1323,9 +1323,9 @@
     import {
       doc,
       getDoc,
-      onSnapshot,
       collection,
       getDocs,
+      onSnapshot,
       runTransaction,
       serverTimestamp,
       query,
@@ -1334,7 +1334,7 @@
       limit
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { ACADEMIC_PROGRAMS } from "./js/academic-programs.js";
-    import { academicSession, canInitiateFeePayment, feePeriodStatus, feePeriodsForProfile, MONTHS, paymentFrequencyFor, registrationPaymentLabel } from "./js/fee-management.mjs";
+    import { academicSession, assertFeePaymentRequestCanBeSubmitted, buildFeePaymentRequest, classifyFeeProfile, feePeriodsForProfile, canInitiateFeePayment, feePeriodStatus, registrationPaymentLabel } from "./js/fee-management.mjs";
 
     const logoutBtn = document.getElementById("logoutBtn");
     const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
@@ -1494,7 +1494,7 @@
       }else if(period.status==="Pending Verification"){
         const pending=document.createElement("p");pending.className="fee-date";pending.textContent="Payment request is awaiting office verification.";card.appendChild(pending);
       }
-      if(canInitiateFeePayment(period,period.paymentRequest)){
+      if(period.paymentEnabled!==false&&canInitiateFeePayment(period,period.paymentRequest)){
         const button=document.createElement("button");button.type="button";button.className="fee-action";button.textContent="Pay";
         button.addEventListener("click",()=>openFeePayment(period));card.appendChild(button);
       }
@@ -1521,68 +1521,73 @@
       if(!activeFeePayment||!activeStudentUid)return;
       const button=document.getElementById("feePaymentCompleted");button.disabled=true;
       const period=activeFeePayment;const requestRef=doc(db,"users",activeStudentUid,"feePaymentRequests",period.id);
+      let requestOperation="read existing payment request";
       try{
         await runTransaction(db,async transaction=>{
           const existing=await transaction.get(requestRef);const request=existing.exists()?existing.data():null;
-          if(request?.status==="pending_verification")throw new Error("A payment request for this period is already awaiting verification.");
-          if(request?.status==="verified"||request?.status==="paid")throw new Error("This period already has a verified payment request.");
-          transaction.set(requestRef,{
-            periodId:period.id,periodKey:period.periodKey,periodLabel:period.label,amount:Number(period.amount),
-            paymentFrequency:studentProfile.paymentFrequency,programType:studentProfile.programType||"individual-subject",
-            status:"pending_verification",reference:`ME-${activeStudentUid}-${period.id}`.slice(0,60),createdAt:serverTimestamp()
-          });
+          requestOperation="validate existing payment request";
+          assertFeePaymentRequestCanBeSubmitted(request);
+          requestOperation="write pending payment request";
+          transaction.set(requestRef,buildFeePaymentRequest(
+            studentProfile,period,`ME-${activeStudentUid}-${period.id}`.slice(0,60),serverTimestamp(),activeStudentUid
+          ));
         });
-        document.getElementById("feePaymentMessage").textContent="Payment request submitted. Your fee remains pending verification until the office confirms it.";
+        document.getElementById("feePaymentMessage").textContent="Thank you! Your fee payment confirmation has been received. Your fee status will be updated shortly after verification by the admin.";
         await loadFees(activeStudentUid);window.setTimeout(closeFeePayment,1800);
       }catch(error){
-        console.error(error);document.getElementById("feePaymentMessage").textContent=error.message||"Could not submit the payment request. Please contact the office.";
+        console.error(`Fee payment request failed during ${requestOperation}.`,{code:error.code||"unknown",path:requestRef.path,error});
+        document.getElementById("feePaymentMessage").textContent=error.message||"Could not submit the payment request. Please contact the office.";
       }finally{button.disabled=false;}
     });
 
     let studentProfile={};
-    async function loadFees(uid,profileData=null){
+    async function loadFees(uid){
       activeStudentUid=uid;feesContainer.innerHTML="";
-      let profile=profileData;
-      if(!profile){
-        const snap=await getDoc(doc(db,"users",uid));
-        if(!snap.exists()){
-          feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">Student profile could not be found.</div>';return;
-        }
-        profile=snap.data();
+      const snap=await getDoc(doc(db,"users",uid));
+      if(!snap.exists()){
+        feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">Student profile could not be found.</div>';return;
       }
-      studentProfile=profile;const frequency=paymentFrequencyFor(profile);
+      studentProfile=snap.data();const profile=studentProfile;const fees=profile.fees||{};const frequency=profile.paymentFrequency;
       let requests={},requestStatusAvailable=true;
       try{
         const requestSnap=await getDocs(collection(db,"users",uid,"feePaymentRequests"));
         requestSnap.forEach(request=>{requests[request.id]=request.data();});
       }catch(requestError){requestStatusAvailable=false;console.warn("Fee payment requests are unavailable under the current Firestore permissions.",requestError);}
+      const classification=classifyFeeProfile(profile);
       const dueAmount=Number(profile.paymentDueAtRegistration);
-      if(frequency){
+      if(classification.kind==="legacy_monthly"){
+        studentPaymentPlan.textContent="Monthly";
+        studentFeePlan.textContent="Historical monthly fee arrangement";
+      }else if(classification.kind==="plan"){
         const labels={monthly:"Monthly",quarterly:"Quarterly",annual:"Annual"};studentPaymentPlan.textContent=labels[frequency]||"Not recorded";
         const paymentStatus=registrationPaymentLabel(profile).replace("Registration payment ", "");
-        studentFeePlan.textContent=`Plan total ₹${Number(profile.planTotal||0).toLocaleString("en-IN")}${Number.isFinite(dueAmount)?` · registration amount ${paymentStatus} (₹${dueAmount.toLocaleString("en-IN")})`:""}`;
+        const total=profile.planTotal!==undefined&&Number.isFinite(Number(profile.planTotal))?"Plan total \u20B9"+Number(profile.planTotal).toLocaleString("en-IN"):"Plan total unavailable"; studentFeePlan.textContent=`${total}${Number.isFinite(dueAmount)?` · registration amount ${paymentStatus} (\u20B9${dueAmount.toLocaleString("en-IN")})`:""}`;
+      }else{
+        studentPaymentPlan.textContent="Plan unavailable";
+        studentFeePlan.textContent="Fee details need to be reviewed by the office.";
       }
       const now=new Date();
       const periods=feePeriodsForProfile(profile,{date:now,programs:ACADEMIC_PROGRAMS});
-      if(frequency==="annual"){
+      if(classification.kind==="plan"&&frequency==="annual"){
         const annual=periods[0];
         annual.paymentRequest=requests[annual.id]||null;
         annual.requestStatusAvailable=requestStatusAvailable;
-        annual.registrationPaymentPending=(profile.registrationPaymentStatus==="pending_verification"||(!profile.registrationPaymentStatus&&profile.paymentDueAtRegistration!==undefined))&&profile.paymentDueAtRegistration!==undefined;
         annual.status=feePeriodStatus(annual,annual.paymentRequest,requestStatusAvailable||Boolean(annual.request));
         document.getElementById("feeSessionCaption").textContent=`${annual.label} · ${annual.status}`;renderFeePeriod(annual);
-        for(const month of MONTHS)renderFeePeriod({label:`${month} (annual display)`,amount:null,applicable:false,status:annual.status});
         return;
       }
       if(!periods.length){feesContainer.innerHTML='<div class="empty-message" style="grid-column:1/-1;">No payment plan is recorded on this profile.</div>';return;}
+      if(classification.kind==="incomplete"||classification.kind==="unknown"){
+        const diagnostic=document.createElement("p");diagnostic.className="fee-date";diagnostic.textContent=classification.diagnostic;
+        feesContainer.appendChild(diagnostic);
+      }
       periods.forEach(period=>{
         period.paymentRequest=requests[period.id]||period.request||null;
         period.requestStatusAvailable=requestStatusAvailable;
-        period.registrationPaymentPending=period.periodKey===profile.paymentDuePeriod&&(profile.registrationPaymentStatus==="pending_verification"||(!profile.registrationPaymentStatus&&profile.paymentDueAtRegistration!==undefined))&&profile.paymentDueAtRegistration!==undefined&&period.status!=="Paid";
         period.status=feePeriodStatus(period,period.paymentRequest,requestStatusAvailable||Boolean(period.request));
       });
       const due=periods.filter(period=>period.applicable&&period.status!=="Paid").reduce((sum,period)=>sum+Number(period.amount||0),0);
-      const periodLabel=frequency==="quarterly"?`Academic session ${academicSession(now).key}`:`Calendar year ${now.getFullYear()}`;
+      const periodLabel=classification.kind==="legacy_monthly"?"Historical monthly fee periods":frequency==="quarterly"?`Academic session ${academicSession(now).key}`:`Calendar year ${now.getFullYear()}`;
       document.getElementById("feeSessionCaption").textContent=`${periodLabel} · outstanding ₹${due.toLocaleString("en-IN")}`;
       periods.forEach(renderFeePeriod);
     }
@@ -1590,7 +1595,6 @@
     onAuthStateChanged(auth, async (user) => {
 
       if(feeProfileUnsubscribe){feeProfileUnsubscribe();feeProfileUnsubscribe=null;}
-
       if (!user){
         location.href = "login.html";
         return;
@@ -1630,9 +1634,12 @@
         studentSubject.textContent =
           data.subject || "Not Assigned";
 
+        const classification = classifyFeeProfile(data);
         const frequencyLabels = { monthly: "Monthly", quarterly: "Quarterly", annual: "Annual" };
-        studentPaymentPlan.textContent = frequencyLabels[data.paymentFrequency] || "Not recorded";
-        if (data.planTotal !== undefined && Number.isFinite(Number(data.planTotal))) {
+        studentPaymentPlan.textContent = classification.kind === "legacy_monthly" ? "Monthly" : classification.kind === "plan" ? frequencyLabels[classification.frequency] : "Plan unavailable";
+        if (classification.kind === "legacy_monthly") {
+          studentFeePlan.textContent = "Historical monthly fee arrangement";
+        } else if (classification.kind === "plan" && data.planTotal !== undefined && Number.isFinite(Number(data.planTotal))) {
           const total = "₹" + Number(data.planTotal).toLocaleString("en-IN");
           const registrationStatus = registrationPaymentLabel(data).replace("Registration payment ", "");
           const due = data.paymentDueAtRegistration !== undefined && Number.isFinite(Number(data.paymentDueAtRegistration))
@@ -1640,7 +1647,7 @@
             : "";
           studentFeePlan.textContent = "Plan total " + total + due;
         } else {
-          studentFeePlan.textContent = "No plan or price stored on this profile.";
+          studentFeePlan.textContent = classification.kind === "plan" ? "Plan total is unavailable on this profile." : classification.diagnostic;
         }
 
         studentStatusText.textContent =
@@ -1680,7 +1687,7 @@
             loadFees(user.uid)
           ]);
           feeProfileUnsubscribe=onSnapshot(doc(db,"users",user.uid),snapshot=>{
-            if(snapshot.exists())loadFees(user.uid,snapshot.data()).catch(error=>console.error("Could not refresh fee status.",error));
+            if(snapshot.exists())loadFees(user.uid).catch(error=>console.error("Could not refresh fee status.",error));
           },error=>console.error("Live fee status updates are unavailable.",error));
 
         }else{

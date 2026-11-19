@@ -703,8 +703,8 @@ footer{padding:25px 0;border-top:1px solid rgba(15,42,68,.07);background:rgba(25
 
 <script type="module">
 import { app, auth, db } from "./js/firebase.js";
-import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, getAcademicTier } from "./js/academic-programs.js";
-import { academicSession, annualPeriod, feePeriodsForProfile, feePeriodStatus, markFeePeriodPaid, monthlyAmount, monthlyPeriods, paymentFrequencyFor, quarterlyPeriods, registrationPaymentLabel, registrationVerificationUpdate, studentOptionLabel, studentRecordFromDocument } from "./js/fee-management.mjs";
+import { ACADEMIC_PROGRAMS, ACTIVE_CLASSES, formatINR, getAcademicTier } from "./js/academic-programs.js";
+import { academicSession, annualPeriod, classifyFeeProfile, feePeriodStatus, feePeriodsForProfile, markFeePeriodPaid, markFeePeriodUnpaid, monthlyAmount, monthlyPeriods, quarterlyPeriods, registrationPaymentLabel } from "./js/fee-management.mjs";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   collection,getDocs,doc,getDoc,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,runTransaction,
@@ -859,7 +859,7 @@ async function loadStudents(){
   studentsCache=[];
   snap.forEach(d=>{
     const u=d.data();
-    if(u.role==="student") studentsCache.push(studentRecordFromDocument(d.id,u));
+    if(u.role==="student") studentsCache.push({id:d.id,...u});
   });
   renderStudents();
   loadFeeStudents();
@@ -979,6 +979,7 @@ $("uploadMaterialBtn").addEventListener("click",async()=>{
 
 /* ---------------- FEES ---------------- */
 function feeScheduleForApproval(profile, fees = {}) {
+  if (classifyFeeProfile(profile).kind !== "plan") return fees;
   const next = { ...fees };
   const enrolledAt = profile.createdAt || new Date();
   const put = (key, id, amount, applicable) => {
@@ -1022,42 +1023,69 @@ async function loadFeeStudents(){
   select.innerHTML="<option value=''>Select Student</option>";
   studentsCache.forEach(u=>{
     const option=document.createElement("option");
-    option.value=u.id;option.textContent=studentOptionLabel(u,u.id);
+    option.value=u.id;option.textContent=u.name||u.email||u.id;
     select.appendChild(option);
   });
 }
 $("showFeesBtn").addEventListener("click",showFees);
 
 async function showFees(){
-  if(!$("feeStudent").value){toast("Select a student.","error");return;}
+  const selectedStudentId=$("feeStudent").value;
+  if(!selectedStudentId){toast("Select a student.","error");return;}
   $("feesGrid").innerHTML="";
+  let operation="read student document";
+  let path=`users/${selectedStudentId}`;
+  console.info("[Fee Management] Loading selected student fee data.",{studentUid:selectedStudentId,documentId:selectedStudentId,operation,path});
   try{
-    const snap=await getDoc(doc(db,"users",$("feeStudent").value));
-    if(!snap.exists())throw new Error("The selected student profile was not found.");
-    const profile=snap.data()||{};const frequency=paymentFrequencyFor(profile);
-    let requests={},requestStatusAvailable=true;
-    try{
-      const requestSnap=await getDocs(collection(db,"users",$("feeStudent").value,"feePaymentRequests"));
-      requestSnap.forEach(request=>{requests[request.id]=request.data();});
-    }catch(requestError){requestStatusAvailable=false;console.warn("Payment requests are unavailable under current Firestore permissions.",requestError);}
+    const snap=await getDoc(doc(db,"users",selectedStudentId));
+    if(!snap.exists()){const error=new Error("The selected student profile was not found.");error.code="application/not-found";throw error;}
+    console.info("[Fee Management] Student document read succeeded.",{studentUid:selectedStudentId,documentId:snap.id,path});
+    const profile=snap.data()||{};const fees=profile.fees||{};const classification=classifyFeeProfile(profile);
+    let requests={};
+    operation="calculate applicable fee periods";
+    path=`users/${selectedStudentId}`;
     const periods=feePeriodsForProfile(profile,{date:new Date(),programs:ACADEMIC_PROGRAMS});
-    const registration=document.createElement("div");registration.className="fee-card";
-    const plan=document.createElement("div");plan.className="fee-card";
-    const planTitle=document.createElement("div");planTitle.className="fee-month";planTitle.textContent="Payment plan";
-    const planStatus=document.createElement("p");planStatus.textContent=`${frequency?frequency[0].toUpperCase()+frequency.slice(1):"Plan unavailable"}${profile.planTotal!==undefined?" · total "+formatINR(profile.planTotal):""}${frequency==="monthly"&&profile.feeAmount!==undefined?" · monthly fee "+formatINR(profile.feeAmount):""}`;
-    plan.append(planTitle,planStatus);$("feesGrid").appendChild(plan);
-    const regTitle=document.createElement("div");regTitle.className="fee-month";regTitle.textContent="Registration payment";
-    const regStatus=document.createElement("p");regStatus.textContent=registrationPaymentLabel(profile)+(Number.isFinite(Number(profile.paymentDueAtRegistration))?" · "+formatINR(profile.paymentDueAtRegistration):"");
-    registration.append(regTitle,regStatus);
-    if(profile.registrationPaymentStatus!=="verified"&&profile.paymentDueAtRegistration!==undefined&&profile.paymentDuePeriod){
-      const verify=document.createElement("button");verify.type="button";verify.textContent="Verify registration payment";
-      verify.addEventListener("click",verifyRegistrationPayment);registration.appendChild(verify);
+    console.info("[Fee Management] Fee period calculation succeeded.",{studentUid:selectedStudentId,path,frequency:classification.frequency||"unavailable",classification:classification.kind,periodCount:periods.length});
+    operation="read payment request documents";
+    for(const period of periods){
+      path=`users/${selectedStudentId}/feePaymentRequests/${period.id}`;
+      const requestSnap=await getDoc(doc(db,"users",selectedStudentId,"feePaymentRequests",period.id));
+      if(requestSnap.exists())requests[period.id]=requestSnap.data();
+      console.info("[Fee Management] Payment request document read succeeded.",{studentUid:selectedStudentId,path,exists:requestSnap.exists()});
     }
-    $("feesGrid").appendChild(registration);
-    if(!periods.length){const empty=document.createElement("div");empty.className="fee-card";empty.textContent=`No supported payment plan is recorded (saved frequency: ${profile.paymentFrequency||"missing"}).`;$("feesGrid").appendChild(empty);return;}
+    operation="render fee management interface";
+    path="admin.html#tab-fees";
+    const identity=document.createElement("div");identity.className="fee-card";
+    const identityTitle=document.createElement("div");identityTitle.className="fee-month";identityTitle.textContent="Student";
+    const identityDetails=document.createElement("p");identityDetails.textContent=[profile.name||"Name unavailable",profile.email||"Email unavailable","Document ID: "+$("feeStudent").value].join(" · ");
+    identity.append(identityTitle,identityDetails);$("feesGrid").appendChild(identity);
+    if(classification.kind==="plan"){
+      const plan=document.createElement("div");plan.className="fee-card";
+      const planTitle=document.createElement("div");planTitle.className="fee-month";planTitle.textContent="Payment plan";
+      const planStatus=document.createElement("p");planStatus.textContent=`New plan · ${classification.frequency[0].toUpperCase()+classification.frequency.slice(1)}${profile.planTotal!==undefined?" · total "+formatINR(profile.planTotal):" · total unavailable"}${classification.frequency==="monthly"&&profile.feeAmount!==undefined?" · monthly fee "+formatINR(profile.feeAmount):""}`;
+      plan.append(planTitle,planStatus);$("feesGrid").appendChild(plan);
+      const hasRegistrationData=profile.registrationPaymentStatus!==undefined||profile.paymentDueAtRegistration!==undefined;
+      if(hasRegistrationData){
+        const registration=document.createElement("div");registration.className="fee-card";
+        const regTitle=document.createElement("div");regTitle.className="fee-month";regTitle.textContent="Registration payment";
+        const regStatus=document.createElement("p");regStatus.textContent=registrationPaymentLabel(profile)+(Number.isFinite(Number(profile.paymentDueAtRegistration))?" · "+formatINR(profile.paymentDueAtRegistration):"");
+        registration.append(regTitle,regStatus);
+        if(profile.registrationPaymentStatus!=="verified"&&profile.paymentDueAtRegistration!==undefined&&profile.paymentDuePeriod){
+          const verify=document.createElement("button");verify.type="button";verify.textContent="Verify registration payment";
+          verify.addEventListener("click",verifyRegistrationPayment);registration.appendChild(verify);
+        }
+        $("feesGrid").appendChild(registration);
+      }
+    }else if(classification.kind==="legacy_monthly"){
+      const plan=document.createElement("div");plan.className="fee-card";plan.textContent="Payment plan: Monthly (legacy monthly arrangement)";$("feesGrid").appendChild(plan);
+    }else{
+      const diagnostic=document.createElement("div");diagnostic.className="fee-card";diagnostic.textContent=classification.diagnostic;$("feesGrid").appendChild(diagnostic);
+      return;
+    }
+    if(!periods.length){const empty=document.createElement("div");empty.className="fee-card";empty.textContent=classification.kind==="plan"?"No applicable fee periods are available.":"No recorded monthly fee periods are available.";$("feesGrid").appendChild(empty);return;}
     periods.forEach(period=>{
-      period.requestStatusAvailable=requestStatusAvailable;
-      period.status=feePeriodStatus(period,requests[period.id]||period.request,requestStatusAvailable||Boolean(period.request));
+      period.requestStatusAvailable=true;
+      period.status=feePeriodStatus(period,requests[period.id]||period.request,true);
       const card=document.createElement("div");card.className="fee-card";
       const title=document.createElement("div");title.className="fee-month";title.textContent=period.label;
       const amount=document.createElement("p");amount.textContent=period.amount?formatINR(period.amount):"Fee amount unavailable";
@@ -1069,13 +1097,30 @@ async function showFees(){
         requestInfo.textContent="Request: "+String(requests[period.id].status||"status unavailable")+" · reference: "+String(requests[period.id].reference||"not provided")+(requests[period.id].createdAt?" · submitted "+formatDate(requests[period.id].createdAt):"");
         card.appendChild(requestInfo);
       }
-      if(period.status!=="Paid"&&period.status!=="Not Applicable"&&period.amount>0){
+      if(period.paymentEnabled===false){
+        if(classification.kind==="legacy_monthly"&&period.status==="Paid"){
+          const button=document.createElement("button");button.type="button";button.textContent="Mark unpaid";
+          button.addEventListener("click",()=>markUnpaid(period));card.appendChild(button);
+        }else if(classification.kind==="legacy_monthly"&&period.status!=="Not Applicable"){
+          const button=document.createElement("button");button.type="button";button.textContent="Mark paid";
+          button.addEventListener("click",()=>markPaid(period));card.appendChild(button);
+        }
+      }else if(period.status!=="Paid"&&period.status!=="Not Applicable"&&period.amount>0){
         const button=document.createElement("button");button.type="button";button.textContent=period.status==="Pending Verification"?"Verify payment":"Mark paid";
         button.addEventListener("click",()=>markPaid(period));card.appendChild(button);
       }
       $("feesGrid").appendChild(card);
     });
-  }catch(error){console.error(error);toast("Could not load fee status.","error");}
+    console.info("[Fee Management] Fee panel rendered successfully.",{studentUid:selectedStudentId,documentId:snap.id,path,periodCount:periods.length});
+  }catch(error){
+    const errorCode=error.code||"unknown";
+    const errorMessage=error.message||String(error);
+    console.error(`[Fee Management] ${operation} failed.`,{studentUid:selectedStudentId,documentId:selectedStudentId,path,operation,errorCode,errorMessage,error});
+    const diagnostic=document.createElement("div");diagnostic.className="fee-card";
+    diagnostic.textContent=`Could not ${operation} for student ${selectedStudentId} at ${path} (${errorCode}): ${errorMessage}`;
+    $("feesGrid").replaceChildren(diagnostic);
+    toast(`Fee Management failed during ${operation} (${errorCode}): ${errorMessage}`,"error");
+  }
 }
 async function markPaid(period){
   const selectedId=$("feeStudent").value;const refUser=doc(db,"users",selectedId);
@@ -1094,14 +1139,23 @@ async function markPaid(period){
     toast(period.label+" payment verified.","success");
   }catch(error){console.error(error);toast("Could not update fee.","error");}
 }
+async function markUnpaid(period){
+  const refUser=doc(db,"users",$("feeStudent").value);
+  try{
+    await runTransaction(db,async transaction=>{
+      const snap=await transaction.get(refUser);if(!snap.exists())throw new Error("Student profile no longer exists.");
+      transaction.update(refUser,{fees:markFeePeriodUnpaid(snap.data(),period)});
+    });
+    await showFees();toast(period.label+" marked unpaid.","success");
+  }catch(error){console.error(error);toast("Could not update fee.","error");}
+}
 async function verifyRegistrationPayment(){
   const refUser=doc(db,"users",$("feeStudent").value);
   try{
     await runTransaction(db,async transaction=>{
       const snap=await transaction.get(refUser);if(!snap.exists())throw new Error("Student profile no longer exists.");
       const profile=snap.data();if(profile.registrationPaymentStatus==="verified"||profile.paymentDueAtRegistration===undefined)throw new Error("Registration payment is no longer pending verification.");
-      if(!profile.paymentDuePeriod)throw new Error("No registration payment period is recorded.");
-      transaction.update(refUser,registrationVerificationUpdate(serverTimestamp()));
+      transaction.update(refUser,{registrationPaymentStatus:"verified",registrationPaymentVerifiedAt:serverTimestamp()});
     });
     await showFees();toast("Registration payment verified.","success");
   }catch(error){console.error(error);toast("Could not verify registration payment.","error");}
